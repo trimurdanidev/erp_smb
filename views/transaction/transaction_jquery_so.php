@@ -1,0 +1,147 @@
+<html>
+
+<head>
+    <title>Stock Opname</title>
+</head>
+<?php
+$mdl_transaction = new transaction();
+$ctrl_transaction = new transactionController($mdl_transaction, $this->dbh);
+
+$mdl_trans_detail = new transaction_detail();
+$ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this->dbh);
+?>
+
+<body>
+    <h2>Transaction Stock Opname</h2>
+    <div id="upload">
+
+        <form name="frmUpload" id="frmUpload" action="index.php?model=transaction&action=saveUploadSo" method="POST"
+            enctype="multipart/form-data">
+            <table border="1" cellpadding="2" style="border-collapse: collapse;" width="50%">
+                <tr>
+                    <td><button class="btn btn-orange" onclick="downloadTemplate()"
+                            title="Download Format Template Excel SO"> <span class="glyphicon glyphicon-save"></span>
+                            Download Template</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="textBold">Upload Excel Stock Opname</td>
+                    <td>
+                        <input type="file" style="text-align: left;" class="form form-control" name="stock_so"
+                            id="stock_so" size="10"
+                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                            title="Pilih Document Excel SO" required />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align: left"><button type="submit" name="submit" value="" class="btn btn-facebook"
+                            title="Proses Upload Excel SO"><span class="glyphicon glyphicon-upload"></span>
+                            Proses</button>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+    <br>
+    <br>
+    <div id="upload_log">
+        <table class="table">
+            <thead class="">
+                <tr>
+                    <th scope="col">#</th>
+                    <th>Tanggal</th>
+                    <th>No Transaksi</th>
+                    <th>Deskripsi Upload</th>
+                    <th>Jumlah Data</th>
+                    <th>Qty Total</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <?php
+                    $no = 1;
+                    foreach ($transaction_list as $upload_list) {
+                        $getTrans = $ctrl_transaction->showData($upload_list->getId());
+
+                        ?>
+                        <th scope="row">
+                            <?php echo $no++; ?>
+                        </th>
+                        <td>
+                            <?php echo $getTrans->getTanggal(); ?>
+                        </td>
+                        <td>
+                            <?php echo $getTrans->getNo_trans(); ?>
+                        </td>
+                        <td>
+                            <?php echo $upload_list->getTrans_descrip(); ?>
+                        </td>
+                        <td>
+                            <?php echo $upload_list->getJumlah_data(); ?> Baris
+                        </td>
+                        <td>
+                            <?php echo $getTrans->getQtyTotal(); ?> Pcs
+                        </td>
+                        <td><b><span class="fa fa-check" style="color: green;"></span>
+                                <?php echo "Success" ?>
+                            </b></td>
+                        <td><a href="#detTrans"><button type="button" class="btn btn-default" title="Detail Transaksi"
+                                onclick="detailTrans(<?php echo $getTrans->getId();?>)"><span class="glyphicon glyphicon-eye-open"></span> Details</button></a>
+                        </td>
+
+                    </tr>
+                    <?php
+                    }
+                    ?>
+            </tbody>
+        </table>
+    </div>
+    <div id="detTrans"></div>
+</body>
+
+</html>
+<br>
+<script language="javascript" type="text/javascript">
+    (function () {
+        $('form').ajaxForm({
+            beforeSubmit: function () {
+            },
+            complete: function (xhr) {
+                alert($.trim(xhr.responseText));
+                // alert('Berhasil Tersimpan'));
+                showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
+            }
+        });
+    })();
+    function validate(evt) {
+        var e = evt || window.event;
+        var key = e.keyCode || e.which;
+        if ((key < 48 || key > 57) && !(key == 8 || key == 9 || key == 13 || key == 37 || key == 39 || key == 46)) {
+            e.returnValue = false;
+            if (e.preventDefault) e.preventDefault();
+        }
+    }
+
+    function downloadTemplate() {
+        window.open('./uploads/Template/FOMAT_STOCK_OPNAME.xls');
+    }
+
+    function ClosedetailTrans() {
+        var area = document.getElementById('detTrans');
+
+
+        area.style.display = "none";
+    }
+
+    function detailTrans(id) {
+        var area = document.getElementById('detTrans');
+        if(area.style.display="block"){
+            showMenu('detTrans','index.php?model=transaction&action=showDetailJQuery_so&id='+id);
+        }
+       
+    }
+</script>
