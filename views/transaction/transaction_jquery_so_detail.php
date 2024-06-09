@@ -47,7 +47,7 @@
                 $number = 1;
                 foreach ($showDetail as $valDetail) {
                     $getProduct = $ctrl_product->showDataByKode($valDetail->getKd_product());
-                    $getTrLog = $ctrl_tr_log->showDataByTransId($valDetail->getTrans_id());
+                    $getTrLog = $ctrl_tr_log->showDataByTransId($valDetail->getId(),$valDetail->getKd_product());
                     ?>
                     <td>
                         <?php echo $number++; ?>

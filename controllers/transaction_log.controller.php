@@ -9,8 +9,8 @@
 
     class transaction_logController extends transaction_logControllerGenerate
     {
-        function showDataByTransId($transid){
-            $sql = "SELECT * FROM transaction_log WHERE trans_id = '".$this->toolsController->replacecharFind($transid,$this->dbh)."'";
+        function showDataByTransId($transid,$kd_prod){
+            $sql = "SELECT a .* FROM transaction_log a inner join transaction_detail b on a.trans_id = b.trans_id WHERE a .id = '".$this->toolsController->replacecharFind($transid,$this->dbh)."' AND b.`kd_product`= '".$this->toolsController->replacecharFind($kd_prod,$this->dbh)."'";
 
             $row = $this->dbh->query($sql)->fetch();
             $this->loadData($this->transaction_log, $row);
