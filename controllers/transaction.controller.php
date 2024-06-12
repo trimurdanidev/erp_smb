@@ -161,6 +161,7 @@ class transactionController extends transactionControllerGenerate
         $this->transaction->setType_trans(3);
         $this->transaction->setQtyTotal($total);
         $this->transaction->setQtyRelease(0);
+        $this->transaction->setTrans_status(0);
         $this->transaction->setCreated_by($user);
         $this->transaction->setCreated_at($dateTime);
         $this->transaction->setUpdated_by('');
@@ -228,14 +229,14 @@ class transactionController extends transactionControllerGenerate
                 $ctrl_transaction_log->saveData();
 
                 //master_stock
-                $mdl_stock->setKd_product($kd_prod);
-                $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
-                $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
-                $mdl_stock->setCreated_by($getStock->getCreated_by());
-                $mdl_stock->setUpdated_by($user);
-                $mdl_stock->setCreated_at($getStock->getCreated_at());
-                $mdl_stock->setUpdated_at($dateTime);
-                $ctrl_stock->saveData();
+                // $mdl_stock->setKd_product($kd_prod);
+                // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
+                // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
+                // $mdl_stock->setCreated_by($getStock->getCreated_by());
+                // $mdl_stock->setUpdated_by($user);
+                // $mdl_stock->setCreated_at($getStock->getCreated_at());
+                // $mdl_stock->setUpdated_at($dateTime);
+                // $ctrl_stock->saveData();
 
             }
 
@@ -268,8 +269,9 @@ class transactionController extends transactionControllerGenerate
 
     }
 
-    function showDataArray($id){
-        $sql = "SELECT * FROM `transaction` WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
+    function showDataArray($id)
+    {
+        $sql = "SELECT * FROM `transaction` WHERE id = '" . $this->toolsController->replacecharFind($id, $this->dbh) . "'";
         return $this->createList($sql);
     }
 
@@ -286,6 +288,55 @@ class transactionController extends transactionControllerGenerate
         $showDetail = $ctrl_trans_dettail->showDataDtlArray($id);
 
         require_once './views/transaction/transaction_jquery_so_detail.php';
+    }
+
+    function confirmSO($id)
+    {
+        $this->setIsadmin(true);
+        $user = $this->user;
+
+        $getTransaction = $this->showData($id);
+
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+
+        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+
+        $this->transaction->setId($id);
+        $this->transaction->setNo_trans($getTransaction->getNo_trans());
+        $this->transaction->setTanggal($getTransaction->getTanggal());
+        $this->transaction->setType_trans($getTransaction->getType_trans());
+        $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
+        $this->transaction->setQtyRelease($getTransaction->getQtyRelease());
+        $this->transaction->setTrans_status(1);
+        $this->transaction->setCreated_by($getTransaction->getCreated_by());
+        $this->transaction->setCreated_at($getTransaction->getCreated_at());
+        $this->transaction->setUpdated_by($user);
+        $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+        $this->updateData();
+
+        foreach ($showDtlTrans as $valDetail) {
+            $getStok = $ctrl_stock->showData($valDetail->getKd_product());
+
+            //master_stock
+            $mdl_stock->setKd_product($valDetail->getKd_product());
+            $mdl_stock->setQty_stock($getStok->getQty_stock() + $valDetail->getQty());
+            $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
+            $mdl_stock->setCreated_by($getStok->getCreated_by());
+            $mdl_stock->setUpdated_by($user);
+            $mdl_stock->setCreated_at($getStok->getCreated_at());
+            $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
+            $ctrl_stock->saveData();
+        }
+    }
+
+    function showAllJQuery_trans_off()
+    {
+        require_once './views/transaction/transaction_jquery_trans_off.php';
+        // require_once './views/transaction/test.php';
     }
 }
 ?>

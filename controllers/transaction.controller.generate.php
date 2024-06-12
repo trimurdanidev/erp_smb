@@ -93,6 +93,7 @@
 	    $sql .= "`type_trans`,";
 	    $sql .= "`qtyTotal`,";
 	    $sql .= "`qtyRelease`,";
+	    $sql .= "`trans_status`,";
 	    $sql .= "`created_by`,";
 	    $sql .= "`created_at`,";
 	    $sql .= "`updated_by`,";
@@ -105,6 +106,7 @@
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getType_trans(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getQtyTotal(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getQtyRelease(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getTrans_status(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getCreated_by(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getCreated_at(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getUpdated_by(), $this->dbh)."',";
@@ -124,6 +126,7 @@
 	    $sql .= "`type_trans` = '".$this->toolsController->replacecharSave($this->transaction->getType_trans(),$this->dbh)."',";
 	    $sql .= "`qtyTotal` = '".$this->toolsController->replacecharSave($this->transaction->getQtyTotal(),$this->dbh)."',";
 	    $sql .= "`qtyRelease` = '".$this->toolsController->replacecharSave($this->transaction->getQtyRelease(),$this->dbh)."',";
+	    $sql .= "`trans_status` = '".$this->toolsController->replacecharSave($this->transaction->getTrans_status(),$this->dbh)."',";
 	    $sql .= "`created_by` = '".$this->toolsController->replacecharSave($this->transaction->getCreated_by(),$this->dbh)."',";
 	    $sql .= "`created_at` = '".$this->toolsController->replacecharSave($this->transaction->getCreated_at(),$this->dbh)."',";
 	    $sql .= "`updated_by` = '".$this->toolsController->replacecharSave($this->transaction->getUpdated_by(),$this->dbh)."',";
@@ -133,12 +136,12 @@
         }
         
         function deleteData($id){
-            $sql = "DELETE FROM `transaction` WHERE id = '".$id."'";
+            $sql = "DELETE FROM transaction WHERE id = '".$id."'";
             $execute = $this->dbh->query($sql);
         }
         
         function showData($id){
-            $sql = "SELECT * FROM `transaction` WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
+            $sql = "SELECT * FROM transaction WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
 
             $row = $this->dbh->query($sql)->fetch();
             $this->loadData($this->transaction, $row);
@@ -201,12 +204,12 @@
         }
         function findDataWhere($where){
             $sql = "SELECT * FROM transaction  ".$where;
-            $sql .= " ORDER BY id desc";
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findCountDataWhere($where){
             $sql = "SELECT count(id)  FROM transaction  ".$where;
-            $sql .= " ORDER BY id desc";
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findDataSql($sql){
@@ -231,6 +234,7 @@
 	    $transaction->setType_trans($row['type_trans']);
 	    $transaction->setQtyTotal($row['qtyTotal']);
 	    $transaction->setQtyRelease($row['qtyRelease']);
+	    $transaction->setTrans_status($row['trans_status']);
 	    $transaction->setCreated_by($row['created_by']);
 	    $transaction->setCreated_at($row['created_at']);
 	    $transaction->setUpdated_by($row['updated_by']);
@@ -411,6 +415,7 @@
 	    $type_trans = isset($_POST['type_trans'])?$_POST['type_trans'] : "";
 	    $qtyTotal = isset($_POST['qtyTotal'])?$_POST['qtyTotal'] : "";
 	    $qtyRelease = isset($_POST['qtyRelease'])?$_POST['qtyRelease'] : "";
+	    $trans_status = isset($_POST['trans_status'])?$_POST['trans_status'] : "";
 	    $created_by = isset($_POST['created_by'])?$_POST['created_by'] : "";
 	    $created_at = isset($_POST['created_at'])?$_POST['created_at'] : "";
 	    $updated_by = isset($_POST['updated_by'])?$_POST['updated_by'] : "";
@@ -421,6 +426,7 @@
 	    $this->transaction->setType_trans($type_trans);
 	    $this->transaction->setQtyTotal($qtyTotal);
 	    $this->transaction->setQtyRelease($qtyRelease);
+	    $this->transaction->setTrans_status($trans_status);
 	    $this->transaction->setCreated_by($created_by);
 	    $this->transaction->setCreated_at($created_at);
 	    $this->transaction->setUpdated_by($updated_by);
@@ -434,29 +440,29 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    echo "";
+                    //echo "Data is Inserted";
                 }else{
-                    echo "You cannot insert data this module";
+                    //echo "You cannot insert data this module";
                 }
             } else {
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                     $this->updateData();
-                    echo "";
+                    //echo "Data is updated";
                 }else{
-                    echo "You cannot update this module";
+                    //echo "You cannot update this module";
                 }
             }
         }
         public function export() {
             $sql = $this->findDataWhere($this->showDataWhereQuery());
-            header("Content-Type:application/xls",false);
-            header("Content-Disposition: attachment; filename=". $this->getModulename() .".xls");           
+            header("Content-Type:application/csv",false);
+            header("Content-Disposition: attachment; filename=". $this->getModulename() .".csv");           
             if($this->getModulename() != "report_query"){
                 $report_query = new report_query();
                 $report_query_controller = new report_queryController($report_query, $this->dbh);
-                echo $report_query_controller->generatetableviewExcel($sql);
+                echo $report_query_controller->exportcsv($sql);
             }else{
-                echo $this->generatetableviewExcel($sql);                
+                echo $this->exportcsv($sql);                
             }
         }
         public function printdata() {
@@ -607,99 +613,5 @@
         public function getLastId(){
             return $this->lastID;
         }
-        function searchtransaction(){
-            $search         = empty ($_REQUEST['search'])?"":$_REQUEST['search'];
-            $limit          = empty ($_REQUEST['limit'])?"5":$_REQUEST['limit'];
-            $skip           = empty ($_REQUEST['skip'])?"0":$_REQUEST['skip'];
-            
-            $pg_now=$skip;
-            if($skip==""){
-                $skip=0;
-            }
-            if($skip!=0){
-                $skip=($skip-1)*$limit;
-            }
-            $no=($skip)+1;
-            if($skip==0){
-                $pg_now=1;
-            }
-            $list_=$this->createList($this->showalltransaction($search)." limit ".$skip.",".$limit);
-            $row_count=count($this->createList($this->showalltransaction($search)));
-            
-            $list= '
-                
-            <table id="tlist"  class="ui-widget ui-widget-content" style="display: table;width:500px;" cellspacing="0" cellpadding="4">    
-                <thead id="tlist-head"><tr class="ui-widget-header">
-                        <th style="text-align:center;">No</th>
-                        
-                        <th style="text-align:left;">
-                            id
-                        </th>
-                        <th style="text-align:left;">
-                            id
-                        </th>
-                        
-                    </tr>
-                </thead>    
-
-                <tbody id="tlist-body">
-                    ';
-                    
-                    foreach ($list_ as $transaction){
-                        if($no%2==0){
-                            $bg="#b4d8b2";
-                        }else{
-                            $bg="#FFFFFF";
-                        }
-                        $list .= '
-                                    <tr style="background:'.$bg.';" id="row_1_" class="list_row row_1_" id_negara="1" onclick="jvpilih(\''.$transaction->getId().'\');">
-                                        <td style="text-align:center; vertical-align:top; width:20px;">'.$no.'</td>
-                                        <td style="text-align:left; vertical-align:top; width:30px;" class="">
-                                        <input type="hidden" id="idnya'.$transaction->getId().'" value="'.$transaction->getId().'" >
-                                        <input type="hidden" id="nilainya'.$transaction->getId().'" value="'.$transaction->getId().'" >
-                                        '.$transaction->getId().'</td>
-                                        <td style="text-align:center; vertical-align:top; width:50px;" class="">'.$transaction->getId().'</td> 
-                                    </tr>
-                                ';
-                        $no++;
-                    }
-                    $list .= '
-                </tbody>
-            </table>';               
-            $hasil = array(
-                       'list'=>$list,
-                       'num'=>$row_count,
-                       'jumpage'=>ceil($row_count/$limit),
-                       'pagenow'=>$pg_now,
-                );
-            echo json_encode($hasil);
-        }
-        
-        function showalltransaction($search=""){
-            $sql="select * from transaction";
-            $where ="";
-            if($search!=""){
-                
-                                 $where .= " where id like '%".$search."%'";
-               $where .= "       or  no_trans like '%".$search."%'";
-               $where .= "       or  tanggal like '%".$search."%'";
-               $where .= "       or  type_trans like '%".$search."%'";
-
-                  
-                
-            }
-            $sql .=$where;
-            $sql .="
-                order by id desc ";
-            return $sql;
-        } 
-        
-        function getModalList(){
-            $modul          = $_REQUEST['modul'];
-            $lebar          = $_REQUEST['lebar'];
-            $idnya          = $_REQUEST['idnya'];
-            $nilainya       = $_REQUEST['nilainya'];
-            require_once './views/modal_list.php';              
-        }   
     }
 ?>
