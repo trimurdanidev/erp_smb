@@ -37,6 +37,20 @@
         <tbody>
             <tr>
                 <?php
+                $sts = $getTrans->getTrans_status();
+                $stsPrint = "";
+                $stsColor = "";
+                switch ($sts) {
+                    case 0:
+                        $stsPrint = "fa fa-clock-o";
+                        $stsColor = "color:red;";
+                        break;
+
+                    case 1:
+                        $stsPrint = "fa fa-check";
+                        $stsColor = "color:green;";
+                        break;
+                }
 
                 $mdl_product = new master_product();
                 $ctrl_product = new master_productController($mdl_product, $this->dbh);
@@ -47,7 +61,7 @@
                 $number = 1;
                 foreach ($showDetail as $valDetail) {
                     $getProduct = $ctrl_product->showDataByKode($valDetail->getKd_product());
-                    $getTrLog = $ctrl_tr_log->showDataByTransId($valDetail->getId(),$valDetail->getKd_product());
+                    $getTrLog = $ctrl_tr_log->showDataByTransId($valDetail->getId(), $valDetail->getKd_product());
                     ?>
                     <td>
                         <?php echo $number++; ?>
@@ -64,11 +78,13 @@
                     <td>
                         <?php echo $valDetail->getQty(); ?>
                     </td>
-                    <td>
-                        <?php echo $getTrLog->getQty_after(); ?>
+                    <td><span style="<?php echo $stsColor; ?>">
+                            <?php echo $getTrLog->getQty_after(); ?>
+                        </span>
+
                     </td>
                     <td>
-                        <span class="fa fa-check"></span>
+                        <span style="<?php echo $stsColor; ?>" class="<?php echo $stsPrint; ?>"></span>
                     </td>
                 </tr>
             <?php }

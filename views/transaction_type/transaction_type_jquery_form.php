@@ -17,6 +17,10 @@
                 if(e.preventDefault)e.preventDefault();
             }
         }
+
+        function tesalet(){
+            alert('Berhasil');
+        }
 </script>
 
 <br>
@@ -52,6 +56,7 @@
         <tr> 
             <td class="textBold">Updated_at</td> 
             <td><input type="text"  name="updated_at" id="updated_at" value="<?php echo $transaction_type_->getUpdated_at();?>" size="10"   ></td>
+            <td><input type="button"  name="updated_at" id="updated_at" class="btn btn-danger" value="HUNI" onclick="tesalet()"/></td>
         </tr>
 
 

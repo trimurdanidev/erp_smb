@@ -35,7 +35,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: left"><button type="submit" name="submit" value="" class="btn btn-facebook"
+                    <td style="text-align: left"><button type="submit" name="submit" id="submit" value="" class="btn btn-facebook"
                             title="Proses Upload Excel SO"><span class="glyphicon glyphicon-upload"></span>
                             Proses</button>
                     </td>
@@ -66,6 +66,15 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     $no = 1;
                     foreach ($transaction_list as $upload_list) {
                         $getTrans = $ctrl_transaction->showData($upload_list->getId());
+                        $sts = "";
+                        $stringsts="";
+                        if ($getTrans->getTrans_status()=='0'){
+                            $sts="fa fa-clock-o";
+                            $stringsts="Pending";
+                        }else{
+                            $sts="fa fa-check";
+                            $stringsts="Success";
+                        }
 
                         ?>
                         <th scope="row">
@@ -86,8 +95,8 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         <td>
                             <?php echo $getTrans->getQtyTotal(); ?> Pcs
                         </td>
-                        <td><b><span class="fa fa-check" style="color: green;"></span>
-                                <?php echo "Success" ?>
+                        <td><b><span class="<?php echo $sts;?>" style="color: green;"></span>
+                                <?php echo $stringsts; ?>
                             </b></td>
                         <td><a href="#detTrans"><button type="button" class="btn btn-default" title="Detail Transaksi"
                                 onclick="detailTrans(<?php echo $getTrans->getId();?>)"><span class="glyphicon glyphicon-eye-open"></span> Details</button></a>
@@ -109,6 +118,10 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
     (function () {
         $('form').ajaxForm({
             beforeSubmit: function () {
+                if(confirm('Anda yakin save data ? ')==false){
+                        return false;
+                    }
+                    $('#submit').prop('disabled', true);
             },
             complete: function (xhr) {
                 alert($.trim(xhr.responseText));
