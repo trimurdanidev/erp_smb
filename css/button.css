@@ -1,0 +1,196 @@
+ @charset "utf-8";
+/* CSS Document */
+.subtle:active, .simple:active, .minimal:active, .awesome:active, .wrapX, .button_slider:active, .games:active, .books:active, .collections:active {
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.5), inset -1px -1px 1px rgba(100, 100, 100, 0.1);
+}
+
+.subtle, .simple, .minimal, .awesome {
+  border-top: 1px solid rgba(250, 250, 250, 0.05);
+  border-left: 1px solid rgba(250, 250, 250, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.subtle:hover, .simple:hover, .minimal:hover, .awesome:hover, .subtle:active, .simple:active, .minimal:active, .awesome:active {
+  border-bottom: 1px solid rgba(250, 250, 250, 0.05);
+  border-righ: 1px solid rgba(250, 250, 250, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.button_slider:before, .button_slider:after, .games:before, .games:after, .books:before, .books:after, .collections:before, .collections:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+
+.button_slider {
+	background: #b3c833;
+	color: #fff;
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	font-size: 14px;
+	/* font-weight:100; */
+  line-height: 32px;
+	/* paddinf-top:10px padding-left:25px; */
+    padding: 5px 25px;
+	text-transform: uppercase;
+	text-decoration: none;
+	padding-right: 35px;
+	width:95%;
+	height:95px;
+	border-radius:10px;
+	opacity: 0.95;
+	border-bottom-width: 5px;
+	border-bottom-style: solid;
+	border-bottom-color: #fafafa;
+	box-shadow: 0 1px 0px #9cc1ca, inset 0 1px 1px #9cc1ca, 0 1px 1px #9cc1ca;
+	float:left;
+    
+
+}
+.button_slider:hover, .button_slider:active {
+  background: #96a72b;
+  color: rgba(0, 0, 0, 0.45);
+}
+.button_slider:before {
+  border-right: 95px solid #f7f7f7;
+  border-bottom: 95px solid transparent;
+  opacity: 0.15;
+}
+.button_slider:after {
+  border-right: 95px solid #f7f7f7;
+  border-top: 95px solid transparent;
+  opacity: 0.2;
+}
+.button_slider:hover {
+  background: #a4b82f;
+}
+.button_slider:active {
+  background: #9db02d;
+  border: none;
+}
+
+.button_slider a {
+	position: relative;
+	display: block;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	margin-bottom: 0px;
+	padding-top:10px;
+	color: #FFF;
+	cursor:pointer;
+}
+.button_slider a:Hover {
+	opacity:.6; 
+	cursor:pointer;	
+	
+	}
+
+.button_slider > .inner {
+	padding-top:10px;
+	cursor:pointer;		
+}
+.button_slider > .button_slider-footer {
+  position: relative;
+  text-align: center;
+  padding: 3px 0;
+  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+ 
+  
+  
+}
+.button_slider > .button_slider-footer:hover {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.15);
+  
+}
+.button_slider h3 {
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+  padding: 0;
+  text-align:center;
+  float:left;
+}
+
+.button_slider p {
+	font-size: 14px;
+	padding-top:17px;
+	cursor: hand;
+	font-weight: bold;
+	float:left;
+	padding-left:10px;
+}
+
+
+.button_slider p > small {
+  display: block;
+  color: #f9f9f9;
+  font-size: 11px;
+  margin-top: 5px;
+  cursor: hand;
+}
+.button_slider h3 {
+	background-color: #FFF;
+	width:60px;
+	height:60px;
+	border-radius:100px;
+	padding-top:4px;
+	opacity: 0.95;
+}
+.button_slider p {
+	z-index: 5px;
+	
+}
+.button_slider .icon {
+  position: absolute;
+  top: auto;
+  bottom: 5px;
+  right: 5px;
+  z-index: 0;
+  font-size: 90px;
+  color: rgba(0, 0, 0, 0.15);
+}
+.button_slider:hover {
+	text-decoration: none;
+	color: #f9f9f9;
+	cursor: hand;
+	
+}
+.button_slider:hover .icon {
+  animation-name: tansformAnimation;
+  animation-duration: .5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+  -webkit-animation-name: tansformAnimation;
+  -webkit-animation-duration: .5s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease;
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-name: tansformAnimation;
+  -moz-animation-duration: .5s;
+  -moz-animation-iteration-count: 1;
+  -moz-animation-timing-function: ease;
+  -moz-animation-fill-mode: forwards;
+ 
+}
+

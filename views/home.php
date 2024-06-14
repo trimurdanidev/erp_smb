@@ -107,7 +107,14 @@
         <script src="./calendar/CalendarControl.js" language="javascript"></script>        
         <script src="./nicEdit/nicEdit.js" type="text/javascript" ></script>
         <script src="./js/jquery.form.js" type="text/javascript" ></script>
+        <!-- Autocomplete -->
         <script src="./js/jquery.autocomplete.js" type="text/javascript" ></script>
+        <!-- Autocomplete Multiple -->
+        <!-- <script src="./src/jquery.autocomplete.multiselect.js" type="text/javascript"></script> -->
+        <!-- Token Input -->
+        <script src="./src/jquery.tokeninput.js"></script>
+        <link rel="stylesheet" href="./css/styles/token-input.css"/>
+
         
         <!--<script type="text/javascript" src="jHtmlArea/scripts/jquery-1.3.2.js"></script>-->
         <script type="text/javascript" src="jHtmlArea/scripts/jquery-ui-1.7.2.custom.min.js"></script>

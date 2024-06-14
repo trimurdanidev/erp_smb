@@ -338,5 +338,9 @@ class transactionController extends transactionControllerGenerate
         require_once './views/transaction/transaction_jquery_trans_off.php';
         // require_once './views/transaction/test.php';
     }
+    
+    function saveTransJualOff(){
+        
+    }
 }
 ?>
