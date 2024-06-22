@@ -35,8 +35,9 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: left"><button type="submit" name="submit" id="submit" value="" class="btn btn-facebook"
-                            title="Proses Upload Excel SO"><span class="glyphicon glyphicon-upload"></span>
+                    <td style="text-align: left"><button type="submit" name="submit" id="submit" value=""
+                            class="btn btn-facebook" title="Proses Upload Excel SO"><span
+                                class="glyphicon glyphicon-upload"></span>
                             Proses</button>
                     </td>
                 </tr>
@@ -47,6 +48,50 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
     <br>
     <br>
     <div id="upload_log">
+        <form id="myForm">
+            <table class="search" border="0" width="80%">
+                <!-- <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-search"></span>
+                        Search Data
+                    </td>
+                </tr> -->
+                <tr>
+                    <?php
+                    $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
+                    $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
+                    $stsId = isset($_REQUEST["sts"]) ? $_REQUEST["sts"] : "";
+                    ?>
+                    <td><span class="glyphicon glyphicon-search"></span></td>
+                    <td>
+                        <input type="date" name="dari" id="dari" size="5"
+                            value="<?php echo $fromDate == date('Y-m-d') ? date('Y-m-d') : $fromDate; ?>"
+                            class="form form-control" placeholder="from Date">
+                    </td>
+                    <td>S/D</td>
+                    <td><input type="date" name="sampai" id="sampai" size="5"
+                            value="<?php echo $toDate == date('Y-m-d') ? date('Y-m-d') : $toDate; ?>"
+                            class="form form-control" placeholder="To Date" onchange="serchData()">
+                    </td>
+                    <td>
+                        <select name="sts" id="sts" class="form form-control" onchange="serchData()">
+                            <option value="0,1" <?php echo $stsId == '0,1' ? "selected" : ""; ?>>All Status</option>
+                            <option value="0" <?php echo $stsId == '0' ? "selected" : ""; ?>>Pending</option>
+                            <option value="1" <?php echo $stsId == '1' ? "selected" : ""; ?>>Success</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="hidden" name="getFrom" id="getFrom" value="<?php echo $fromDate; ?>">
+                        <input type="hidden" name="getTo" id="getTo" value="<?php echo $toDate; ?>">
+                        <input type="hidden" name="getStatus" id="getStatus" value="<?php echo $stsId; ?>">
+                    </td>
+                    <td>
+                        <button type="button" onclick="resetFilter()" class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span>
+                            Reset
+                        </button>
+                    </td>
+            </table>
+        </form>
         <table class="table">
             <thead class="">
                 <tr>
@@ -67,13 +112,13 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     foreach ($transaction_list as $upload_list) {
                         $getTrans = $ctrl_transaction->showData($upload_list->getId());
                         $sts = "";
-                        $stringsts="";
-                        if ($getTrans->getTrans_status()=='0'){
-                            $sts="fa fa-clock-o";
-                            $stringsts="Pending";
-                        }else{
-                            $sts="fa fa-check";
-                            $stringsts="Success";
+                        $stringsts = "";
+                        if ($getTrans->getTrans_status() == '0') {
+                            $sts = "fa fa-clock-o";
+                            $stringsts = "Pending";
+                        } else {
+                            $sts = "fa fa-check";
+                            $stringsts = "Success";
                         }
 
                         ?>
@@ -95,11 +140,17 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         <td>
                             <?php echo $getTrans->getQtyTotal(); ?> Pcs
                         </td>
-                        <td><b><span class="<?php echo $sts;?>" style="color: green;"></span>
+                        <td><b><span class="<?php echo $sts; ?>" style="color: green;"></span>
                                 <?php echo $stringsts; ?>
                             </b></td>
                         <td><a href="#detTrans"><button type="button" class="btn btn-default" title="Detail Transaksi"
-                                onclick="detailTrans(<?php echo $getTrans->getId();?>)"><span class="glyphicon glyphicon-eye-open"></span> Details</button></a>
+                                    onclick="detailTrans(<?php echo $getTrans->getId(); ?>)"><span
+                                        class="glyphicon glyphicon-eye-open"></span> Details</button></a>
+                            <?php if ($getTrans->getTrans_status() == '0') { ?>
+                                <button type="button" class="btn btn-green" title="Release Transaksi"
+                                    onclick="ReleaseTrans('<?php echo $getTrans->getId(); ?>')"><span
+                                        class="glyphicon glyphicon-thumbs-up"></span> Release</button>
+                            <?php } ?>
                         </td>
 
                     </tr>
@@ -118,10 +169,10 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
     (function () {
         $('form').ajaxForm({
             beforeSubmit: function () {
-                if(confirm('Anda yakin save data ? ')==false){
-                        return false;
-                    }
-                    $('#submit').prop('disabled', true);
+                if (confirm('Anda yakin save data ? ') == false) {
+                    return false;
+                }
+                $('#submit').prop('disabled', true);
             },
             complete: function (xhr) {
                 alert($.trim(xhr.responseText));
@@ -145,16 +196,42 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
 
     function ClosedetailTrans() {
         var area = document.getElementById('detTrans');
-
-
         area.style.display = "none";
     }
 
     function detailTrans(id) {
         var area = document.getElementById('detTrans');
-        if(area.style.display="block"){
-            showMenu('detTrans','index.php?model=transaction&action=showDetailJQuery_so&id='+id);
+        if (area.style.display = "block") {
+            showMenu('detTrans', 'index.php?model=transaction&action=showDetailJQuery_so&id=' + id);
         }
-       
+
+    }
+
+    function ReleaseTrans(id) {
+        var ask = confirm("Yakin Release Dokumen Stock Opname Ini ?,\n Semua Quantity Didalamnya Akan Terupdate kedalam Stock Anda.");
+        if (ask == true) {
+            site = "index.php?model=transaction&action=confirmSO&id=" + id;
+            target = "content";
+            showMenu(target, site);
+        }
+    }
+
+    function serchData() {
+        var sts = $('#sts option:selected').val();
+        var dari = $('#dari').val();
+        var sampai = $('#sampai').val();
+        var param = {};
+
+        param['sts'] = sts;
+        param['dari'] = dari;
+        param['sampai'] = sampai;
+
+        $.post('index.php?model=transaction&action=showAllJQuery_so_by_data', param, function (data) {
+            $('#content').html(data);
+        });
+    }
+
+    function resetFilter() {
+        showMenu('content','index.php?model=transaction&action=showAllJQuery_so');
     }
 </script>

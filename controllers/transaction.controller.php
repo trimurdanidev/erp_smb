@@ -110,6 +110,76 @@ class transactionController extends transactionControllerGenerate
         require_once './views/transaction/transaction_jquery_so.php';
     }
 
+    function showAllJQuery_so_by_data()
+    {
+        $mdl_transcation_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
+
+        $mdl_transaction_log = new transaction_log();
+        $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        $mdl_upload_tr_log = new upload_trans_log();
+        $ctrl_upload_tr_log = new upload_trans_logController($mdl_upload_tr_log, $this->dbh);
+
+        $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
+        $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
+        $stsId = isset($_REQUEST["sts"]) ? $_REQUEST["sts"] : "";
+
+        $sql = "SELECT a.* FROM `upload_trans_log` a
+        LEFT JOIN transaction_detail b ON a.id = b.`trans_id`
+        INNER JOIN transaction_log c ON c.`trans_id` = a.`id`
+        INNER JOIN `transaction` d ON d.`id` = a.`id`
+        WHERE d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId)
+        GROUP BY a.`id` 
+        ORDER BY a.`created_at` DESC";
+
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        $sisa = intval($last % $limit);
+
+        if ($sisa > 0) {
+            $last = $last - $sisa;
+        } else if ($last - $limit < 0) {
+            $last = 0;
+        } else {
+            $last = $last - $limit;
+        }
+
+        $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+        if ($skip + $limit > $last) {
+            $next = $last;
+        } else if ($skip == 0) {
+            $next = $skip + $limit + 1;
+        } else {
+            $next = $skip + $limit;
+        }
+        $first = 0;
+
+        $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+        $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+        $transaction_list = $ctrl_upload_tr_log->createList($sql);
+        $isadmin = $this->isadmin;
+        $ispublic = $this->ispublic;
+        $isread = $this->isread;
+        $isconfirm = $this->isconfirm;
+        $isentry = $this->isentry;
+        $isupdate = $this->isupdate;
+        $isdelete = $this->isdelete;
+        $isprint = $this->isprint;
+        $isexport = $this->isexport;
+        $isimport = $this->isimport;
+
+        require_once './views/transaction/transaction_jquery_so.php';
+    }
+
     function saveUploadSo()
     {
         $this->setIsadmin(true);
@@ -290,10 +360,12 @@ class transactionController extends transactionControllerGenerate
         require_once './views/transaction/transaction_jquery_so_detail.php';
     }
 
-    function confirmSO($id)
+    function confirmSO()
     {
         $this->setIsadmin(true);
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
         $user = $this->user;
+        $total = 0;
 
         $getTransaction = $this->showData($id);
 
@@ -305,31 +377,38 @@ class transactionController extends transactionControllerGenerate
 
         $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
 
-        $this->transaction->setId($id);
-        $this->transaction->setNo_trans($getTransaction->getNo_trans());
-        $this->transaction->setTanggal($getTransaction->getTanggal());
-        $this->transaction->setType_trans($getTransaction->getType_trans());
-        $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
-        $this->transaction->setQtyRelease($getTransaction->getQtyRelease());
-        $this->transaction->setTrans_status(1);
-        $this->transaction->setCreated_by($getTransaction->getCreated_by());
-        $this->transaction->setCreated_at($getTransaction->getCreated_at());
-        $this->transaction->setUpdated_by($user);
-        $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
-        $this->updateData();
 
-        foreach ($showDtlTrans as $valDetail) {
-            $getStok = $ctrl_stock->showData($valDetail->getKd_product());
-
-            //master_stock
-            $mdl_stock->setKd_product($valDetail->getKd_product());
-            $mdl_stock->setQty_stock($getStok->getQty_stock() + $valDetail->getQty());
-            $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
-            $mdl_stock->setCreated_by($getStok->getCreated_by());
-            $mdl_stock->setUpdated_by($user);
-            $mdl_stock->setCreated_at($getStok->getCreated_at());
-            $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
-            $ctrl_stock->saveData();
+        if ($id != "") {
+            foreach ($showDtlTrans as $valDetail) {
+                $getStok = $ctrl_stock->showData($valDetail->getKd_product());
+                $total += $valDetail->getQty();
+                //master_stock
+                $mdl_stock->setKd_product($valDetail->getKd_product());
+                $mdl_stock->setQty_stock( /*$getStok->getQty_stock() + */$valDetail->getQty());
+                $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
+                $mdl_stock->setCreated_by($getStok->getCreated_by());
+                $mdl_stock->setUpdated_by($user);
+                $mdl_stock->setCreated_at($getStok->getCreated_at());
+                $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
+                $ctrl_stock->saveData();
+            }
+            //transaction
+            $this->transaction->setId($id);
+            $this->transaction->setNo_trans($getTransaction->getNo_trans());
+            $this->transaction->setTanggal($getTransaction->getTanggal());
+            $this->transaction->setType_trans($getTransaction->getType_trans());
+            $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
+            $this->transaction->setQtyRelease($total);
+            $this->transaction->setTrans_status(1);
+            $this->transaction->setCreated_by($getTransaction->getCreated_by());
+            $this->transaction->setCreated_at($getTransaction->getCreated_at());
+            $this->transaction->setUpdated_by($user);
+            $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+            $this->updateData();
+            echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
+            $this->showAllJQuery_so();
+        } else {
+            echo "<script>alert('Gagal Rilis, Cek Koneksi Internet Anda!!');</script>";
         }
     }
 
@@ -338,9 +417,10 @@ class transactionController extends transactionControllerGenerate
         require_once './views/transaction/transaction_jquery_trans_off.php';
         // require_once './views/transaction/test.php';
     }
-    
-    function saveTransJualOff(){
-        
+
+    function saveTransJualOff()
+    {
+
     }
 }
 ?>
