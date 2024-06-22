@@ -195,7 +195,7 @@
         }
         function findDataWhere($where){
             $sql = "SELECT * FROM upload_trans_log  ".$where;
-            $sql .= " ORDER BY id";
+            $sql .= " ORDER BY created_at desc";
             return $sql;
         }
         function findCountDataWhere($where){
