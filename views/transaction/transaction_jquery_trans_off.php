@@ -18,16 +18,17 @@
             <tr>
                 <td class="textBold"><span class="fa fa-search"></span> Cari Part</td>
                 <td><input type="text" nama="part" id='part' class="form form-control"
-                        placeholder="Cari Kode Part, Nama Part" onkeypress="actionBtn()"></td>
+                        placeholder="Cari Kode Part, Nama Part"></td>
                 <td>
-                    <inpu type="button" class="btn btn-red" id="btnTambah" onclick="tesalet()"><span
+                    <button type="button" class="btn btn-red" id="btnTambah" onclick="tesalet()"><span
                             class="glyphicon glyphicon-ok"></span> Tambah</button>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <div id="detail_part_submit"></div>
+                    <div id="detail_part_submit">
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -142,14 +143,55 @@
         const keys = {};
         keys['id'] = Part.toString();
 
-        if(Part == null || Part == ""){
+        if (Part == null || Part == "") {
             alert("Upps\nPart Belum Ada Yang Dipilih !!");
-        }else{
+        } else {
             $.post('index.php?model=master_product&action=getPartDet', keys, function (data) {
                 $('#detail_part_submit').html(data);
             });
         }
 
+    }
+
+    function hapusElemen(no) {
+        $(no).remove();
+        var gtotal = $('#gTotal').val()
+        var btnHps = $('#' + no[0] + '_hpsDtl').val();
+
+        // alert(gtotal+btnHps);
+        // var i = 0 ;
+        // $('.tbody tr').each(function () {
+        //     jml = '#t' + ( i + 1 ) + '_ttl';
+        // });
+
+    }
+
+    function jshitung(id) {
+        var x = $(id).attr('id').split('_');
+        var price = $('#' + x[0] + '_price').val();
+        var qtyBeli = $('#' + x[0] + '_qtyBeli').val();
+        $('#' + x[0] + '_ttl').val('');
+
+        if ($.trim($('#' + x[0] + '_qtyBeli').val()) == '' || $.trim($('#' + x[0] + '_price').val()) == '') {
+            return false;
+        } else {
+            $('#' + x[0] + '_total').val(formatMoney(parseInt(price) * parseInt(qtyBeli)));
+            $('#' + x[0] + '_ttl').val(parseInt(price) * parseInt(qtyBeli));
+        }
+
+
+        var jum = 0 ; i = 0;
+        $('.tbody tr').each(function () {
+            jml = '#t' + ( i + 1 ) + '_ttl';
+            if (price != '' || qtyBeli != '') {
+                jum = parseInt(jum) + parseInt($(jml).val());
+                // jum += parseInt($(jml).val());
+                console.log(jml+parseInt($(jml).val()));
+            }
+            i++;
+        });
+        $('#gTotal').val(parseInt(jum));
+        $('#totalnya').val(formatMoney(parseInt(jum)));
     }
 
     function validate(evt) {
@@ -161,15 +203,24 @@
         }
     }
 
+    function formatMoney(amount, decimalCount = 0, decimal = ".", thousands = ",") {
+        try {
+            decimalCount = Math.abs(decimalCount);
+            decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+            const negativeSign = amount < 0 ? "-" : "";
+
+            let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+            let j = (i.length > 3) ? i.length % 3 : 0;
+
+            return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     $(document).ready(function () {
         $("#part").tokenInput("index.php?model=master_product&action=searchProdmulti");
-        
-        // function actionBtn() {
-        //     if (document.getElementById('part') !='' || document.getElementById('part') !=null ) {
-        //         document.getElementById('btnTambah').disabled = false;
-        //     }
-        // }
-
     });
 
 </script>
