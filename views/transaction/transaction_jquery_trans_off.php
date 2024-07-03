@@ -5,6 +5,11 @@
 </head>
 
 <body>
+    <?php
+    $mdl_pay_transfer = new master_pay_transfer();
+    $ctrl_pay_transfer = new master_pay_transferController($mdl_pay_transfer, $this->dbh);
+    $showPay_transfer = $ctrl_pay_transfer->showDataAll();
+    ?>
     <h2>Transaction Jual Offline</h2>
     <!-- <div id="trans_off"> -->
     <form name="trans_j_off" id="trans_j_off" method="post"
@@ -70,7 +75,7 @@
                         <option value="">Pilih Metode Pembayaran</option>
                         <option value="1">Tunai</option>
                         <option value="2">Transfer</option>
-                        <option value="3">QRIS</option>
+                        <!-- <option value="3">QRIS</option> -->
                     </select>
                 </td>
             </tr>
@@ -79,14 +84,59 @@
                 <td>
                     <div id="detail_pay_tn_submit" style="display: none;">
                         Uang Pembayaran :
+                        <input type="hidden" name="bayarSet" id="bayarSet">
                         <input type="text" name="bayar" id="bayar" class="form form-control"
-                            onkeypress="validate(event)" placeholder="Masukkan Uang Bayar">
+                            onkeypress="validate(event)" onblur="jsBayar(this)" placeholder="Masukkan Uang Bayar">
+                        <script>
+                            $(document).ready(function () {
+                                $('#bayar').formatCurrency({ symbol: '', roundToDecimalPlace: 0, });
+                                $('#bayar').blur(function () {
+                                    $('#bayar').formatCurrency({ symbol: '', roundToDecimalPlace: 0, });
+                                    $('#bayarSet').val($('#bayar').val().replace(/,/g, ''));
+                                });
+                            });
+                        </script>
                         Uang Kembalian :
+                        <input type="hidden" name="sisa" id="sisa">
                         <input type="text" name="kembalian" id="kembalian" class="form form-control"
                             onkeypress="validate(event)" placeholder="Uang Kembalian" readonly>
                     </div>
                     <div id="detail_pay_tr_submit" style="display: none;">
-                        <p>Disini Button Logo Bank</p>
+                        <?php foreach ($showPay_transfer as $value) { ?>
+                            <button type="button" class="btn btn-default" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"><img src="./img/icon/<?php echo $value->getImg() ?>"
+                                    style="width:60px; height:50px;"></img></button>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ...
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <button class="btn btn-default"><img src="./img/icon/btn-bri.png"
+                                style="width:60px; height:50px;"></img></button>
+                        <button class="btn btn-default"><img src="./img/icon/btn-mandiri.png"
+                                style="width:60px; height:50px;"></img></button>
+                        <button class="btn btn-default"><img src="./img/icon/btn-bni.png"
+                                style="width:60px; height:50px;"></img><br></button><br><br>
+                        <button class="btn btn-default"><img src="./img/icon/btn-gopay.png"
+                                style="width:60px; height:50px;"></img></button>
+                        <button class="btn btn-default"><img src="./img/icon/btn-ovo.png"
+                                style="width:60px; height:50px;"></img></button> -->
+                        <?php } ?>
                     </div>
                     <div id="detail_pay_qr_submit" style="display: none;">
                         <p>Disini Button Logo Bank Qris</p>
@@ -180,18 +230,38 @@
         }
 
 
-        var jum = 0 ; i = 0;
+        var jum = 0; i = 0;
         $('.tbody tr').each(function () {
-            jml = '#t' + ( i + 1 ) + '_ttl';
+            jml = '#t' + (i + 1) + '_ttl';
             if (price != '' || qtyBeli != '') {
                 jum = parseInt(jum) + parseInt($(jml).val());
                 // jum += parseInt($(jml).val());
-                console.log(jml+parseInt($(jml).val()));
+                console.log(jml + parseInt($(jml).val()));
             }
             i++;
         });
         $('#gTotal').val(parseInt(jum));
         $('#totalnya').val(formatMoney(parseInt(jum)));
+    }
+
+    function jsBayar(id) {
+        var x = $(id).attr('id');
+        var bayar = $('#bayar').val();
+        var gtotal = $('#gTotal').val();
+        var kembalian = $('#kembalian');
+        var sisa = $('#sisa');
+
+        if (parseInt(bayar) >= parseInt(gtotal)) {
+            sisa.val(parseInt(bayar - gtotal));
+            kembalian.val(formatMoney(parseInt(bayar - gtotal)));
+            // alert(bayar + "-" + gtotal);
+        } else {
+            alert("Uppss!\nUang Bayar Harus Lebih dari / Sama Dengan Total Belanja");
+            $('#bayar').val('');
+            kembalian.val('');
+            sisa.val('');
+            return false;
+        }
     }
 
     function validate(evt) {

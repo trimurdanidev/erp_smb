@@ -22,6 +22,9 @@ require_once './controllers/master_stock.controller.generate.php';
 require_once './models/master_product.class.php';
 require_once './controllers/master_product.controller.php';
 require_once './controllers/excel_reader2.php';
+require_once './models/master_pay_transfer.class.php';
+require_once './controllers/master_pay_transfer.controller.php';
+require_once './controllers/master_pay_transfer.controller.generate.php';
 
 if (!isset($_SESSION)) {
     session_start();
