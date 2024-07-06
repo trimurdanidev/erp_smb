@@ -213,12 +213,12 @@
 
                 
         function loadData($initial_company,$row){
-	    $initial_company->setId($row['id']);
-	    $initial_company->setCompany_name($row['company_name']);
-	    $initial_company->setUsername($row['username']);
-	    $initial_company->setDatabase_name($row['database_name']);
-	    $initial_company->setLogo($row['logo']);
-	    $initial_company->setBgfile($row['bgfile']);
+	    $initial_company->setId(isset($row['id']));
+	    $initial_company->setCompany_name(isset($row['company_name']));
+	    $initial_company->setUsername(isset($row['username']));
+	    $initial_company->setDatabase_name(isset($row['database_name']));
+	    $initial_company->setLogo(isset($row['logo']));
+	    $initial_company->setBgfile(isset($row['bgfile']));
 
         }
 

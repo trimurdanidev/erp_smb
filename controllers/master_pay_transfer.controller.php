@@ -9,6 +9,20 @@
 
     class master_pay_transferController extends master_pay_transferControllerGenerate
     {
+        function showData_groupByTransfer(){
+            $sql = "SELECT * FROM `master_pay_transfer` GROUP BY `transfer`";
+            return $this->createList($sql);            
+        }
 
+        function showDataByName($name){
+            $sql = "SELECT * FROM `master_pay_transfer` WHERE transfer='".$name."'";
+            return $this->createList($sql);            
+        }
+
+        function CountsByName($name){
+            $sql = "SELECT COUNT(*) FROM `master_pay_transfer` WHERE transfer='".$name."'";
+            $row = $this->dbh->query($sql)->fetch();
+            return $row[0];
+        }
     }
 ?>
