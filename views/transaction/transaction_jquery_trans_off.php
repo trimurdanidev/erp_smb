@@ -8,7 +8,7 @@
     <?php
     $mdl_pay_transfer = new master_pay_transfer();
     $ctrl_pay_transfer = new master_pay_transferController($mdl_pay_transfer, $this->dbh);
-    $showPay_transfer = $ctrl_pay_transfer->showDataAll();
+    $showPay_transfer = $ctrl_pay_transfer->showData_groupByTransfer();
     ?>
     <h2>Transaction Jual Offline</h2>
     <!-- <div id="trans_off"> -->
@@ -102,44 +102,95 @@
                             onkeypress="validate(event)" placeholder="Uang Kembalian" readonly>
                     </div>
                     <div id="detail_pay_tr_submit" style="display: none;">
-                        <?php foreach ($showPay_transfer as $value) { ?>
-                            <button type="button" class="btn btn-default" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"><img src="./img/icon/<?php echo $value->getImg() ?>"
+                        <?php foreach ($showPay_transfer as $value) {
+                            $showPayRek = $ctrl_pay_transfer->showDataByName($value->getTransfer());
+                            $countRekBybank = $ctrl_pay_transfer->CountsByName($value->getTransfer());
+
+                            ?>
+                            <button type="button" class="btn btn-default" data-toggle="modal"
+                                data-target="#modalTrf<?php echo $value->getId() ?>"><img
+                                    src="./img/icon/<?php echo $value->getImg() ?>"
                                     style="width:60px; height:50px;"></img></button>
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                aria-hidden="true">
+                            <div class="modal fade" id="modalTrf<?php echo $value->getId() ?>" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel"><img
+                                                    src="./img/icon/<?php echo $value->getImg() ?>"
+                                                    style="width:100px; height:95px;"></img>
+                                            </h1>
                                         </div>
                                         <div class="modal-body">
-                                            ...
+                                            <h4><span class="glyphicon glyphicon-th-list"></span> Transfer
+                                                <?php echo $value->getTransfer(); ?>
+                                            </h4>
+                                            <?php if ($value->getName_akun() == null && $value->getRek_akun() == null) {
+                                                ?>
+                                                <table class="table table-striped">
+                                                    <td align="center"><b>Akun Rekening Pembayaran Belum Tersedia</b></td>
+                                                </table>
+                                            <?php } else { ?>
+                                                <div class="row table-row">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-left">No</th>
+                                                                <th class="text-left">A/n (Atas Nama)</th>
+                                                                <th class="text-left">No. Rekening</th>
+                                                                <th class="text-center">#</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                            $index = 1;
+                                                            foreach ($showPayRek as $val_rek) {
+                                                                ?>
+                                                                <tr>
+                                                                    <td class="text-left">
+                                                                        <?php echo $index++; ?>
+                                                                    </td>
+                                                                    <td class="text-left">
+                                                                        <b>
+                                                                            <?php echo $val_rek->getName_akun(); ?>
+                                                                        </b>
+                                                                    </td>
+                                                                    <td class="text-left">
+                                                                        <b>
+                                                                            <?php echo $val_rek->getRek_akun(); ?>
+                                                                        </b>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <input type="button" class="btn btn-facebook"
+                                                                            onclick="btnChoose('<?php echo $val_rek->getTransfer();?>','<?php echo $val_rek->getId(); ?>','<?php echo $val_rek->getName_akun(); ?>','<?php echo $val_rek->getRek_akun(); ?>')"
+                                                                            value="Pilih"  data-dismiss="modal" />
+                                                                        <!-- <a href="#"
+                                                                            onclick="btnChoose('<?php echo $val_rek->getId(); ?>')"><button
+                                                                                class="btn btn-default"><span
+                                                                                    class="glyphicon glyphicon-ok"></span> Pilih
+                                                                            </button></a> -->
+
+                                                                    </td>
+                                                                </tr>
+                                                                <?php
+                                                            } ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            <?php } ?>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                                data-dismiss="modal">Close</button>
+                                            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- <button class="btn btn-default"><img src="./img/icon/btn-bri.png"
-                                style="width:60px; height:50px;"></img></button>
-                        <button class="btn btn-default"><img src="./img/icon/btn-mandiri.png"
-                                style="width:60px; height:50px;"></img></button>
-                        <button class="btn btn-default"><img src="./img/icon/btn-bni.png"
-                                style="width:60px; height:50px;"></img><br></button><br><br>
-                        <button class="btn btn-default"><img src="./img/icon/btn-gopay.png"
-                                style="width:60px; height:50px;"></img></button>
-                        <button class="btn btn-default"><img src="./img/icon/btn-ovo.png"
-                                style="width:60px; height:50px;"></img></button> -->
                         <?php } ?>
                     </div>
-                    <div id="detail_pay_qr_submit" style="display: none;">
-                        <p>Disini Button Logo Bank Qris</p>
+                    <div id="hasil_detail_pay_tr" style="display: none;">
+                        <p id="printh_pay_tr" style="color: blue;"></p>
                     </div>
                 </td>
             </tr>
@@ -262,6 +313,17 @@
             sisa.val('');
             return false;
         }
+    }
+
+    function btnChoose(bank,id, name, rekening) {
+        var check_choose = document.getElementById('hasil_detail_pay_tr');
+        var listPayment = document.getElementById('detail_pay_tr_submit');
+        // alert("Berhasil Dipilih" + id);
+
+        check_choose.style.display = 'block';
+        document.getElementById('printh_pay_tr').innerHTML = bank + " - " + name + " - " + rekening;
+        listPayment.style.display= 'none';
+
     }
 
     function validate(evt) {
