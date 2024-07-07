@@ -213,12 +213,12 @@
 
                 
         function loadData($transaction_type,$row){
-	    $transaction_type->setId($row['id']);
-	    $transaction_type->setType_name($row['type_name']);
-	    $transaction_type->setCreated_by($row['created_by']);
-	    $transaction_type->setCreated_at($row['created_at']);
-	    $transaction_type->setUpdated_by($row['updated_by']);
-	    $transaction_type->setUpdated_at($row['updated_at']);
+	    $transaction_type->setId(isset($row['id']));
+	    $transaction_type->setType_name(isset($row['type_name']));
+	    $transaction_type->setCreated_by(isset($row['created_by']));
+	    $transaction_type->setCreated_at(isset($row['created_at']));
+	    $transaction_type->setUpdated_by(isset($row['updated_by']));
+	    $transaction_type->setUpdated_at(isset($row['updated_at']));
 
         }
 

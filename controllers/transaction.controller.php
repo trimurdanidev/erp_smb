@@ -25,6 +25,13 @@ require_once './controllers/excel_reader2.php';
 require_once './models/master_pay_transfer.class.php';
 require_once './controllers/master_pay_transfer.controller.php';
 require_once './controllers/master_pay_transfer.controller.generate.php';
+require_once './models/transaction_payment.class.php';
+require_once './controllers/transaction_payment.controller.php';
+require_once './controllers/transaction_payment.controller.generate.php';
+require_once './controllers/master_pay_transfer.controller.generate.php';
+require_once './models/transaction_buyer.class.php';
+require_once './controllers/transaction_buyer.controller.php';
+require_once './controllers/transaction_buyer.controller.generate.php';
 
 if (!isset($_SESSION)) {
     session_start();
@@ -35,11 +42,21 @@ class transactionController extends transactionControllerGenerate
     function showDataNomorTerakhir($type)
     {
         $this->setIsadmin(true);
-        $sql = "select * from `transaction` WHERE type_trans='" . $type . "' order by id desc limit 1";
+        $sql = "select COUNT(*) id from `transaction` WHERE type_trans='" . $type . "' order by id desc";
         $row = $this->dbh->query($sql)->fetch();
-        $this->loadData($this->transaction, $row);
+        // $this->loadData($this->transaction, $row);
 
-        return $this->transaction;
+        return $row;
+
+
+    }
+
+    function countNomorTerakhir($type)
+    {
+        $this->setIsadmin(true);
+        $sql = "select count(*) from `transaction` WHERE type_trans='" . $type . "' order by id desc limit 1";
+        $row = $this->dbh->query($sql)->fetch();
+        return $row[0];
 
     }
 
@@ -208,7 +225,7 @@ class transactionController extends transactionControllerGenerate
         $numbering = $this->showDataNomorTerakhir(3);
 
         if (count($numbering) > 0) {
-            $nomorakhir = $numbering->getId() + 1;
+            $nomorakhir = $numbering['id'] + 1;
         }
 
         $id = isset($_POST['id']) ? $_POST['id'] : "";
@@ -423,6 +440,85 @@ class transactionController extends transactionControllerGenerate
 
     function saveTransJualOff()
     {
+        $this->setIsadmin(true);
+
+        $mdl_trans_dtl = new transaction_detail();
+        $ctrl_trans_dtl = new transaction_detailController($mdl_trans_dtl, $this->dbh);
+
+        $mdl_trans_buyer = new transaction_buyer();
+        $ctrl_trans_buyer = new transaction_buyerController($mdl_trans_buyer, $this->dbh);
+
+        $mdl_trans_payment = new transaction_payment();
+        $ctrl_trans_payment = new transaction_paymentController($mdl_trans_payment, $this->dbh);
+
+        $mdl_trans_log = new transaction_log();
+        $ctrl_trans_log = new transaction_logController($mdl_trans_log, $this->dbh);
+
+        $mdl_mst_stok = new master_stock();
+        $ctrl_mst_stok = new master_stockController($mdl_mst_stok, $this->dbh);
+
+        $user = $this->user;
+        $numbering = $this->countNomorTerakhir(2);
+        $setNumbering = $this->showDataNomorTerakhir(2);
+
+        if ($numbering > 0) {
+            $nomorakhir = $setNumbering['id'] + 1;
+        } else {
+            $nomorakhir = 1;
+        }
+
+        $id = isset($_POST['id']) ? $_POST['id'] : "";
+        $generateNotrans = 'OF' . date('dmy') . '-' . sprintf('%06s', $nomorakhir);
+        $no_trans = isset($generateNotrans) ? $generateNotrans : "";
+        $dateTime = date('Y-m-d h:i:s');
+        $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : "";
+        // $qtyTotal = isset($_POST['qtyTotal']) ? $_POST['qtyTotal'] : "";
+        // $qtyRelease = isset($_POST['qtyRelease']) ? $_POST['qtyRelease'] : "";
+        // $qtyTotal = 0;
+        // $qtyRelease = 0;
+        $total = 0;
+        $part = isset($_POST['part']) ? $_POST['part'] : "";
+        $qtyBeli = isset($_POST['qtyBeli']) ? $_POST['qtyBeli'] : "";
+        $price = isset($_POST['price']) ? $_POST['price'] : "";
+
+        if ($part != null || $id != "") {
+
+            // transaction
+            $this->transaction->setId($id);
+            $this->transaction->setNo_trans($no_trans);
+            $this->transaction->setTanggal($dateTime);
+            $this->transaction->setType_trans(2);
+            $this->transaction->setQtyTotal($total);
+            $this->transaction->setQtyRelease($total);
+            $this->transaction->setTrans_status(1);
+            $this->transaction->setCreated_by($user);
+            $this->transaction->setCreated_at($dateTime);
+            $this->transaction->setUpdated_by($user);
+            $this->transaction->setUpdated_at($dateTime);
+            $this->saveData();
+
+
+            foreach ($part as $arr_part => $y) {
+                // transaction detail
+                $part = $y;
+                $qty = $qtyBeli[$arr_part];
+                $priceSet = $price[$arr_part];
+
+                // $mdl_trans_dtl->setId($id);
+                $mdl_trans_dtl->setTrans_id($this->getLastId());
+                $mdl_trans_dtl->setKd_product($part);
+                $mdl_trans_dtl->setQty($qty);
+                $mdl_trans_dtl->setHarga($priceSet);
+                $ctrl_trans_dtl->saveData();
+                
+                $total += $qty;
+            }
+
+            //Update Total
+            $queryExe = "UPDATE `transaction` set qtyTotal='$total',qtyRelease='$total' where id='".$this->getLastId()."'";
+            $this->dbh->query($queryExe); 
+        }
+
 
     }
 }

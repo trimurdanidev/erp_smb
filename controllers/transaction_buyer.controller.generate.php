@@ -1,5 +1,5 @@
 <?php
-    require_once './models/master_stock.class.php';
+    require_once './models/transaction_buyer.class.php';
     require_once './models/master_module.class.php';
     require_once './controllers/master_module.controller.php';
     require_once './models/master_group_detail.class.php';
@@ -13,10 +13,10 @@
         session_start();
     }
  
-    class master_stockControllerGenerate
+    class transaction_buyerControllerGenerate
     {
-        protected $master_stock;
-        var $modulename = "master_stock";
+        protected $transaction_buyer;
+        var $modulename = "transaction_buyer";
         var $dbh;
         var $limit = 20;
         var $user = "None";
@@ -33,9 +33,9 @@
         var $isimport = false;
         var $lastID = "";
         var $toolsController;
-        function __construct($master_stock, $dbh) {
+        function __construct($transaction_buyer, $dbh) {
             $this->modulename = strtoupper($this->modulename);
-            $this->master_stock = $master_stock;
+            $this->transaction_buyer = $transaction_buyer;
             $this->dbh = $dbh;            
                                      
             $user = isset($_SESSION[config::$LOGIN_USER])? unserialize($_SESSION[config::$LOGIN_USER]): new master_user() ;
@@ -85,24 +85,20 @@
         function insertData(){
             $datetime = date("Y-m-d H:i:s");
             
-            $sql = "INSERT INTO master_stock ";
+            $sql = "INSERT INTO transaction_buyer ";
             $sql .= " ( ";
-	    $sql .= "`kd_product`,";
-	    $sql .= "`qty_stock`,";
-	    $sql .= "`qty_stock_promo`,";
-	    $sql .= "`created_by`,";
-	    $sql .= "`updated_by`,";
-	    $sql .= "`created_at`,";
-	    $sql .= "`updated_at` ";
+	    $sql .= "`id`,";
+	    $sql .= "`trans_id`,";
+	    $sql .= "`buyer_name`,";
+	    $sql .= "`buyer_phone`,";
+	    $sql .= "`buyer_address` ";
             $sql .= ") ";
             $sql .= " VALUES (";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getKd_product(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getQty_stock(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getQty_stock_promo(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getCreated_by(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getUpdated_by(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getCreated_at(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getUpdated_at(), $this->dbh)."' ";
+	    $sql .= " null,";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_buyer->getTrans_id(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_buyer->getBuyer_name(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_buyer->getBuyer_phone(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_buyer->getBuyer_address(), $this->dbh)."' ";
 
             $sql .= ")";
             $execute = $this->dbh->query($sql);
@@ -111,34 +107,32 @@
         
         function updateData(){
             $datetime = date("Y-m-d H:i:s");
-            $sql = "UPDATE master_stock SET ";
-	    $sql .= "`kd_product` = '".$this->toolsController->replacecharSave($this->master_stock->getKd_product(),$this->dbh)."',";
-	    $sql .= "`qty_stock` = '".$this->toolsController->replacecharSave($this->master_stock->getQty_stock(),$this->dbh)."',";
-	    $sql .= "`qty_stock_promo` = '".$this->toolsController->replacecharSave($this->master_stock->getQty_stock_promo(),$this->dbh)."',";
-	    $sql .= "`created_by` = '".$this->toolsController->replacecharSave($this->master_stock->getCreated_by(),$this->dbh)."',";
-	    $sql .= "`updated_by` = '".$this->toolsController->replacecharSave($this->master_stock->getUpdated_by(),$this->dbh)."',";
-	    $sql .= "`created_at` = '".$this->toolsController->replacecharSave($this->master_stock->getCreated_at(),$this->dbh)."',";
-	    $sql .= "`updated_at` = '".$this->toolsController->replacecharSave($this->master_stock->getUpdated_at(),$this->dbh)."' ";
-            $sql .= "WHERE kd_product = '".$this->master_stock->getKd_product()."'";                
+            $sql = "UPDATE transaction_buyer SET ";
+	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->transaction_buyer->getId(),$this->dbh)."',";
+	    $sql .= "`trans_id` = '".$this->toolsController->replacecharSave($this->transaction_buyer->getTrans_id(),$this->dbh)."',";
+	    $sql .= "`buyer_name` = '".$this->toolsController->replacecharSave($this->transaction_buyer->getBuyer_name(),$this->dbh)."',";
+	    $sql .= "`buyer_phone` = '".$this->toolsController->replacecharSave($this->transaction_buyer->getBuyer_phone(),$this->dbh)."',";
+	    $sql .= "`buyer_address` = '".$this->toolsController->replacecharSave($this->transaction_buyer->getBuyer_address(),$this->dbh)."' ";
+            $sql .= "WHERE id = '".$this->transaction_buyer->getId()."'";                
             $execute = $this->dbh->query($sql);
         }
         
         function deleteData($id){
-            $sql = "DELETE FROM master_stock WHERE  kd_product= '".$id."'";
+            $sql = "DELETE FROM transaction_buyer WHERE id = '".$id."'";
             $execute = $this->dbh->query($sql);
         }
         
         function showData($id){
-            $sql = "SELECT * FROM master_stock WHERE kd_product= '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
+            $sql = "SELECT * FROM transaction_buyer WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
 
             $row = $this->dbh->query($sql)->fetch();
-            $this->loadData($this->master_stock, $row);
+            $this->loadData($this->transaction_buyer, $row);
             
-            return $this->master_stock;
+            return $this->transaction_buyer;
         }
         
         function checkData($id){
-            $sql = "SELECT count(*) FROM master_stock where kd_product = '".$id."'";
+            $sql = "SELECT count(*) FROM transaction_buyer where id = '".$id."'";
             $row = $this->dbh->query($sql)->fetch();
             return $row[0];
         }
@@ -161,10 +155,10 @@
             $where = "";
             if ($bsearch) {
                 $search = $_REQUEST["search"] ;
-               $where .= " where kd_product like '%".$search."%'";
-               $where .= "       or  qty_stock like '%".$search."%'";
-               $where .= "       or  qty_stock_promo like '%".$search."%'";
-               $where .= "       or  created_by like '%".$search."%'";
+               $where .= " where id like '%".$search."%'";
+               $where .= "       or  trans_id like '%".$search."%'";
+               $where .= "       or  buyer_name like '%".$search."%'";
+               $where .= "       or  buyer_phone like '%".$search."%'";
 
             }            
             return $where;
@@ -191,13 +185,13 @@
             return $this->findDataWhere($where);
         }
         function findDataWhere($where){
-            $sql = "SELECT * FROM master_stock  ".$where;
-            $sql .= " ORDER BY ";
+            $sql = "SELECT * FROM transaction_buyer  ".$where;
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findCountDataWhere($where){
-            $sql = "SELECT count()  FROM master_stock  ".$where;
-            $sql .= " ORDER BY ";
+            $sql = "SELECT count(id)  FROM transaction_buyer  ".$where;
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findDataSql($sql){
@@ -205,24 +199,22 @@
         }
 
         function createList($sql){
-            $master_stock_List = array();
+            $transaction_buyer_List = array();
             foreach ($this->dbh->query($sql) as $row) {
-                    $master_stock_ = new master_stock();
-                    $this->loadData($master_stock_, $row);
-                    $master_stock_List[] = $master_stock_;
+                    $transaction_buyer_ = new transaction_buyer();
+                    $this->loadData($transaction_buyer_, $row);
+                    $transaction_buyer_List[] = $transaction_buyer_;
             }
-            return $master_stock_List;            
+            return $transaction_buyer_List;            
         }
 
                 
-        function loadData($master_stock,$row){
-	    $master_stock->setKd_product(isset($row['kd_product'])?$row['kd_product']:"");
-	    $master_stock->setQty_stock(isset($row['qty_stock'])?$row['qty_stock']:"");
-	    $master_stock->setQty_stock_promo(isset($row['qty_stock_promo'])?$row['qty_stock_promo']:"");
-	    $master_stock->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
-	    $master_stock->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
-	    $master_stock->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
-	    $master_stock->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
+        function loadData($transaction_buyer,$row){
+	    $transaction_buyer->setId(isset($row['id']));
+	    $transaction_buyer->setTrans_id(isset($row['trans_id']));
+	    $transaction_buyer->setBuyer_name(isset($row['buyer_name']));
+	    $transaction_buyer->setBuyer_phone(isset($row['buyer_phone']));
+	    $transaction_buyer->setBuyer_address(isset($row['buyer_address']));
 
         }
 
@@ -261,7 +253,7 @@
                 $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
                 $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-                $master_stock_list = $this->showDataAllLimit();
+                $transaction_buyer_list = $this->showDataAllLimit();
 
                 $isadmin = $this->isadmin;
                 $ispublic = $this->ispublic;
@@ -274,7 +266,7 @@
                 $isexport = $this->isexport ;
                 $isimport = $this->isimport;
 
-                require_once './views/master_stock/master_stock_list.php';
+                require_once './views/transaction_buyer/transaction_buyer_list.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -310,7 +302,7 @@
                 $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
                 $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-                $master_stock_list = $this->showDataAllLimit();
+                $transaction_buyer_list = $this->showDataAllLimit();
                 $isadmin = $this->isadmin;
                 $ispublic = $this->ispublic;
                 $isread = $this->isread;
@@ -321,7 +313,7 @@
                 $isprint = $this->isprint;
                 $isexport = $this->isexport ;
                 $isimport = $this->isimport;
-                require_once './views/master_stock/master_stock_jquery_list.php';
+                require_once './views/transaction_buyer/transaction_buyer_jquery_list.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -330,8 +322,8 @@
         function showDetail(){
             if ($this->ispublic || $this->isadmin || $this->isread ){
                 $id = $_GET['id'];
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_detail.php';
+                $transaction_buyer_ = $this->showData($id);
+                require_once './views/transaction_buyer/transaction_buyer_detail.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -339,8 +331,8 @@
         function showDetailJQuery(){
             if ($this->ispublic || $this->isadmin || $this->isread ){
                 $id = $_GET['id'];
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_jquery_detail.php';
+                $transaction_buyer_ = $this->showData($id);
+                require_once './views/transaction_buyer/transaction_buyer_jquery_detail.php';
             }else{
                 echo  "You cannot access this module";
             }
@@ -349,8 +341,8 @@
         function showForm(){
             if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_form.php';
+                $transaction_buyer_ = $this->showData($id);
+                require_once './views/transaction_buyer/transaction_buyer_form.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -361,8 +353,8 @@
                 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
                 $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
                 $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_jquery_form.php';
+                $transaction_buyer_ = $this->showData($id);
+                require_once './views/transaction_buyer/transaction_buyer_jquery_form.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -393,25 +385,20 @@
             $this->showAll();
         }                
         function saveFormPost(){
-	    $kd_product = isset($_POST['kd_product'])?$_POST['kd_product'] : "";
-	    $qty_stock = isset($_POST['qty_stock'])?$_POST['qty_stock'] : "";
-	    $qty_stock_promo = isset($_POST['qty_stock_promo'])?$_POST['qty_stock_promo'] : "";
-	    $created_by = isset($_POST['created_by'])?$_POST['created_by'] : "";
-	    $updated_by = isset($_POST['updated_by'])?$_POST['updated_by'] : "";
-	    $created_at = isset($_POST['created_at'])?$_POST['created_at'] : "";
-	    $updated_at = isset($_POST['updated_at'])?$_POST['updated_at'] : "";
-	    $this->master_stock->setKd_product($kd_product);
-	    $this->master_stock->setQty_stock($qty_stock);
-	    $this->master_stock->setQty_stock_promo($qty_stock_promo);
-	    $this->master_stock->setCreated_by($created_by);
-	    $this->master_stock->setUpdated_by($updated_by);
-	    $this->master_stock->setCreated_at($created_at);
-	    $this->master_stock->setUpdated_at($updated_at);            
+	    $id = isset($_POST['id'])?$_POST['id'] : "";
+	    $trans_id = isset($_POST['trans_id'])?$_POST['trans_id'] : "";
+	    $buyer_name = isset($_POST['buyer_name'])?$_POST['buyer_name'] : "";
+	    $buyer_phone = isset($_POST['buyer_phone'])?$_POST['buyer_phone'] : "";
+	    $buyer_address = isset($_POST['buyer_address'])?$_POST['buyer_address'] : "";
+	    $this->transaction_buyer->setId($id);
+	    $this->transaction_buyer->setTrans_id($trans_id);
+	    $this->transaction_buyer->setBuyer_name($buyer_name);
+	    $this->transaction_buyer->setBuyer_phone($buyer_phone);
+	    $this->transaction_buyer->setBuyer_address($buyer_address);            
             $this->saveData();
         }
         public function saveData(){
-            $this->setIsadmin(true);
-            $check = $this->checkData($this->master_stock->getKd_product());
+            $check = $this->checkData($this->transaction_buyer->getId());
             if($check == 0){
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isentry)){
                     $this->insertData();
@@ -459,11 +446,11 @@
             echo "</body>";
             echo "</html>";
         }
-        public function getMaster_stock() {
-            return $this->master_stock;
+        public function getTransaction_buyer() {
+            return $this->transaction_buyer;
         }
-        public function setMaster_stock($master_stock) {
-            $this->master_stock = $master_stock;
+        public function setTransaction_buyer($transaction_buyer) {
+            $this->transaction_buyer = $transaction_buyer;
         }
         public function getDbh() {
             return $this->dbh;

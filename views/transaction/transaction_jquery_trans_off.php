@@ -21,9 +21,9 @@
                 </td>
             </tr>
             <tr>
-                <td class="textBold"><span class="fa fa-search"></span> Cari Part</td>
+                <td class="textBold"><span class="fa fa-search"></span> Cari Part *</td>
                 <td><input type="text" nama="part" id='part' class="form form-control"
-                        placeholder="Cari Kode Part, Nama Part"></td>
+                        placeholder="Cari Kode Part, Nama Part" required/></td>
                 <td>
                     <button type="button" class="btn btn-red" id="btnTambah" onclick="tesalet()"><span
                             class="glyphicon glyphicon-ok"></span> Tambah</button>
@@ -46,9 +46,9 @@
                 </td>
             </tr>
             <tr>
-                <td class="textBold"><span class="glyphicon glyphicon-user"></span> Nama Pembeli</td>
+                <td class="textBold"><span class="glyphicon glyphicon-user"></span> Nama Pembeli *</td>
                 <td><input type="text" name="buyer_name" id="buyer_name" class="form form-control"
-                        placeholder="Nama Pembeli"></td>
+                        placeholder="Nama Pembeli" required></td>
             </tr>
             <tr>
                 <td class="textBold"><span class="glyphicon glyphicon-earphone"></span> Np Telp/Hp Pembeli</td>
@@ -70,7 +70,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="textBold"><span class="glyphicon glyphicon-tags"></span> Metode Pembayaran</td>
+                <td class="textBold"><span class="glyphicon glyphicon-tags"></span> Metode Pembayaran *</td>
                 <td><select name="metod_pay" id="metod_pay" class="form form-control" onchange="jsMetod()" required>
                         <option value="">Pilih Metode Pembayaran</option>
                         <option value="1">Tunai</option>
@@ -84,7 +84,7 @@
                 <td>
                     <div id="detail_pay_tn_submit" style="display: none;">
                         Uang Pembayaran :
-                        <input type="hidden" name="bayarSet" id="bayarSet">
+                        <input type="text" name="bayarSet" id="bayarSet">
                         <input type="text" name="bayar" id="bayar" class="form form-control"
                             onkeypress="validate(event)" onblur="jsBayar(this)" placeholder="Masukkan Uang Bayar">
                         <script>
@@ -97,7 +97,7 @@
                             });
                         </script>
                         Uang Kembalian :
-                        <input type="hidden" name="sisa" id="sisa">
+                        <input type="text" name="sisa" id="sisa">
                         <input type="text" name="kembalian" id="kembalian" class="form form-control"
                             onkeypress="validate(event)" placeholder="Uang Kembalian" readonly>
                     </div>

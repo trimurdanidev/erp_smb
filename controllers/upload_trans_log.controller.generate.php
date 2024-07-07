@@ -219,14 +219,14 @@
 
                 
         function loadData($upload_trans_log,$row){
-	    $upload_trans_log->setId($row['id']);
-	    $upload_trans_log->setTrans_type($row['trans_type']);
-	    $upload_trans_log->setTrans_descrip($row['trans_descrip']);
-	    $upload_trans_log->setJumlah_data($row['jumlah_data']);
-	    $upload_trans_log->setCreated_by($row['created_by']);
-	    $upload_trans_log->setCreated_at($row['created_at']);
-	    $upload_trans_log->setUpdated_by($row['updated_by']);
-	    $upload_trans_log->setUpdated_at($row['updated_at']);
+	    $upload_trans_log->setId(isset($row['id'])?$row['id']:"");
+	    $upload_trans_log->setTrans_type(isset($row['trans_type'])?$row['trans_type']:"");
+	    $upload_trans_log->setTrans_descrip(isset($row['trans_descrip'])?$row['trans_descrip']:"");
+	    $upload_trans_log->setJumlah_data(isset($row['jumlah_data'])?$row['jumlah_data']:"");
+	    $upload_trans_log->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $upload_trans_log->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $upload_trans_log->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $upload_trans_log->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 
