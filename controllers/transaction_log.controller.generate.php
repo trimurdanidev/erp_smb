@@ -222,15 +222,15 @@
 
                 
         function loadData($transaction_log,$row){
-	    $transaction_log->setId($row['id']);
-	    $transaction_log->setTrans_id($row['trans_id']);
-	    $transaction_log->setTrans_type($row['trans_type']);
-	    $transaction_log->setQty_before($row['qty_before']);
-	    $transaction_log->setQty_after($row['qty_after']);
-	    $transaction_log->setCreated_by($row['created_by']);
-	    $transaction_log->setCreated_at($row['created_at']);
-	    $transaction_log->setUpdated_by($row['updated_by']);
-	    $transaction_log->setUpdated_at($row['updated_at']);
+	    $transaction_log->setId(isset($row['id'])?$row['id']:"");
+	    $transaction_log->setTrans_id(isset($row['trans_id'])?$row['trans_id']:"");
+	    $transaction_log->setTrans_type(isset($row['trans_type'])?$row['trans_type']:"");
+	    $transaction_log->setQty_before(isset($row['qty_before'])?$row['qty_before']:"");
+	    $transaction_log->setQty_after(isset($row['qty_after'])?$row['qty_after']:"");
+	    $transaction_log->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $transaction_log->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $transaction_log->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $transaction_log->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 

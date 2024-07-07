@@ -25,13 +25,13 @@
     <table id="detailTrans" class="table" aria-colspan="8" style="width: 75%;">
         <thead>
             <tr>
-                <th>#</th>
+                <th>No</th>
                 <th>Kode Part</th>
                 <th>Part</th>
                 <th>Qty Stock</th>
                 <th>Qty SO</th>
                 <th>Qty After SO</th>
-                <th></th>
+                <th>#</th>
             </tr>
         </thead>
         <tbody>

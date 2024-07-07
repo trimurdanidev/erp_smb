@@ -92,17 +92,17 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     </td>
             </table>
         </form>
-        <table class="table">
-            <thead class="">
+        <table class="table table-striped" style="width: 95%;">
+            <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th>Tanggal</th>
-                    <th>No Transaksi</th>
-                    <th>Deskripsi Upload</th>
-                    <th>Jumlah Data</th>
-                    <th>Qty Total</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th class="text-left">No</th>
+                    <th class="text-left">Tanggal</th>
+                    <th class="text-left">No Transaksi</th>
+                    <th class="text-left">Deskripsi Upload</th>
+                    <th class="text-left">Jumlah Data</th>
+                    <th class="text-left">Qty Total</th>
+                    <th class="text-left">Status</th>
+                    <th class="text-center">#</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,9 +122,9 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         }
 
                         ?>
-                        <th scope="row">
+                        <td>
                             <?php echo $no++; ?>
-                        </th>
+                        </td>
                         <td>
                             <?php echo $getTrans->getTanggal(); ?>
                         </td>

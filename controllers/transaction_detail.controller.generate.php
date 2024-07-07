@@ -210,11 +210,11 @@
 
                 
         function loadData($transaction_detail,$row){
-	    $transaction_detail->setId($row['id']);
-	    $transaction_detail->setTrans_id($row['trans_id']);
-	    $transaction_detail->setKd_product($row['kd_product']);
-	    $transaction_detail->setQty($row['qty']);
-	    $transaction_detail->setHarga($row['harga']);
+	    $transaction_detail->setId(isset($row['id'])?$row['id']:"");
+	    $transaction_detail->setTrans_id(isset($row['trans_id'])?$row['trans_id']:"");
+	    $transaction_detail->setKd_product(isset($row['kd_product'])?$row['kd_product']:"");
+	    $transaction_detail->setQty(isset($row['qty'])?$row['qty']:"");
+	    $transaction_detail->setHarga(isset($row['harga'])?$row['harga']:"");
 
         }
 

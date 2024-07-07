@@ -234,19 +234,19 @@
 
                 
         function loadData($master_product,$row){
-	    $master_product->setId($row['id']);
-	    $master_product->setKd_product($row['kd_product']);
-	    $master_product->setNm_product($row['nm_product']);
-	    $master_product->setImage_product($row['image_product']);
-	    $master_product->setHrg_modal($row['hrg_modal']);
-	    $master_product->setHrg_jual($row['hrg_jual']);
-	    $master_product->setKategori_id($row['kategori_id']);
-	    $master_product->setTipe_id($row['tipe_id']);
-	    $master_product->setSts_aktif($row['sts_aktif']);
-	    $master_product->setCreated_by($row['created_by']);
-	    $master_product->setUpdated_by($row['updated_by']);
-	    $master_product->setCreated_at($row['created_at']);
-	    $master_product->setUpdated_at($row['updated_at']);
+	    $master_product->setId(isset($row['id'])?$row['id']:"");
+	    $master_product->setKd_product(isset($row['kd_product'])?$row['kd_product']:"");
+	    $master_product->setNm_product(isset($row['nm_product'])?$row['nm_product']:"");
+	    $master_product->setImage_product(isset($row['image_product'])?$row['image_product']:"");
+	    $master_product->setHrg_modal(isset($row['hrg_modal'])?$row['hrg_modal']:"");
+	    $master_product->setHrg_jual(isset($row['hrg_jual'])?$row['hrg_jual']:"");
+	    $master_product->setKategori_id(isset($row['kategori_id'])?$row['kategori_id']:"");
+	    $master_product->setTipe_id(isset($row['tipe_id'])?$row['tipe_id']:"");
+	    $master_product->setSts_aktif(isset($row['sts_aktif'])?$row['sts_aktif']:"");
+	    $master_product->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $master_product->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $master_product->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $master_product->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 
@@ -430,7 +430,7 @@
 	    $updated_by = isset($_POST['updated_by'])?$_POST['updated_by'] : "";
 	    $created_at = isset($_POST['created_at'])?$_POST['created_at'] : "";
 	    $updated_at = isset($_POST['updated_at'])?$_POST['updated_at'] : "";
-	    $this->master_product->setId($id);
+	    $this->duct->setId($id);
 	    $this->master_product->setKd_product($kd_product);
 	    $this->master_product->setNm_product($nm_product);
 	    $this->master_product->setImage_product($image_product);

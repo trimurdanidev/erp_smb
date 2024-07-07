@@ -1,5 +1,5 @@
 <?php
-    require_once './models/master_stock.class.php';
+    require_once './models/transaction_payment.class.php';
     require_once './models/master_module.class.php';
     require_once './controllers/master_module.controller.php';
     require_once './models/master_group_detail.class.php';
@@ -13,10 +13,10 @@
         session_start();
     }
  
-    class master_stockControllerGenerate
+    class transaction_paymentControllerGenerate
     {
-        protected $master_stock;
-        var $modulename = "master_stock";
+        protected $transaction_payment;
+        var $modulename = "transaction_payment";
         var $dbh;
         var $limit = 20;
         var $user = "None";
@@ -33,9 +33,9 @@
         var $isimport = false;
         var $lastID = "";
         var $toolsController;
-        function __construct($master_stock, $dbh) {
+        function __construct($transaction_payment, $dbh) {
             $this->modulename = strtoupper($this->modulename);
-            $this->master_stock = $master_stock;
+            $this->transaction_payment = $transaction_payment;
             $this->dbh = $dbh;            
                                      
             $user = isset($_SESSION[config::$LOGIN_USER])? unserialize($_SESSION[config::$LOGIN_USER]): new master_user() ;
@@ -85,24 +85,28 @@
         function insertData(){
             $datetime = date("Y-m-d H:i:s");
             
-            $sql = "INSERT INTO master_stock ";
+            $sql = "INSERT INTO transaction_payment ";
             $sql .= " ( ";
-	    $sql .= "`kd_product`,";
-	    $sql .= "`qty_stock`,";
-	    $sql .= "`qty_stock_promo`,";
+	    $sql .= "`id`,";
+	    $sql .= "`trans_id`,";
+	    $sql .= "`method`,";
+	    $sql .= "`payment`,";
+	    $sql .= "`payment_akun`,";
 	    $sql .= "`created_by`,";
-	    $sql .= "`updated_by`,";
 	    $sql .= "`created_at`,";
+	    $sql .= "`updated_by`,";
 	    $sql .= "`updated_at` ";
             $sql .= ") ";
             $sql .= " VALUES (";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getKd_product(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getQty_stock(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getQty_stock_promo(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getCreated_by(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getUpdated_by(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getCreated_at(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_stock->getUpdated_at(), $this->dbh)."' ";
+	    $sql .= " null,";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getTrans_id(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getMethod(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getPayment(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getPayment_akun(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getCreated_by(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getCreated_at(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getUpdated_by(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getUpdated_at(), $this->dbh)."' ";
 
             $sql .= ")";
             $execute = $this->dbh->query($sql);
@@ -111,34 +115,36 @@
         
         function updateData(){
             $datetime = date("Y-m-d H:i:s");
-            $sql = "UPDATE master_stock SET ";
-	    $sql .= "`kd_product` = '".$this->toolsController->replacecharSave($this->master_stock->getKd_product(),$this->dbh)."',";
-	    $sql .= "`qty_stock` = '".$this->toolsController->replacecharSave($this->master_stock->getQty_stock(),$this->dbh)."',";
-	    $sql .= "`qty_stock_promo` = '".$this->toolsController->replacecharSave($this->master_stock->getQty_stock_promo(),$this->dbh)."',";
-	    $sql .= "`created_by` = '".$this->toolsController->replacecharSave($this->master_stock->getCreated_by(),$this->dbh)."',";
-	    $sql .= "`updated_by` = '".$this->toolsController->replacecharSave($this->master_stock->getUpdated_by(),$this->dbh)."',";
-	    $sql .= "`created_at` = '".$this->toolsController->replacecharSave($this->master_stock->getCreated_at(),$this->dbh)."',";
-	    $sql .= "`updated_at` = '".$this->toolsController->replacecharSave($this->master_stock->getUpdated_at(),$this->dbh)."' ";
-            $sql .= "WHERE kd_product = '".$this->master_stock->getKd_product()."'";                
+            $sql = "UPDATE transaction_payment SET ";
+	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->transaction_payment->getId(),$this->dbh)."',";
+	    $sql .= "`trans_id` = '".$this->toolsController->replacecharSave($this->transaction_payment->getTrans_id(),$this->dbh)."',";
+	    $sql .= "`method` = '".$this->toolsController->replacecharSave($this->transaction_payment->getMethod(),$this->dbh)."',";
+	    $sql .= "`payment` = '".$this->toolsController->replacecharSave($this->transaction_payment->getPayment(),$this->dbh)."',";
+	    $sql .= "`payment_akun` = '".$this->toolsController->replacecharSave($this->transaction_payment->getPayment_akun(),$this->dbh)."',";
+	    $sql .= "`created_by` = '".$this->toolsController->replacecharSave($this->transaction_payment->getCreated_by(),$this->dbh)."',";
+	    $sql .= "`created_at` = '".$this->toolsController->replacecharSave($this->transaction_payment->getCreated_at(),$this->dbh)."',";
+	    $sql .= "`updated_by` = '".$this->toolsController->replacecharSave($this->transaction_payment->getUpdated_by(),$this->dbh)."',";
+	    $sql .= "`updated_at` = '".$this->toolsController->replacecharSave($this->transaction_payment->getUpdated_at(),$this->dbh)."' ";
+            $sql .= "WHERE id = '".$this->transaction_payment->getId()."'";                
             $execute = $this->dbh->query($sql);
         }
         
         function deleteData($id){
-            $sql = "DELETE FROM master_stock WHERE  kd_product= '".$id."'";
+            $sql = "DELETE FROM transaction_payment WHERE id = '".$id."'";
             $execute = $this->dbh->query($sql);
         }
         
         function showData($id){
-            $sql = "SELECT * FROM master_stock WHERE kd_product= '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
+            $sql = "SELECT * FROM transaction_payment WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
 
             $row = $this->dbh->query($sql)->fetch();
-            $this->loadData($this->master_stock, $row);
+            $this->loadData($this->transaction_payment, $row);
             
-            return $this->master_stock;
+            return $this->transaction_payment;
         }
         
         function checkData($id){
-            $sql = "SELECT count(*) FROM master_stock where kd_product = '".$id."'";
+            $sql = "SELECT count(*) FROM transaction_payment where id = '".$id."'";
             $row = $this->dbh->query($sql)->fetch();
             return $row[0];
         }
@@ -161,10 +167,10 @@
             $where = "";
             if ($bsearch) {
                 $search = $_REQUEST["search"] ;
-               $where .= " where kd_product like '%".$search."%'";
-               $where .= "       or  qty_stock like '%".$search."%'";
-               $where .= "       or  qty_stock_promo like '%".$search."%'";
-               $where .= "       or  created_by like '%".$search."%'";
+               $where .= " where id like '%".$search."%'";
+               $where .= "       or  trans_id like '%".$search."%'";
+               $where .= "       or  method like '%".$search."%'";
+               $where .= "       or  payment like '%".$search."%'";
 
             }            
             return $where;
@@ -191,13 +197,13 @@
             return $this->findDataWhere($where);
         }
         function findDataWhere($where){
-            $sql = "SELECT * FROM master_stock  ".$where;
-            $sql .= " ORDER BY ";
+            $sql = "SELECT * FROM transaction_payment  ".$where;
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findCountDataWhere($where){
-            $sql = "SELECT count()  FROM master_stock  ".$where;
-            $sql .= " ORDER BY ";
+            $sql = "SELECT count(id)  FROM transaction_payment  ".$where;
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findDataSql($sql){
@@ -205,24 +211,26 @@
         }
 
         function createList($sql){
-            $master_stock_List = array();
+            $transaction_payment_List = array();
             foreach ($this->dbh->query($sql) as $row) {
-                    $master_stock_ = new master_stock();
-                    $this->loadData($master_stock_, $row);
-                    $master_stock_List[] = $master_stock_;
+                    $transaction_payment_ = new transaction_payment();
+                    $this->loadData($transaction_payment_, $row);
+                    $transaction_payment_List[] = $transaction_payment_;
             }
-            return $master_stock_List;            
+            return $transaction_payment_List;            
         }
 
                 
-        function loadData($master_stock,$row){
-	    $master_stock->setKd_product(isset($row['kd_product'])?$row['kd_product']:"");
-	    $master_stock->setQty_stock(isset($row['qty_stock'])?$row['qty_stock']:"");
-	    $master_stock->setQty_stock_promo(isset($row['qty_stock_promo'])?$row['qty_stock_promo']:"");
-	    $master_stock->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
-	    $master_stock->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
-	    $master_stock->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
-	    $master_stock->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
+        function loadData($transaction_payment,$row){
+	    $transaction_payment->setId(isset($row['id']));
+	    $transaction_payment->setTrans_id(isset($row['trans_id']));
+	    $transaction_payment->setMethod(isset($row['method']));
+	    $transaction_payment->setPayment(isset($row['payment']));
+	    $transaction_payment->setPayment_akun(isset($row['payment_akun']));
+	    $transaction_payment->setCreated_by(isset($row['created_by']));
+	    $transaction_payment->setCreated_at(isset($row['created_at']));
+	    $transaction_payment->setUpdated_by(isset($row['updated_by']));
+	    $transaction_payment->setUpdated_at(isset($row['updated_at']));
 
         }
 
@@ -261,7 +269,7 @@
                 $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
                 $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-                $master_stock_list = $this->showDataAllLimit();
+                $transaction_payment_list = $this->showDataAllLimit();
 
                 $isadmin = $this->isadmin;
                 $ispublic = $this->ispublic;
@@ -274,7 +282,7 @@
                 $isexport = $this->isexport ;
                 $isimport = $this->isimport;
 
-                require_once './views/master_stock/master_stock_list.php';
+                require_once './views/transaction_payment/transaction_payment_list.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -310,7 +318,7 @@
                 $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
                 $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-                $master_stock_list = $this->showDataAllLimit();
+                $transaction_payment_list = $this->showDataAllLimit();
                 $isadmin = $this->isadmin;
                 $ispublic = $this->ispublic;
                 $isread = $this->isread;
@@ -321,7 +329,7 @@
                 $isprint = $this->isprint;
                 $isexport = $this->isexport ;
                 $isimport = $this->isimport;
-                require_once './views/master_stock/master_stock_jquery_list.php';
+                require_once './views/transaction_payment/transaction_payment_jquery_list.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -330,8 +338,8 @@
         function showDetail(){
             if ($this->ispublic || $this->isadmin || $this->isread ){
                 $id = $_GET['id'];
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_detail.php';
+                $transaction_payment_ = $this->showData($id);
+                require_once './views/transaction_payment/transaction_payment_detail.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -339,8 +347,8 @@
         function showDetailJQuery(){
             if ($this->ispublic || $this->isadmin || $this->isread ){
                 $id = $_GET['id'];
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_jquery_detail.php';
+                $transaction_payment_ = $this->showData($id);
+                require_once './views/transaction_payment/transaction_payment_jquery_detail.php';
             }else{
                 echo  "You cannot access this module";
             }
@@ -349,8 +357,8 @@
         function showForm(){
             if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_form.php';
+                $transaction_payment_ = $this->showData($id);
+                require_once './views/transaction_payment/transaction_payment_form.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -361,8 +369,8 @@
                 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
                 $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
                 $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
-                $master_stock_ = $this->showData($id);
-                require_once './views/master_stock/master_stock_jquery_form.php';
+                $transaction_payment_ = $this->showData($id);
+                require_once './views/transaction_payment/transaction_payment_jquery_form.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -393,25 +401,28 @@
             $this->showAll();
         }                
         function saveFormPost(){
-	    $kd_product = isset($_POST['kd_product'])?$_POST['kd_product'] : "";
-	    $qty_stock = isset($_POST['qty_stock'])?$_POST['qty_stock'] : "";
-	    $qty_stock_promo = isset($_POST['qty_stock_promo'])?$_POST['qty_stock_promo'] : "";
+	    $id = isset($_POST['id'])?$_POST['id'] : "";
+	    $trans_id = isset($_POST['trans_id'])?$_POST['trans_id'] : "";
+	    $method = isset($_POST['method'])?$_POST['method'] : "";
+	    $payment = isset($_POST['payment'])?$_POST['payment'] : "";
+	    $payment_akun = isset($_POST['payment_akun'])?$_POST['payment_akun'] : "";
 	    $created_by = isset($_POST['created_by'])?$_POST['created_by'] : "";
-	    $updated_by = isset($_POST['updated_by'])?$_POST['updated_by'] : "";
 	    $created_at = isset($_POST['created_at'])?$_POST['created_at'] : "";
+	    $updated_by = isset($_POST['updated_by'])?$_POST['updated_by'] : "";
 	    $updated_at = isset($_POST['updated_at'])?$_POST['updated_at'] : "";
-	    $this->master_stock->setKd_product($kd_product);
-	    $this->master_stock->setQty_stock($qty_stock);
-	    $this->master_stock->setQty_stock_promo($qty_stock_promo);
-	    $this->master_stock->setCreated_by($created_by);
-	    $this->master_stock->setUpdated_by($updated_by);
-	    $this->master_stock->setCreated_at($created_at);
-	    $this->master_stock->setUpdated_at($updated_at);            
+	    $this->transaction_payment->setId($id);
+	    $this->transaction_payment->setTrans_id($trans_id);
+	    $this->transaction_payment->setMethod($method);
+	    $this->transaction_payment->setPayment($payment);
+	    $this->transaction_payment->setPayment_akun($payment_akun);
+	    $this->transaction_payment->setCreated_by($created_by);
+	    $this->transaction_payment->setCreated_at($created_at);
+	    $this->transaction_payment->setUpdated_by($updated_by);
+	    $this->transaction_payment->setUpdated_at($updated_at);            
             $this->saveData();
         }
         public function saveData(){
-            $this->setIsadmin(true);
-            $check = $this->checkData($this->master_stock->getKd_product());
+            $check = $this->checkData($this->transaction_payment->getId());
             if($check == 0){
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isentry)){
                     $this->insertData();
@@ -459,11 +470,11 @@
             echo "</body>";
             echo "</html>";
         }
-        public function getMaster_stock() {
-            return $this->master_stock;
+        public function getTransaction_payment() {
+            return $this->transaction_payment;
         }
-        public function setMaster_stock($master_stock) {
-            $this->master_stock = $master_stock;
+        public function setTransaction_payment($transaction_payment) {
+            $this->transaction_payment = $transaction_payment;
         }
         public function getDbh() {
             return $this->dbh;
