@@ -197,8 +197,8 @@
 
                 
         function loadData($master_department,$row){
-	    $master_department->setDepartmentid($row['departmentid']);
-	    $master_department->setDescription($row['description']);
+	    $master_department->setDepartmentid(isset($row['departmentid'])?$row['departmentid']:"");
+	    $master_department->setDescription(isset($row['description'])?$row['description']:"");
 
         }
 

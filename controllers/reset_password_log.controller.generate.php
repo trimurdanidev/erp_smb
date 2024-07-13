@@ -1,5 +1,5 @@
 <?php
-    require_once './models/master_user_detail.class.php';
+    require_once './models/reset_password_log.class.php';
     require_once './models/master_module.class.php';
     require_once './controllers/master_module.controller.php';
     require_once './models/master_group_detail.class.php';
@@ -8,14 +8,15 @@
     require_once './controllers/report_query.controller.php';
     require_once './controllers/tools.controller.php';
     require_once './database/config.php';
+
     if (!isset($_SESSION)) {
         session_start();
     }
  
-    class master_user_detailControllerGenerate
+    class reset_password_logControllerGenerate
     {
-        protected $master_user_detail;
-        var $modulename = "master_user_detail";
+        protected $reset_password_log;
+        var $modulename = "reset_password_log";
         var $dbh;
         var $limit = 20;
         var $user = "None";
@@ -30,10 +31,11 @@
         var $isprint = false;
         var $isexport = false;
         var $isimport = false;
+        var $lastID = "";
         var $toolsController;
-        function __construct($master_user_detail, $dbh) {
+        function __construct($reset_password_log, $dbh) {
             $this->modulename = strtoupper($this->modulename);
-            $this->master_user_detail = $master_user_detail;
+            $this->reset_password_log = $reset_password_log;
             $this->dbh = $dbh;            
                                      
             $user = isset($_SESSION[config::$LOGIN_USER])? unserialize($_SESSION[config::$LOGIN_USER]): new master_user() ;
@@ -83,65 +85,52 @@
         function insertData(){
             $datetime = date("Y-m-d H:i:s");
             
-            $sql = "INSERT INTO master_user_detail ";
+            $sql = "INSERT INTO reset_password_log ";
             $sql .= " ( ";
 	    $sql .= "`id`,";
-	    $sql .= "`user`,";
-	    $sql .= "`groupcode`,";
-	    $sql .= "`entrytime`,";
-	    $sql .= "`entryuser`,";
-	    $sql .= "`entryip`,";
-	    $sql .= "`updatetime`,";
-	    $sql .= "`updateuser`,";
-	    $sql .= "`updateip` ";
+	    $sql .= "`user_id`,";
+	    $sql .= "`date`,";
+	    $sql .= "`time` ";
             $sql .= ") ";
             $sql .= " VALUES (";
-	    $sql .= " null,";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user_detail->getUser(), $this->dbh)."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user_detail->getGroupcode(), $this->dbh)."',";
-	    $sql .= "'".$datetime."',";
-	    $sql .= "'".$this->user."',";
-	    $sql .= "'".$this->ip."',";
-	    $sql .= "'".$datetime."',";
-	    $sql .= "'".$this->user."',";
-	    $sql .= "'".$this->ip."' ";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->reset_password_log->getId(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->reset_password_log->getUser_id(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->reset_password_log->getDate(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->reset_password_log->getTime(), $this->dbh)."' ";
 
             $sql .= ")";
+            echo $sql;
             $execute = $this->dbh->query($sql);
         }
         
         
         function updateData(){
             $datetime = date("Y-m-d H:i:s");
-            $sql = "UPDATE master_user_detail SET ";
-	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->master_user_detail->getId(),$this->dbh)."',";
-	    $sql .= "`user` = '".$this->toolsController->replacecharSave($this->master_user_detail->getUser(),$this->dbh)."',";
-	    $sql .= "`groupcode` = '".$this->toolsController->replacecharSave($this->master_user_detail->getGroupcode(),$this->dbh)."',";
-	    $sql .= "`entryuser` = '".$this->toolsController->replacecharSave($this->master_user_detail->getEntryuser(),$this->dbh)."',";
-	    $sql .= "`entryip` = '".$this->toolsController->replacecharSave($this->master_user_detail->getEntryip(),$this->dbh)."',";
-	    $sql .= "`updatetime` = '".$datetime."',";
-	    $sql .= "`updateuser` = '".$this->user."',";
-	    $sql .= "`updateip` = '".$this->ip."' ";
-            $sql .= "WHERE id = '".$this->master_user_detail->getId()."'";                
+            $sql = "UPDATE reset_password_log SET ";
+	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->reset_password_log->getId(),$this->dbh)."',";
+	    $sql .= "`user_id` = '".$this->toolsController->replacecharSave($this->reset_password_log->getUser_id(),$this->dbh)."',";
+	    $sql .= "`date` = '".$this->toolsController->replacecharSave($this->reset_password_log->getDate(),$this->dbh)."',";
+	    $sql .= "`time` = '".$this->toolsController->replacecharSave($this->reset_password_log->getTime(),$this->dbh)."' ";
+            $sql .= "WHERE id = '".$this->reset_password_log->getId()."'";                
             $execute = $this->dbh->query($sql);
         }
         
         function deleteData($id){
-            $sql = "DELETE FROM master_user_detail WHERE id = '".$id."'";
+            $sql = "DELETE FROM reset_password_log WHERE id = '".$id."'";
             $execute = $this->dbh->query($sql);
         }
         
         function showData($id){
-            $sql = "SELECT * FROM master_user_detail WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
+            $sql = "SELECT * FROM reset_password_log WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
 
             $row = $this->dbh->query($sql)->fetch();
-            $this->loadData($this->master_user_detail, $row);
+            $this->loadData($this->reset_password_log, $row);
             
-            return $this->master_user_detail;
+            return $this->reset_password_log;
         }
         
         function checkData($id){
-            $sql = "SELECT count(*) FROM master_user_detail where id = '".$id."'";
+            $sql = "SELECT count(*) FROM reset_password_log where id = '".$id."'";
             $row = $this->dbh->query($sql)->fetch();
             return $row[0];
         }
@@ -165,9 +154,9 @@
             if ($bsearch) {
                 $search = $_REQUEST["search"] ;
                $where .= " where id like '%".$search."%'";
-               $where .= "       or  user like '%".$search."%'";
-               $where .= "       or  groupcode like '%".$search."%'";
-               $where .= "       or  entrytime like '%".$search."%'";
+               $where .= "       or  user_id like '%".$search."%'";
+               $where .= "       or  date like '%".$search."%'";
+               $where .= "       or  time like '%".$search."%'";
 
             }            
             return $where;
@@ -194,12 +183,12 @@
             return $this->findDataWhere($where);
         }
         function findDataWhere($where){
-            $sql = "SELECT * FROM master_user_detail  ".$where;
+            $sql = "SELECT * FROM reset_password_log  ".$where;
             $sql .= " ORDER BY id";
             return $sql;
         }
         function findCountDataWhere($where){
-            $sql = "SELECT count(id)  FROM master_user_detail  ".$where;
+            $sql = "SELECT count(id)  FROM reset_password_log  ".$where;
             $sql .= " ORDER BY id";
             return $sql;
         }
@@ -208,26 +197,21 @@
         }
 
         function createList($sql){
-            $master_user_detail_List = array();
+            $reset_password_log_List = array();
             foreach ($this->dbh->query($sql) as $row) {
-                    $master_user_detail_ = new master_user_detail();
-                    $this->loadData($master_user_detail_, $row);
-                    $master_user_detail_List[] = $master_user_detail_;
+                    $reset_password_log_ = new reset_password_log();
+                    $this->loadData($reset_password_log_, $row);
+                    $reset_password_log_List[] = $reset_password_log_;
             }
-            return $master_user_detail_List;            
+            return $reset_password_log_List;            
         }
 
                 
-        function loadData($master_user_detail,$row){
-	    $master_user_detail->setId(isset($row['id'])?$row['id']:"");
-	    $master_user_detail->setUser(isset($row['user'])?$row['user']:"");
-	    $master_user_detail->setGroupcode(isset($row['groupcode'])?$row['groupcode']:"");
-	    $master_user_detail->setEntrytime(isset($row['entrytime'])?$row['entrytime']:"");
-	    $master_user_detail->setEntryuser(isset($row['entryuser'])?$row['entryuser']:"");
-	    $master_user_detail->setEntryip(isset($row['entryip'])?$row['entryip']:"");
-	    $master_user_detail->setUpdatetime(isset($row['updatetime'])?$row['updatetime']:"");
-	    $master_user_detail->setUpdateuser(isset($row['updateuser'])?$row['updateuser']:"");
-	    $master_user_detail->setUpdateip(isset($row['updateip'])?$row['updateip']:"");
+        function loadData($reset_password_log,$row){
+	    $reset_password_log->setId(isset($row['id'])?$row['id']:"");
+	    $reset_password_log->setUser_id(isset($row['user_id'])?$row['user_id']:"");
+	    $reset_password_log->setDate(isset($row['date'])?$row['date']:"");
+	    $reset_password_log->setTime(isset($row['time'])?$row['time']:"");
 
         }
 
@@ -266,7 +250,7 @@
                 $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
                 $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-                $master_user_detail_list = $this->showDataAllLimit();
+                $reset_password_log_list = $this->showDataAllLimit();
 
                 $isadmin = $this->isadmin;
                 $ispublic = $this->ispublic;
@@ -279,7 +263,7 @@
                 $isexport = $this->isexport ;
                 $isimport = $this->isimport;
 
-                require_once './views/master_user_detail/master_user_detail_list.php';
+                require_once './views/reset_password_log/reset_password_log_list.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -315,7 +299,7 @@
                 $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
                 $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-                $master_user_detail_list = $this->showDataAllLimit();
+                $reset_password_log_list = $this->showDataAllLimit();
                 $isadmin = $this->isadmin;
                 $ispublic = $this->ispublic;
                 $isread = $this->isread;
@@ -326,7 +310,7 @@
                 $isprint = $this->isprint;
                 $isexport = $this->isexport ;
                 $isimport = $this->isimport;
-                require_once './views/master_user_detail/master_user_detail_jquery_list.php';
+                require_once './views/reset_password_log/reset_password_log_jquery_list.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -335,8 +319,8 @@
         function showDetail(){
             if ($this->ispublic || $this->isadmin || $this->isread ){
                 $id = $_GET['id'];
-                $master_user_detail_ = $this->showData($id);
-                require_once './views/master_user_detail/master_user_detail_detail.php';
+                $reset_password_log_ = $this->showData($id);
+                require_once './views/reset_password_log/reset_password_log_detail.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -344,8 +328,8 @@
         function showDetailJQuery(){
             if ($this->ispublic || $this->isadmin || $this->isread ){
                 $id = $_GET['id'];
-                $master_user_detail_ = $this->showData($id);
-                require_once './views/master_user_detail/master_user_detail_jquery_detail.php';
+                $reset_password_log_ = $this->showData($id);
+                require_once './views/reset_password_log/reset_password_log_jquery_detail.php';
             }else{
                 echo  "You cannot access this module";
             }
@@ -354,8 +338,8 @@
         function showForm(){
             if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
-                $master_user_detail_ = $this->showData($id);
-                require_once './views/master_user_detail/master_user_detail_form.php';
+                $reset_password_log_ = $this->showData($id);
+                require_once './views/reset_password_log/reset_password_log_form.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -366,8 +350,8 @@
                 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
                 $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
                 $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
-                $master_user_detail_ = $this->showData($id);
-                require_once './views/master_user_detail/master_user_detail_jquery_form.php';
+                $reset_password_log_ = $this->showData($id);
+                require_once './views/reset_password_log/reset_password_log_jquery_form.php';
             }else{
                 echo "You cannot access this module";
             }
@@ -399,30 +383,32 @@
         }                
         function saveFormPost(){
 	    $id = isset($_POST['id'])?$_POST['id'] : "";
-	    $user = isset($_POST['user'])?$_POST['user'] : "";
-	    $groupcode = isset($_POST['groupcode'])?$_POST['groupcode'] : "";
-
-	    $this->master_user_detail->setId($id);
-	    $this->master_user_detail->setUser($user);
-	    $this->master_user_detail->setGroupcode($groupcode);
-            
+	    $user_id = isset($_POST['user_id'])?$_POST['user_id'] : "";
+	    $date = isset($_POST['date'])?$_POST['date'] : "";
+	    $time = isset($_POST['time'])?$_POST['time'] : "";
+	    $this->reset_password_log->setId($id);
+	    $this->reset_password_log->setUser_id($user_id);
+	    $this->reset_password_log->setDate($date);
+	    $this->reset_password_log->setTime($time);            
             $this->saveData();
         }
         public function saveData(){
-            $check = $this->checkData($this->master_user_detail->getId());
+            $check = $this->checkData($this->reset_password_log->getId());
             if($check == 0){
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isentry)){
                     $this->insertData();
+                    $last_id = $this->dbh->lastInsertId();
+                    $this->setLastId($last_id);
                     echo "Data is Inserted";
                 }else{
-                    echo "You cannot insert data this module";
+                    //echo "You cannot insert data this module";
                 }
             } else {
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                     $this->updateData();
-                    echo "Data is updated";
+                    //echo "Data is updated";
                 }else{
-                    echo "You cannot update this module";
+                    //echo "You cannot update this module";
                 }
             }
         }
@@ -455,11 +441,11 @@
             echo "</body>";
             echo "</html>";
         }
-        public function getMaster_user_detail() {
-            return $this->master_user_detail;
+        public function getReset_password_log() {
+            return $this->reset_password_log;
         }
-        public function setMaster_user_detail($master_user_detail) {
-            $this->master_user_detail = $master_user_detail;
+        public function setReset_password_log($reset_password_log) {
+            $this->reset_password_log = $reset_password_log;
         }
         public function getDbh() {
             return $this->dbh;
@@ -577,6 +563,14 @@
 
         public function setIsimport($isimport) {
             $this->isimport = $isimport;
+        }
+
+        public function setLastId($id){
+            $this->lastID = $id;
+        }
+        
+        public function getLastId(){
+            return $this->lastID;
         }
     }
 ?>

@@ -6,6 +6,10 @@
 	var $description;
 	var $password;
 	var $username;
+	var $phone;
+	var $nik;
+	var $departmentid;
+	var $unitid;
 	var $entrytime;
 	var $entryuser;
 	var $entryip;
@@ -13,9 +17,6 @@
 	var $updateuser;
 	var $updateip;
 	var $avatar;
-	var $nik;
-	var $departmentid;
-	var $unitid;
 
         var $primarykey = "user";
         
@@ -53,6 +54,34 @@
 
 	public function setUsername($username) {
 	   $this->username = $username;
+	}
+	public function getPhone() {
+	   return $this->phone;
+	}
+
+	public function setPhone($phone) {
+	   $this->phone = $phone;
+	}
+	public function getNik() {
+	   return $this->nik;
+	}
+
+	public function setNik($nik) {
+	   $this->nik = $nik;
+	}
+	public function getDepartmentid() {
+	   return $this->departmentid;
+	}
+
+	public function setDepartmentid($departmentid) {
+	   $this->departmentid = $departmentid;
+	}
+	public function getUnitid() {
+	   return $this->unitid;
+	}
+
+	public function setUnitid($unitid) {
+	   $this->unitid = $unitid;
 	}
 	public function getEntrytime() {
 	   return $this->entrytime;
@@ -102,27 +131,6 @@
 
 	public function setAvatar($avatar) {
 	   $this->avatar = $avatar;
-	}
-	public function getNik() {
-	   return $this->nik;
-	}
-
-	public function setNik($nik) {
-	   $this->nik = $nik;
-	}
-	public function getDepartmentid() {
-	   return $this->departmentid;
-	}
-
-	public function setDepartmentid($departmentid) {
-	   $this->departmentid = $departmentid;
-	}
-	public function getUnitid() {
-	   return $this->unitid;
-	}
-
-	public function setUnitid($unitid) {
-	   $this->unitid = $unitid;
 	}
          
     }
