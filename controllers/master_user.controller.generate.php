@@ -8,6 +8,7 @@
     require_once './controllers/report_query.controller.php';
     require_once './controllers/tools.controller.php';
     require_once './database/config.php';
+
     if (!isset($_SESSION)) {
         session_start();
     }
@@ -30,6 +31,7 @@
         var $isprint = false;
         var $isexport = false;
         var $isimport = false;
+        var $lastID = "";
         var $toolsController;
         function __construct($master_user, $dbh) {
             $this->modulename = strtoupper($this->modulename);
@@ -90,16 +92,17 @@
 	    $sql .= "`description`,";
 	    $sql .= "`password`,";
 	    $sql .= "`username`,";
+	    $sql .= "`phone`,";
+	    $sql .= "`nik`,";
+	    $sql .= "`departmentid`,";
+	    $sql .= "`unitid`,";
 	    $sql .= "`entrytime`,";
 	    $sql .= "`entryuser`,";
 	    $sql .= "`entryip`,";
 	    $sql .= "`updatetime`,";
 	    $sql .= "`updateuser`,";
 	    $sql .= "`updateip`,";
-	    $sql .= "`avatar`,";
-	    $sql .= "`nik`,";
-	    $sql .= "`departmentid`,";
-	    $sql .= "`unitid` ";
+	    $sql .= "`avatar` ";
             $sql .= ") ";
             $sql .= " VALUES (";
 	    $sql .= " null,";
@@ -107,16 +110,17 @@
 	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getDescription(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getPassword(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getUsername(), $this->dbh)."',";
-	    $sql .= "'".$datetime."',";
-	    $sql .= "'".$this->user."',";
-	    $sql .= "'".$this->ip."',";
-	    $sql .= "'".$datetime."',";
-	    $sql .= "'".$this->user."',";
-	    $sql .= "'".$this->ip."',";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getAvatar(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getPhone(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getNik(), $this->dbh)."',";
-	    $sql .= "".$this->toolsController->replacecharSave($this->master_user->getDepartmentid(), $this->dbh).",";
-	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getUnitid(), $this->dbh)."' ";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getDepartmentid(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getUnitid(), $this->dbh)."',";
+	    $sql .= "'".$datetime."',";
+	    $sql .= "'".$this->user."',";
+	    $sql .= "'".$this->ip."',";
+	    $sql .= "'".$datetime."',";
+	    $sql .= "'".$this->user."',";
+	    $sql .= "'".$this->ip."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->master_user->getAvatar(), $this->dbh)."' ";
 
             $sql .= ")";
             $execute = $this->dbh->query($sql);
@@ -131,15 +135,14 @@
 	    $sql .= "`description` = '".$this->toolsController->replacecharSave($this->master_user->getDescription(),$this->dbh)."',";
 	    $sql .= "`password` = '".$this->toolsController->replacecharSave($this->master_user->getPassword(),$this->dbh)."',";
 	    $sql .= "`username` = '".$this->toolsController->replacecharSave($this->master_user->getUsername(),$this->dbh)."',";
-	    $sql .= "`entryuser` = '".$this->toolsController->replacecharSave($this->master_user->getEntryuser(),$this->dbh)."',";
-	    $sql .= "`entryip` = '".$this->toolsController->replacecharSave($this->master_user->getEntryip(),$this->dbh)."',";
+	    $sql .= "`phone` = '".$this->toolsController->replacecharSave($this->master_user->getPhone(),$this->dbh)."',";
+	    $sql .= "`nik` = '".$this->toolsController->replacecharSave($this->master_user->getNik(),$this->dbh)."',";
+	    $sql .= "`departmentid` = '".$this->toolsController->replacecharSave($this->master_user->getDepartmentid(),$this->dbh)."',";
+	    $sql .= "`unitid` = '".$this->toolsController->replacecharSave($this->master_user->getUnitid(),$this->dbh)."',";
 	    $sql .= "`updatetime` = '".$datetime."',";
 	    $sql .= "`updateuser` = '".$this->user."',";
 	    $sql .= "`updateip` = '".$this->ip."',";
-	    $sql .= "`avatar` = '".$this->toolsController->replacecharSave($this->master_user->getAvatar(),$this->dbh)."',";
-	    $sql .= "`nik` = '".$this->toolsController->replacecharSave($this->master_user->getNik(),$this->dbh)."',";
-	    $sql .= "`departmentid` = ".$this->toolsController->replacecharSave($this->master_user->getDepartmentid(),$this->dbh)."',";
-	    $sql .= "`unitid` = '".$this->toolsController->replacecharSave($this->master_user->getUnitid(),$this->dbh)."' ";
+	    $sql .= "`avatar` = '".$this->toolsController->replacecharSave($this->master_user->getAvatar(),$this->dbh)."' ";
             $sql .= "WHERE user = '".$this->master_user->getUser()."'";                
             $execute = $this->dbh->query($sql);
         }
@@ -237,21 +240,22 @@
 
                 
         function loadData($master_user,$row){
-	    $master_user->setId($row['id']);
-	    $master_user->setUser($row['user']);
-	    $master_user->setDescription($row['description']);
-	    $master_user->setPassword($row['password']);
-	    $master_user->setUsername($row['username']);
-	    $master_user->setEntrytime($row['entrytime']);
-	    $master_user->setEntryuser($row['entryuser']);
-	    $master_user->setEntryip($row['entryip']);
-	    $master_user->setUpdatetime($row['updatetime']);
-	    $master_user->setUpdateuser($row['updateuser']);
-	    $master_user->setUpdateip($row['updateip']);
-	    $master_user->setAvatar($row['avatar']);
-	    $master_user->setNik($row['nik']);
-	    $master_user->setDepartmentid($row['departmentid']);
-	    $master_user->setUnitid($row['unitid']);
+	    $master_user->setId(isset($row['id'])?$row['id']:"");
+	    $master_user->setUser(isset($row['user'])?$row['user']:"");
+	    $master_user->setDescription(isset($row['description'])?$row['description']:"");
+	    $master_user->setPassword(isset($row['password'])?$row['password']:"");
+	    $master_user->setUsername(isset($row['username'])?$row['username']:"");
+	    $master_user->setPhone(isset($row['phone'])?$row['phone']:"");
+	    $master_user->setNik(isset($row['nik'])?$row['nik']:"");
+	    $master_user->setDepartmentid(isset($row['departmentid'])?$row['departmentid']:"");
+	    $master_user->setUnitid(isset($row['unitid'])?$row['unitid']:"");
+	    $master_user->setEntrytime(isset($row['entrytime'])?$row['entrytime']:"");
+	    $master_user->setEntryuser(isset($row['entryuser'])?$row['entryuser']:"");
+	    $master_user->setEntryip(isset($row['entryip'])?$row['entryip']:"");
+	    $master_user->setUpdatetime(isset($row['updatetime'])?$row['updatetime']:"");
+	    $master_user->setUpdateuser(isset($row['updateuser'])?$row['updateuser']:"");
+	    $master_user->setUpdateip(isset($row['updateip'])?$row['updateip']:"");
+	    $master_user->setAvatar(isset($row['avatar'])?$row['avatar']:"");
 
         }
 
@@ -427,19 +431,21 @@
 	    $description = isset($_POST['description'])?$_POST['description'] : "";
 	    $password = isset($_POST['password'])?$_POST['password'] : "";
 	    $username = isset($_POST['username'])?$_POST['username'] : "";
-	    $avatar = isset($_POST['avatar'])?$_POST['avatar'] : "";
+	    $phone = isset($_POST['phone'])?$_POST['phone'] : "";
 	    $nik = isset($_POST['nik'])?$_POST['nik'] : "";
 	    $departmentid = isset($_POST['departmentid'])?$_POST['departmentid'] : "";
 	    $unitid = isset($_POST['unitid'])?$_POST['unitid'] : "";
+	    $avatar = isset($_POST['avatar'])?$_POST['avatar'] : "";
 	    $this->master_user->setId($id);
 	    $this->master_user->setUser($user);
 	    $this->master_user->setDescription($description);
 	    $this->master_user->setPassword($password);
 	    $this->master_user->setUsername($username);
-	    $this->master_user->setAvatar($avatar);
+	    $this->master_user->setPhone($phone);
 	    $this->master_user->setNik($nik);
 	    $this->master_user->setDepartmentid($departmentid);
-	    $this->master_user->setUnitid($unitid);            
+	    $this->master_user->setUnitid($unitid);
+	    $this->master_user->setAvatar($avatar);            
             $this->saveData();
         }
         public function saveData(){
@@ -447,16 +453,18 @@
             if($check == 0){
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isentry)){
                     $this->insertData();
-                    echo "Data is Inserted";
+                    $last_id = $this->dbh->lastInsertId();
+                    $this->setLastId($last_id);
+                    //echo "Data is Inserted";
                 }else{
-                    echo "You cannot insert data this module";
+                    //echo "You cannot insert data this module";
                 }
             } else {
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                     $this->updateData();
-                    echo "Data is updated";
+                    //echo "Data is updated";
                 }else{
-                    echo "You cannot update this module";
+                    //echo "You cannot update this module";
                 }
             }
         }
@@ -611,6 +619,14 @@
 
         public function setIsimport($isimport) {
             $this->isimport = $isimport;
+        }
+
+        public function setLastId($id){
+            $this->lastID = $id;
+        }
+        
+        public function getLastId(){
+            return $this->lastID;
         }
     }
 ?>

@@ -201,9 +201,9 @@
 
                 
         function loadData($master_unit,$row){
-	    $master_unit->setUnitid($row['unitid']);
-	    $master_unit->setUnitname($row['unitname']);
-	    $master_unit->setDescription($row['description']);
+	    $master_unit->setUnitid(isset($row['unitid'])?$row['unitid']:"");
+	    $master_unit->setUnitname(isset($row['unitname'])?$row['unitname']:"");
+	    $master_unit->setDescription(isset($row['description'])?$row['description']:"");
 
         }
 

@@ -211,12 +211,12 @@
 
                 
         function loadData($master_profil,$row){
-	    $master_profil->setId($row['id']);
-	    $master_profil->setNik($row['nik']);
-	    $master_profil->setUser($row['user']);
-	    $master_profil->setAvatar($row['avatar']);
-	    $master_profil->setDepartmentid($row['departmentid']);
-	    $master_profil->setUnitid($row['unitid']);
+	    $master_profil->setId(isset($row['id'])?$row['id']:"");
+	    $master_profil->setNik(isset($row['nik'])?$row['nik']:"");
+	    $master_profil->setUser(isset($row['user'])?$row['user']:"");
+	    $master_profil->setAvatar(isset($row['avatar'])?$row['avatar']:"");
+	    $master_profil->setDepartmentid(isset($row['departmentid'])?$row['departmentid']:"");
+	    $master_profil->setUnitid(isset($row['unitid'])?$row['unitid']:"");
 
         }
 
