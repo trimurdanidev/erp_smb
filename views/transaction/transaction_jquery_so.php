@@ -86,7 +86,8 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         <input type="hidden" name="getStatus" id="getStatus" value="<?php echo $stsId; ?>">
                     </td>
                     <td>
-                        <button type="button" onclick="resetFilter()" class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span>
+                        <button type="button" onclick="resetFilter()" class="btn btn-default"><span
+                                class="glyphicon glyphicon-repeat"></span>
                             Reset
                         </button>
                     </td>
@@ -208,12 +209,32 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
     }
 
     function ReleaseTrans(id) {
-        var ask = confirm("Yakin Release Dokumen Stock Opname Ini ?,\n Semua Quantity Didalamnya Akan Terupdate kedalam Stock Anda.");
-        if (ask == true) {
-            site = "index.php?model=transaction&action=confirmSO&id=" + id;
-            target = "content";
-            showMenu(target, site);
-        }
+        Swal.fire({
+            title: "Are you sure Release Stock Opname?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                site = "index.php?model=transaction&action=confirmSO&id=" + id;
+                target = "content";
+                showMenu(target, site);
+                Swal.fire({
+                    title: "Released!",
+                    text: "Stock Opname has been Released.",
+                    icon: "success"
+                });
+            } else if(result.isDenied){
+                Swal.fire({
+                    title: "Not Released!",
+                    text: "",
+                    icon: "info"
+                }); 
+            }
+        });
     }
 
     function serchData() {
@@ -232,6 +253,6 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
     }
 
     function resetFilter() {
-        showMenu('content','index.php?model=transaction&action=showAllJQuery_so');
+        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so');
     }
 </script>
