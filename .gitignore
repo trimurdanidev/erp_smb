@@ -1,0 +1,8 @@
+database/connection.php
+uploads/excel_upload/*
+images/*
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite

@@ -425,7 +425,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setUpdated_by($user);
             $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
             $this->updateData();
-            echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
+            // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
             $this->showAllJQuery_so();
         } else {
             echo "<script>alert('Gagal Rilis, Cek Koneksi Internet Anda!!');</script>";
