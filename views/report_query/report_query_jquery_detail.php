@@ -40,6 +40,18 @@
 
     <tr> 
         <td> 
+            Headertable 
+        </td> 
+        <td> 
+            : 
+        </td> 
+        <td> 
+            <?php echo $report_query_->getHeadertable() ?>
+        </td> 
+    </tr>
+
+    <tr> 
+        <td> 
             Query 
         </td> 
         <td> 
@@ -83,6 +95,42 @@
         </td> 
         <td> 
             <?php echo $report_query_->getSubtotal() ?>
+        </td> 
+    </tr>
+
+    <tr> 
+        <td> 
+            Headertableshow 
+        </td> 
+        <td> 
+            : 
+        </td> 
+        <td> 
+            <?php echo $report_query_->getHeadertableshow() ?>
+        </td> 
+    </tr>
+
+    <tr> 
+        <td> 
+            Footertableshow 
+        </td> 
+        <td> 
+            : 
+        </td> 
+        <td> 
+            <?php echo $report_query_->getFootertableshow() ?>
+        </td> 
+    </tr>
+
+    <tr> 
+        <td> 
+            Totalqueryid 
+        </td> 
+        <td> 
+            : 
+        </td> 
+        <td> 
+            <?php echo $report_query_->getTotalqueryid() ?>
         </td> 
     </tr>
 

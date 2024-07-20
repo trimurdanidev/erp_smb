@@ -90,10 +90,14 @@
 	    $sql .= "`id`,";
 	    $sql .= "`reportname`,";
 	    $sql .= "`header`,";
+	    $sql .= "`headertable`,";
 	    $sql .= "`query`,";
 	    $sql .= "`crosstab`,";
 	    $sql .= "`total`,";
 	    $sql .= "`subtotal`,";
+	    $sql .= "`headertableshow`,";
+	    $sql .= "`footertableshow`,";
+	    $sql .= "`totalqueryid`,";
 	    $sql .= "`entrytime`,";
 	    $sql .= "`entryuser`,";
 	    $sql .= "`entryip`,";
@@ -105,10 +109,14 @@
 	    $sql .= " null,";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getReportname(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getHeader(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getHeadertable(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getQuery(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getCrosstab(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getTotal(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getSubtotal(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getHeadertableshow(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getFootertableshow(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getTotalqueryid(), $this->dbh)."',";
 	    $sql .= "'".$datetime."',";
 	    $sql .= "'".$this->user."',";
 	    $sql .= "'".$this->ip."',";
@@ -127,10 +135,14 @@
 	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->report_query->getId(),$this->dbh)."',";
 	    $sql .= "`reportname` = '".$this->toolsController->replacecharSave($this->report_query->getReportname(),$this->dbh)."',";
 	    $sql .= "`header` = '".$this->toolsController->replacecharSave($this->report_query->getHeader(),$this->dbh)."',";
+	    $sql .= "`headertable` = '".$this->toolsController->replacecharSave($this->report_query->getHeadertable(),$this->dbh)."',";
 	    $sql .= "`query` = '".$this->toolsController->replacecharSave($this->report_query->getQuery(),$this->dbh)."',";
 	    $sql .= "`crosstab` = '".$this->toolsController->replacecharSave($this->report_query->getCrosstab(),$this->dbh)."',";
 	    $sql .= "`total` = '".$this->toolsController->replacecharSave($this->report_query->getTotal(),$this->dbh)."',";
 	    $sql .= "`subtotal` = '".$this->toolsController->replacecharSave($this->report_query->getSubtotal(),$this->dbh)."',";
+	    $sql .= "`headertableshow` = '".$this->toolsController->replacecharSave($this->report_query->getHeadertableshow(),$this->dbh)."',";
+	    $sql .= "`footertableshow` = '".$this->toolsController->replacecharSave($this->report_query->getFootertableshow(),$this->dbh)."',";
+	    $sql .= "`totalqueryid` = '".$this->toolsController->replacecharSave($this->report_query->getTotalqueryid(),$this->dbh)."',";
 	    $sql .= "`updatetime` = '".$datetime."',";
 	    $sql .= "`updateuser` = '".$this->user."',";
 	    $sql .= "`updateip` = '".$this->ip."' ";
@@ -179,7 +191,7 @@
                $where .= " where id like '%".$search."%'";
                $where .= "       or  reportname like '%".$search."%'";
                $where .= "       or  header like '%".$search."%'";
-               $where .= "       or  query like '%".$search."%'";
+               $where .= "       or  headertable like '%".$search."%'";
 
             }            
             return $where;
@@ -207,12 +219,12 @@
         }
         function findDataWhere($where){
             $sql = "SELECT * FROM report_query  ".$where;
-            $sql .= " ORDER BY id desc";
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findCountDataWhere($where){
             $sql = "SELECT count(id)  FROM report_query  ".$where;
-            $sql .= " ORDER BY id desc";
+            $sql .= " ORDER BY id";
             return $sql;
         }
         function findDataSql($sql){
@@ -231,19 +243,23 @@
 
                 
         function loadData($report_query,$row){
-	    $report_query->setId($row['id']);
-	    $report_query->setReportname($row['reportname']);
-	    $report_query->setHeader($row['header']);
-	    $report_query->setQuery($row['query']);
-	    $report_query->setCrosstab($row['crosstab']);
-	    $report_query->setTotal($row['total']);
-	    $report_query->setSubtotal($row['subtotal']);
-	    $report_query->setEntrytime($row['entrytime']);
-	    $report_query->setEntryuser($row['entryuser']);
-	    $report_query->setEntryip($row['entryip']);
-	    $report_query->setUpdatetime($row['updatetime']);
-	    $report_query->setUpdateuser($row['updateuser']);
-	    $report_query->setUpdateip($row['updateip']);
+	    $report_query->setId(isset($row['id'])?$row['id']:"");
+	    $report_query->setReportname(isset($row['reportname'])?$row['reportname']:"");
+	    $report_query->setHeader(isset($row['header'])?$row['header']:"");
+	    $report_query->setHeadertable(isset($row['headertable'])?$row['headertable']:"");
+	    $report_query->setQuery(isset($row['query'])?$row['query']:"");
+	    $report_query->setCrosstab(isset($row['crosstab'])?$row['crosstab']:"");
+	    $report_query->setTotal(isset($row['total'])?$row['total']:"");
+	    $report_query->setSubtotal(isset($row['subtotal'])?$row['subtotal']:"");
+	    $report_query->setHeadertableshow(isset($row['headertableshow'])?$row['headertableshow']:"");
+	    $report_query->setFootertableshow(isset($row['footertableshow'])?$row['footertableshow']:"");
+	    $report_query->setTotalqueryid(isset($row['totalqueryid'])?$row['totalqueryid']:"");
+	    $report_query->setEntrytime(isset($row['entrytime'])?$row['entrytime']:"");
+	    $report_query->setEntryuser(isset($row['entryuser'])?$row['entryuser']:"");
+	    $report_query->setEntryip(isset($row['entryip'])?$row['entryip']:"");
+	    $report_query->setUpdatetime(isset($row['updatetime'])?$row['updatetime']:"");
+	    $report_query->setUpdateuser(isset($row['updateuser'])?$row['updateuser']:"");
+	    $report_query->setUpdateip(isset($row['updateip'])?$row['updateip']:"");
 
         }
 
@@ -417,18 +433,26 @@
 	    $id = isset($_POST['id'])?$_POST['id'] : "";
 	    $reportname = isset($_POST['reportname'])?$_POST['reportname'] : "";
 	    $header = isset($_POST['header'])?$_POST['header'] : "";
+	    $headertable = isset($_POST['headertable'])?$_POST['headertable'] : "";
 	    $query = isset($_POST['query'])?$_POST['query'] : "";
 	    $crosstab = isset($_POST['crosstab'])?$_POST['crosstab'] : "";
 	    $total = isset($_POST['total'])?$_POST['total'] : "";
 	    $subtotal = isset($_POST['subtotal'])?$_POST['subtotal'] : "";
+	    $headertableshow = isset($_POST['headertableshow'])?$_POST['headertableshow'] : "";
+	    $footertableshow = isset($_POST['footertableshow'])?$_POST['footertableshow'] : "";
+	    $totalqueryid = isset($_POST['totalqueryid'])?$_POST['totalqueryid'] : "";
 
 	    $this->report_query->setId($id);
 	    $this->report_query->setReportname($reportname);
 	    $this->report_query->setHeader($header);
+	    $this->report_query->setHeadertable($headertable);
 	    $this->report_query->setQuery($query);
 	    $this->report_query->setCrosstab($crosstab);
 	    $this->report_query->setTotal($total);
 	    $this->report_query->setSubtotal($subtotal);
+	    $this->report_query->setHeadertableshow($headertableshow);
+	    $this->report_query->setFootertableshow($footertableshow);
+	    $this->report_query->setTotalqueryid($totalqueryid);
             
             $this->saveData();
         }
@@ -439,29 +463,29 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    echo "Data is Inserted";
+                    //echo "Data is Inserted";
                 }else{
-                    echo "You cannot insert data this module";
+                    //echo "You cannot insert data this module";
                 }
             } else {
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                     $this->updateData();
-                    echo "Data is updated";
+                    //echo "Data is updated";
                 }else{
-                    echo "You cannot update this module";
+                    //echo "You cannot update this module";
                 }
             }
         }
         public function export() {
             $sql = $this->findDataWhere($this->showDataWhereQuery());
-            header("Content-Type:application/xls",false);
-            header("Content-Disposition: attachment; filename=". $this->getModulename() .".xls");           
+            header("Content-Type:application/csv",false);
+            header("Content-Disposition: attachment; filename=". $this->getModulename() .".csv");           
             if($this->getModulename() != "report_query"){
                 $report_query = new report_query();
                 $report_query_controller = new report_queryController($report_query, $this->dbh);
-                echo $report_query_controller->generatetableviewExcel($sql);
+                echo $report_query_controller->exportcsv($sql);
             }else{
-                echo $this->generatetableviewExcel($sql);                
+                echo $this->exportcsv($sql);                
             }
         }
         public function printdata() {
@@ -612,99 +636,5 @@
         public function getLastId(){
             return $this->lastID;
         }
-        function searchreport_query(){
-            $search         = empty ($_REQUEST['search'])?"":$_REQUEST['search'];
-            $limit          = empty ($_REQUEST['limit'])?"5":$_REQUEST['limit'];
-            $skip           = empty ($_REQUEST['skip'])?"0":$_REQUEST['skip'];
-            
-            $pg_now=$skip;
-            if($skip==""){
-                $skip=0;
-            }
-            if($skip!=0){
-                $skip=($skip-1)*$limit;
-            }
-            $no=($skip)+1;
-            if($skip==0){
-                $pg_now=1;
-            }
-            $list_=$this->createList($this->showallreport_query($search)." limit ".$skip.",".$limit);
-            $row_count=count($this->createList($this->showallreport_query($search)));
-            
-            $list= '
-                
-            <table id="tlist"  class="ui-widget ui-widget-content" style="display: table;width:500px;" cellspacing="0" cellpadding="4">    
-                <thead id="tlist-head"><tr class="ui-widget-header">
-                        <th style="text-align:center;">No</th>
-                        
-                        <th style="text-align:left;">
-                            id
-                        </th>
-                        <th style="text-align:left;">
-                            id
-                        </th>
-                        
-                    </tr>
-                </thead>    
-
-                <tbody id="tlist-body">
-                    ';
-                    
-                    foreach ($list_ as $report_query){
-                        if($no%2==0){
-                            $bg="#b4d8b2";
-                        }else{
-                            $bg="#FFFFFF";
-                        }
-                        $list .= '
-                                    <tr style="background:'.$bg.';" id="row_1_" class="list_row row_1_" id_negara="1" onclick="jvpilih('.$report_query->getId().');">
-                                        <td style="text-align:center; vertical-align:top; width:20px;">'.$no.'</td>
-                                        <td style="text-align:left; vertical-align:top; width:30px;" class="">
-                                        <input type="hidden" id="idnya'.$report_query->getId().'" value="'.$report_query->getId().'" >
-                                        <input type="hidden" id="nilainya'.$report_query->getId().'" value="'.$report_query->getId().'" >
-                                        '.$report_query->getId().'</td>
-                                        <td style="text-align:center; vertical-align:top; width:50px;" class="">'.$report_query->getId().'</td> 
-                                    </tr>
-                                ';
-                        $no++;
-                    }
-                    $list .= '
-                </tbody>
-            </table>';               
-            $hasil = array(
-                       'list'=>$list,
-                       'num'=>$row_count,
-                       'jumpage'=>ceil($row_count/$limit),
-                       'pagenow'=>$pg_now,
-                );
-            echo json_encode($hasil);
-        }
-        
-        function showallreport_query($search=""){
-            $sql="select * from report_query";
-            $where ="";
-            if($search!=""){
-                
-                                 $where .= " where id like '%".$search."%'";
-               $where .= "       or  reportname like '%".$search."%'";
-               $where .= "       or  header like '%".$search."%'";
-               $where .= "       or  query like '%".$search."%'";
-
-                  
-                
-            }
-            $sql .=$where;
-            $sql .="
-                order by id desc ";
-            return $sql;
-        } 
-        
-        function getModalList(){
-            $modul          = $_REQUEST['modul'];
-            $lebar          = $_REQUEST['lebar'];
-            $idnya          = $_REQUEST['idnya'];
-            $nilainya       = $_REQUEST['nilainya'];
-            require_once './views/modal_list.php';              
-        }   
     }
 ?>
