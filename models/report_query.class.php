@@ -4,10 +4,14 @@
 	var $id;
 	var $reportname;
 	var $header;
+	var $headertable;
 	var $query;
 	var $crosstab;
 	var $total;
 	var $subtotal;
+	var $headertableshow;
+	var $footertableshow;
+	var $totalqueryid;
 	var $entrytime;
 	var $entryuser;
 	var $entryip;
@@ -38,6 +42,13 @@
 	public function setHeader($header) {
 	   $this->header = $header;
 	}
+	public function getHeadertable() {
+	   return $this->headertable;
+	}
+
+	public function setHeadertable($headertable) {
+	   $this->headertable = $headertable;
+	}
 	public function getQuery() {
 	   return $this->query;
 	}
@@ -65,6 +76,27 @@
 
 	public function setSubtotal($subtotal) {
 	   $this->subtotal = $subtotal;
+	}
+	public function getHeadertableshow() {
+	   return $this->headertableshow;
+	}
+
+	public function setHeadertableshow($headertableshow) {
+	   $this->headertableshow = $headertableshow;
+	}
+	public function getFootertableshow() {
+	   return $this->footertableshow;
+	}
+
+	public function setFootertableshow($footertableshow) {
+	   $this->footertableshow = $footertableshow;
+	}
+	public function getTotalqueryid() {
+	   return $this->totalqueryid;
+	}
+
+	public function setTotalqueryid($totalqueryid) {
+	   $this->totalqueryid = $totalqueryid;
 	}
 	public function getEntrytime() {
 	   return $this->entrytime;

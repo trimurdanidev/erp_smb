@@ -239,7 +239,7 @@ class transactionController extends transactionControllerGenerate
 
         $dataSheet = new Spreadsheet_Excel_Reader();
         $dataSheet->setOutputEncoding('CP1251');
-        $dataSheet->read("$targetFile");
+        $dataSheet->read($targetFile);
         $total = 0;
 
         error_reporting(E_ALL ^ E_NOTICE);
