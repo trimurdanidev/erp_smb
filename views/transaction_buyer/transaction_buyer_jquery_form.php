@@ -4,7 +4,7 @@
                 beforeSubmit: function() {
                 },
                 complete: function(xhr) {
-                        alert($.trim(xhr.responseText));
+                        Swal.fire($.trim(xhr.responseText));
                         showMenu('content', 'index.php?model=transaction_buyer&action=showAllJQuery&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
                 }
              });

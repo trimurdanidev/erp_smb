@@ -68,7 +68,7 @@ class loginController
             $_SESSION[config::$MASTER_GROUP_DETAIL_LIST] = serialize($master_group_detail_list);
 
         } else {
-            echo "<script>alert('Password Salah !');</script>";
+            echo "<script>Swal.fire('Password Salah !');</script>";
             unset($_SESSION[config::$LOGIN_USER]);
             unset($_SESSION[config::$LOGIN_DETAIL]);
             unset($_SESSION[config::$MENUS]);

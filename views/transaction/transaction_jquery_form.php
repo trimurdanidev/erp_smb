@@ -10,10 +10,10 @@
         idf = (idf - 1) + 1;
         document.getElementById("idf").value = idf;
         // } else if (idf == 0) {
-        //     alert('Pilih Frekuensi Plan Terlebih Dahulu !');
+        //     Swal.fire('Pilih Frekuensi Plan Terlebih Dahulu !');
         //     return false;
         // } else {
-        //     alert('Mencapai Batas Frekuensi Yang dipilih !!');
+        //     Swal.fire('Mencapai Batas Frekuensi Yang dipilih !!');
         //     return false;
         // }
     }
@@ -29,7 +29,7 @@
             beforeSubmit: function () {
             },
             complete: function (xhr) {
-                alert($.trim(xhr.responseText));
+                Swal.fire($.trim(xhr.responseText));
                 showMenu('content', 'index.php?model=transaction&action=showAllJQuery&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
             }
         });

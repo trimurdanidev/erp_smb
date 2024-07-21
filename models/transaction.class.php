@@ -7,6 +7,7 @@
 	var $type_trans;
 	var $qtyTotal;
 	var $qtyRelease;
+	var $trans_total;
 	var $trans_status;
 	var $created_by;
 	var $created_at;
@@ -56,6 +57,13 @@
 
 	public function setQtyRelease($qtyRelease) {
 	   $this->qtyRelease = $qtyRelease;
+	}
+	public function getTrans_total() {
+	   return $this->trans_total;
+	}
+
+	public function setTrans_total($trans_total) {
+	   $this->trans_total = $trans_total;
 	}
 	public function getTrans_status() {
 	   return $this->trans_status;

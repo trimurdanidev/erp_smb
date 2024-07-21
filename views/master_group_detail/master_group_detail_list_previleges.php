@@ -10,11 +10,11 @@
                      cache: false, 
                      data : post_data,
                      success : function(){
-                         alert("Data is Already Saved");
+                         Swal.fire("Data is Already Saved");
                      }
                      , 
                      error : function(error){
-                        alert("Error"+error.value);
+                        Swal.fire("Error"+error.value);
                      }
                 });
                 return false;

@@ -429,7 +429,7 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    echo "Berhasil Tersimpan \n";
+                    // echo "Berhasil Tersimpan \n";
                 }else{
                     //echo "You cannot insert data this module";
                 }

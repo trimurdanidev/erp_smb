@@ -84,7 +84,7 @@
                 <td>
                     <div id="detail_pay_tn_submit" style="display: none;">
                         Uang Pembayaran :
-                        <input type="text" name="bayarSet" id="bayarSet">
+                        <input type="hidden" name="bayarSet" id="bayarSet">
                         <input type="text" name="bayar" id="bayar" class="form form-control"
                             onkeypress="validate(event)" onblur="jsBayar(this)" placeholder="Masukkan Uang Bayar">
                         <script>
@@ -97,7 +97,7 @@
                             });
                         </script>
                         Uang Kembalian :
-                        <input type="text" name="sisa" id="sisa">
+                        <input type="hidden" name="sisa" id="sisa">
                         <input type="text" name="kembalian" id="kembalian" class="form form-control"
                             onkeypress="validate(event)" placeholder="Uang Kembalian" readonly>
                     </div>
@@ -120,29 +120,30 @@
                                                     src="./img/icon/<?php echo $value->getImg() ?>"
                                                     style="width:100px; height:95px;"></img>
                                             </h1>
+                                            <!-- <input type="text" name="paymenn" id="paymenn" value="<?php echo $value->getTransfer();?>"> -->
                                         </div>
                                         <div class="modal-body">
                                             <h4><span class="glyphicon glyphicon-th-list"></span> Transfer
-                                                <?php echo $value->getTransfer(); ?>
-                                            </h4>
-                                            <?php if ($value->getName_akun() == null && $value->getRek_akun() == null) {
-                                                ?>
+                                            <?php echo $value->getTransfer(); ?>
+                                        </h4>
+                                        <?php if ($value->getName_akun() == null && $value->getRek_akun() == null) {
+                                            ?>
                                                 <table class="table table-striped">
                                                     <td align="center"><b>Akun Rekening Pembayaran Belum Tersedia</b></td>
                                                 </table>
-                                            <?php } else { ?>
-                                                <div class="row table-row">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="text-left">No</th>
-                                                                <th class="text-left">A/n (Atas Nama)</th>
-                                                                <th class="text-left">No. Rekening</th>
-                                                                <th class="text-center">#</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?php
+                                                <?php } else { ?>
+                                                    <div class="row table-row">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-left">No</th>
+                                                                    <th class="text-left">A/n (Atas Nama)</th>
+                                                                    <th class="text-left">No. Rekening</th>
+                                                                    <th class="text-center">#</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php
                                                             $index = 1;
                                                             foreach ($showPayRek as $val_rek) {
                                                                 ?>
@@ -162,38 +163,40 @@
                                                                     </td>
                                                                     <td class="text-center">
                                                                         <input type="button" class="btn btn-facebook"
-                                                                            onclick="btnChoose('<?php echo $val_rek->getTransfer();?>','<?php echo $val_rek->getId(); ?>','<?php echo $val_rek->getName_akun(); ?>','<?php echo $val_rek->getRek_akun(); ?>')"
-                                                                            value="Pilih"  data-dismiss="modal" />
+                                                                        onclick="btnChoose('<?php echo $val_rek->getTransfer();?>','<?php echo $val_rek->getId(); ?>','<?php echo $val_rek->getName_akun(); ?>','<?php echo $val_rek->getRek_akun(); ?>')"
+                                                                        value="Pilih"  data-dismiss="modal" />
                                                                         <!-- <a href="#"
-                                                                            onclick="btnChoose('<?php echo $val_rek->getId(); ?>')"><button
-                                                                                class="btn btn-default"><span
-                                                                                    class="glyphicon glyphicon-ok"></span> Pilih
-                                                                            </button></a> -->
-
-                                                                    </td>
-                                                                </tr>
-                                                                <?php
+                                                                        onclick="btnChoose('<?php echo $val_rek->getId(); ?>')"><button
+                                                                        class="btn btn-default"><span
+                                                                        class="glyphicon glyphicon-ok"></span> Pilih
+                                                                    </button></a> -->
+                                                                    
+                                                                </td>
+                                                            </tr>
+                                                            <?php
                                                             } ?>
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                            <?php } ?>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
+                                                <?php } ?>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Close</button>
-                                            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <?php } ?>
                             </div>
-                        <?php } ?>
-                    </div>
-                    <div id="hasil_detail_pay_tr" style="display: none;">
-                        <p id="printh_pay_tr" style="color: blue;"></p>
-                    </div>
-                </td>
-            </tr>
+                            <div id="hasil_detail_pay_tr" style="display: none;">
+                                <p id="printh_pay_tr" style="color: blue;"></p>
+                                <input type="text" name="paymenn" id="paymenn" value="">
+                                <input type="text" name="pay_akun" id="pay_akun" value="">
+                            </div>
+                        </td>
+                    </tr>
             <tr>
                 <td></td>
                 <td>
@@ -225,12 +228,12 @@
             document.getElementById('detail_pay_tr_submit').style.display = "none";
             document.getElementById('detail_pay_qr_submit').style.display = "none";
         } else if (selectMetod == '2') {
-            // alert('Transfer');
+            // Swal.fire('Transfer');
             document.getElementById('detail_pay_tn_submit').style.display = "none";
             document.getElementById('detail_pay_tr_submit').style.display = "block";
             document.getElementById('detail_pay_qr_submit').style.display = "none";
         } else {
-            // alert('QRIS');
+            // Swal.fire('QRIS');
             document.getElementById('detail_pay_tn_submit').style.display = "none";
             document.getElementById('detail_pay_tr_submit').style.display = "none";
             document.getElementById('detail_pay_qr_submit').style.display = "block";
@@ -245,7 +248,7 @@
         keys['id'] = Part.toString();
 
         if (Part == null || Part == "") {
-            alert("Upps\nPart Belum Ada Yang Dipilih !!");
+            Swal.fire("Upps\nPart Belum Ada Yang Dipilih !!");
         } else {
             $.post('index.php?model=master_product&action=getPartDet', keys, function (data) {
                 $('#detail_part_submit').html(data);
@@ -259,7 +262,7 @@
         var gtotal = $('#gTotal').val()
         var btnHps = $('#' + no[0] + '_hpsDtl').val();
 
-        // alert(gtotal+btnHps);
+        // Swal.fire(gtotal+btnHps);
         // var i = 0 ;
         // $('.tbody tr').each(function () {
         //     jml = '#t' + ( i + 1 ) + '_ttl';
@@ -305,9 +308,9 @@
         if (parseInt(bayar) >= parseInt(gtotal)) {
             sisa.val(parseInt(bayar - gtotal));
             kembalian.val(formatMoney(parseInt(bayar - gtotal)));
-            // alert(bayar + "-" + gtotal);
+            // Swal.fire(bayar + "-" + gtotal);
         } else {
-            alert("Uppss!\nUang Bayar Harus Lebih dari / Sama Dengan Total Belanja");
+            Swal.fire("Uppss!\nUang Bayar Harus Lebih dari / Sama Dengan Total Belanja");
             $('#bayar').val('');
             kembalian.val('');
             sisa.val('');
@@ -318,10 +321,12 @@
     function btnChoose(bank,id, name, rekening) {
         var check_choose = document.getElementById('hasil_detail_pay_tr');
         var listPayment = document.getElementById('detail_pay_tr_submit');
-        // alert("Berhasil Dipilih" + id);
+        // Swal.fire("Berhasil Dipilih" + id);
 
         check_choose.style.display = 'block';
         document.getElementById('printh_pay_tr').innerHTML = bank + " - " + name + " - " + rekening;
+        $('#paymenn').val(bank); 
+        $('#pay_akun').val(name + " - " + rekening); 
         listPayment.style.display= 'none';
 
     }
