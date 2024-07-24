@@ -24,5 +24,14 @@
             $row = $this->dbh->query($sql)->fetch();
             return $row[0];
         }
+
+        function showDataSingle($trf){
+            $sql = "SELECT * FROM master_pay_transfer WHERE transfer = '".$this->toolsController->replacecharFind($trf,$this->dbh)."'";
+
+            $row = $this->dbh->query($sql)->fetch();
+            $this->loadData($this->master_pay_transfer, $row);
+            
+            return $this->master_pay_transfer;
+        }
     }
 ?>

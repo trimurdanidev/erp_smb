@@ -222,15 +222,15 @@
 
                 
         function loadData($transaction_payment,$row){
-	    $transaction_payment->setId(isset($row['id']));
-	    $transaction_payment->setTrans_id(isset($row['trans_id']));
-	    $transaction_payment->setMethod(isset($row['method']));
-	    $transaction_payment->setPayment(isset($row['payment']));
-	    $transaction_payment->setPayment_akun(isset($row['payment_akun']));
-	    $transaction_payment->setCreated_by(isset($row['created_by']));
-	    $transaction_payment->setCreated_at(isset($row['created_at']));
-	    $transaction_payment->setUpdated_by(isset($row['updated_by']));
-	    $transaction_payment->setUpdated_at(isset($row['updated_at']));
+	    $transaction_payment->setId(isset($row['id'])?$row['id']:"");
+	    $transaction_payment->setTrans_id(isset($row['trans_id'])?$row['trans_id']:"");
+	    $transaction_payment->setMethod(isset($row['method'])?$row['method']:"");
+	    $transaction_payment->setPayment(isset($row['payment'])?$row['payment']:"");
+	    $transaction_payment->setPayment_akun(isset($row['payment_akun'])?$row['payment_akun']:"");
+	    $transaction_payment->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $transaction_payment->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $transaction_payment->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $transaction_payment->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 

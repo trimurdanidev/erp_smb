@@ -1,4 +1,6 @@
 <?php
+use Shuchkin\SimpleXLS;
+
 require_once './models/master_user.class.php';
 require_once './controllers/master_user.controller.php';
 require_once './models/transaction.class.php';
@@ -203,6 +205,7 @@ class transactionController extends transactionControllerGenerate
     function saveUploadSo()
     {
         $this->setIsadmin(true);
+        require_once './Excel/SimpleXLS.php';
         $mdl_transaction_dtl = new transaction_detail();
         $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
 
@@ -237,125 +240,141 @@ class transactionController extends transactionControllerGenerate
         $targetFile = "uploads/excel_upload/" . $getFile_name;
         $uploadok = move_uploaded_file($getThe_file, $targetFile);
 
-        $dataSheet = new Spreadsheet_Excel_Reader();
-        $dataSheet->setOutputEncoding('CP1251');
-        $dataSheet->read($targetFile);
-        $total = 0;
+        if ($dataSheet = SimpleXLS::parse("$targetFile")) {
+            // print_r( $xlsx->rows() );
+            $total = 0;
 
-        error_reporting(E_ALL ^ E_NOTICE);
+            //transaction
+            $this->transaction->setId($id);
+            $this->transaction->setNo_trans($no_trans);
+            $this->transaction->setTanggal($dateTime);
+            $this->transaction->setType_trans(3);
+            $this->transaction->setQtyTotal($total);
+            $this->transaction->setQtyRelease(0);
+            $this->transaction->setTrans_total(0);
+            $this->transaction->setTrans_status(0);
+            $this->transaction->setCreated_by($user);
+            $this->transaction->setCreated_at($dateTime);
+            $this->transaction->setUpdated_by('');
+            $this->transaction->setUpdated_at('');
+            $this->saveData();
 
-        //transaction
-        $this->transaction->setId($id);
-        $this->transaction->setNo_trans($no_trans);
-        $this->transaction->setTanggal($dateTime);
-        $this->transaction->setType_trans(3);
-        $this->transaction->setQtyTotal($total);
-        $this->transaction->setQtyRelease(0);
-        $this->transaction->setTrans_status(0);
-        $this->transaction->setCreated_by($user);
-        $this->transaction->setCreated_at($dateTime);
-        $this->transaction->setUpdated_by('');
-        $this->transaction->setUpdated_at('');
-        $this->saveData();
+            //upload_trans_log
+            // $mdl_upload_tr_log->setId($id);
+            $mdl_upload_tr_log->setTrans_type(3);
+            $mdl_upload_tr_log->setTrans_descrip('IN STOCK OPNAME TGL.' . date('d-m-Y') . " OLEH " . $user);
+            $mdl_upload_tr_log->setJumlah_data(0);
+            $mdl_upload_tr_log->setCreated_by($user);
+            $mdl_upload_tr_log->setCreated_at($dateTime);
+            $mdl_upload_tr_log->setUpdated_by('');
+            $mdl_upload_tr_log->setUpdated_at('');
+            $ctrl_upload_tr_log->saveData();
 
-        //upload_trans_log
-        // $mdl_upload_tr_log->setId($id);
-        $mdl_upload_tr_log->setTrans_type(3);
-        $mdl_upload_tr_log->setTrans_descrip('IN STOCK OPNAME TGL.' . date('d-m-Y') . " OLEH " . $user);
-        $mdl_upload_tr_log->setJumlah_data(0);
-        $mdl_upload_tr_log->setCreated_by($user);
-        $mdl_upload_tr_log->setCreated_at($dateTime);
-        $mdl_upload_tr_log->setUpdated_by('');
-        $mdl_upload_tr_log->setUpdated_at('');
-        $ctrl_upload_tr_log->saveData();
+            foreach ($dataSheet->rows() as $k => $r) {
+                if ($k === 0) {
+                    $header_values = $r;
+                    continue;
+                }
+                $jml_data = $k++;
+                $kd_prod = $r[0];
+                $nm_prod = $r[1];
+                $qty = $r[2];
+                $ket = $r[3];
+                // echo print_r($kd_prod."-".$nm_prod."-".$qty."-".$ket."<br>");
 
-        for ($a = 2; $a <= $dataSheet->sheets[0]['numRows']; $a++) {
-            $jml_data = $dataSheet->sheets[0]['numRows'];
-            $kd_prod = isset($dataSheet->sheets[0]['cells'][$a][1]) ? $dataSheet->sheets[0]['cells'][$a][1] : "";
-            $nm_prod = isset($dataSheet->sheets[0]['cells'][$a][2]) ? $dataSheet->sheets[0]['cells'][$a][2] : "";
-            $qty = isset($dataSheet->sheets[0]['cells'][$a][3]) ? $dataSheet->sheets[0]['cells'][$a][3] : "";
-            $ket = isset($dataSheet->sheets[0]['cells'][$a][4]) ? $dataSheet->sheets[0]['cells'][$a][4] : "";
+                $count_from_product = $ctrl_product->checkDataByKode($kd_prod);
+                $count_from_stock = $ctrl_stock->checkData($kd_prod);
 
-            $count_from_product = $ctrl_product->checkDataByKode($kd_prod);
-            $count_from_stock = $ctrl_stock->checkData($kd_prod);
+                if ($count_from_product == 0 && $count_from_stock == 0):
+                    echo "Gagal Upload!!\nKode Product $kd_prod - $nm_prod Belum Ada di Master Produk & Master Stok";
+                    //delete trans & upload log
+                    $this->deleteData($this->getLastId());
+                    $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                    // echo "konsalah0";
+                    return false;
+                elseif ($count_from_product == 0):
+                    echo "Gagal Upload !!\nKode Product $kd_prod - $nm_prod Belum Ada di Master Produk";
+                    //delete trans & upload log
+                    $this->deleteData($this->getLastId());
+                    $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                    // echo "konsalah1";
+                    return false;
+                elseif ($count_from_stock == 0):
+                    // echo "Gagal Upload !\nKode Product $kd_prod - $nm_prod Belum Ada di Master Stock";
+                    //delete trans & upload log
+                    $this->deleteData($this->getLastId());
+                    $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                    // echo "Kon salah 2";
+                    return false;
+                else:
+                    // echo "kon bener";
+                    //get_stock_produk
+                    $getStock = $ctrl_stock->showData($kd_prod);
+                    $getHarga = $ctrl_product->showDataByKode($kd_prod);
+                    $total += $qty;
 
-            if ($count_from_product == 0) {
-                echo "Gagal !! \n  Kode Product " . $kd_prod . "-" . $nm_prod . " Belum Ada di Master Produk";
-                //delete trans & upload log
-                $this->deleteData($this->getLastId());
-                $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                return false;
-            } else if ($count_from_stock == 0) {
-                echo "Gagal !! \n Kode Product " . $kd_prod . "-" . $nm_prod . " Belum Ada di Master Stock";
-                //delete trans & upload log
-                $this->deleteData($this->getLastId());
-                $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                return false;
-            } else {
-                //get_stock_produk
-                $getStock = $ctrl_stock->showData($kd_prod);
-                $getHarga = $ctrl_product->showDataByKode($kd_prod);
-                $total += $qty;
+                    //transaction_detail
+                    // $mdl_transaction_dtl->setId($id);
+                    $mdl_transaction_dtl->setTrans_id($this->getLastId());
+                    $mdl_transaction_dtl->setKd_product($kd_prod);
+                    $mdl_transaction_dtl->setQty($qty);
+                    $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                    $ctrl_transaction_dtl->saveData();
 
+                    //transaction_log
+                    // $mdl_transaction_log->setId($id);
+                    $mdl_transaction_log->setTrans_id($this->getLastId());
+                    $mdl_transaction_log->setTrans_type(3);
+                    $mdl_transaction_log->setQty_before($getStock->getQty_stock());
+                    $mdl_transaction_log->setQty_after($qty);
+                    $mdl_transaction_log->setCreated_by($user);
+                    $mdl_transaction_log->setCreated_at($dateTime);
+                    $mdl_transaction_log->setUpdated_by('');
+                    $mdl_transaction_log->setUpdated_at('');
+                    $ctrl_transaction_log->saveData();
 
-                //transaction_detail
-                // $mdl_transaction_dtl->setId($id);
-                $mdl_transaction_dtl->setTrans_id($this->getLastId());
-                $mdl_transaction_dtl->setKd_product($kd_prod);
-                $mdl_transaction_dtl->setQty($qty);
-                $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
-                $ctrl_transaction_dtl->saveData();
+                    //master_stock
+                    // $mdl_stock->setKd_product($kd_prod);
+                    // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
+                    // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
+                    // $mdl_stock->setCreated_by($getStock->getCreated_by());
+                    // $mdl_stock->setUpdated_by($user);
+                    // $mdl_stock->setCreated_at($getStock->getCreated_at());
+                    // $mdl_stock->setUpdated_at($dateTime);
+                    // $ctrl_stock->saveData();
 
-                //transaction_log
-                // $mdl_transaction_log->setId($id);
-                $mdl_transaction_log->setTrans_id($this->getLastId());
-                $mdl_transaction_log->setTrans_type(3);
-                $mdl_transaction_log->setQty_before($getStock->getQty_stock());
-                $mdl_transaction_log->setQty_after($getStock->getQty_stock() + $qty);
-                $mdl_transaction_log->setCreated_by($user);
-                $mdl_transaction_log->setCreated_at($dateTime);
-                $mdl_transaction_log->setUpdated_by('');
-                $mdl_transaction_log->setUpdated_at('');
-                $ctrl_transaction_log->saveData();
-
-                //master_stock
-                // $mdl_stock->setKd_product($kd_prod);
-                // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
-                // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
-                // $mdl_stock->setCreated_by($getStock->getCreated_by());
-                // $mdl_stock->setUpdated_by($user);
-                // $mdl_stock->setCreated_at($getStock->getCreated_at());
-                // $mdl_stock->setUpdated_at($dateTime);
-                // $ctrl_stock->saveData();
-
+                endif;
             }
 
+            $showUpdadte_upl = $ctrl_upload_tr_log->showData($ctrl_upload_tr_log->getLastId());
+            $showUpdate_trs = $this->showData($this->getLastId());
 
+            $mdl_upload_tr_log->setId($showUpdadte_upl->getId());
+            $mdl_upload_tr_log->setTrans_type($showUpdadte_upl->getTrans_type());
+            $mdl_upload_tr_log->setTrans_descrip($showUpdadte_upl->getTrans_descrip());
+            $mdl_upload_tr_log->setJumlah_data($jml_data);
+            $mdl_upload_tr_log->setCreated_by($showUpdadte_upl->getCreated_by());
+            $mdl_upload_tr_log->setCreated_at($showUpdadte_upl->getCreated_at());
+            $mdl_upload_tr_log->setUpdated_by($showUpdadte_upl->getUpdated_by());
+            $mdl_upload_tr_log->setUpdated_at($showUpdadte_upl->getUpdated_at());
+            $ctrl_upload_tr_log->saveData();
+
+            $this->transaction->setId($showUpdate_trs->getId());
+            $this->transaction->setNo_trans($showUpdate_trs->getNo_trans());
+            $this->transaction->setTanggal($showUpdate_trs->getTanggal());
+            $this->transaction->setType_trans($showUpdate_trs->getType_trans());
+            $this->transaction->setQtyTotal($total);
+            $this->transaction->setTrans_total(0);
+            $this->transaction->setQtyRelease($showUpdate_trs->getQtyRelease());
+            $this->transaction->setCreated_by($showUpdate_trs->getCreated_by());
+            $this->transaction->setCreated_at($showUpdate_trs->getCreated_at());
+            $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
+            $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
+            $this->saveData();
+            echo "Uploas Success";
+        } else {
+            echo SimpleXLS::parseError();
         }
-        $showUpdadte_upl = $ctrl_upload_tr_log->showData($ctrl_upload_tr_log->getLastId());
-        $showUpdate_trs = $this->showData($this->getLastId());
-
-        $mdl_upload_tr_log->setId($showUpdadte_upl->getId());
-        $mdl_upload_tr_log->setTrans_type($showUpdadte_upl->getTrans_type());
-        $mdl_upload_tr_log->setTrans_descrip($showUpdadte_upl->getTrans_descrip());
-        $mdl_upload_tr_log->setJumlah_data($jml_data - 1);
-        $mdl_upload_tr_log->setCreated_by($showUpdadte_upl->getCreated_by());
-        $mdl_upload_tr_log->setCreated_at($showUpdadte_upl->getCreated_at());
-        $mdl_upload_tr_log->setUpdated_by($showUpdadte_upl->getUpdated_by());
-        $mdl_upload_tr_log->setUpdated_at($showUpdadte_upl->getUpdated_at());
-        $ctrl_upload_tr_log->saveData();
-
-        $this->transaction->setId($showUpdate_trs->getId());
-        $this->transaction->setNo_trans($showUpdate_trs->getNo_trans());
-        $this->transaction->setTanggal($showUpdate_trs->getTanggal());
-        $this->transaction->setType_trans($showUpdate_trs->getType_trans());
-        $this->transaction->setQtyTotal($total);
-        $this->transaction->setQtyRelease($showUpdate_trs->getQtyRelease());
-        $this->transaction->setCreated_by($showUpdate_trs->getCreated_by());
-        $this->transaction->setCreated_at($showUpdate_trs->getCreated_at());
-        $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
-        $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
-        $this->saveData();
 
     }
 
@@ -419,6 +438,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setType_trans($getTransaction->getType_trans());
             $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
             $this->transaction->setQtyRelease($total);
+            $this->transaction->setTrans_total(0);
             $this->transaction->setTrans_status(1);
             $this->transaction->setCreated_by($getTransaction->getCreated_by());
             $this->transaction->setCreated_at($getTransaction->getCreated_at());
@@ -428,14 +448,81 @@ class transactionController extends transactionControllerGenerate
             // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
             $this->showAllJQuery_so();
         } else {
-            echo "<script>alert('Gagal Rilis, Cek Koneksi Internet Anda!!');</script>";
+            echo "<script language='javascript' type='text/javascript'>
+            Swal.fire({
+                title : 'Gagal Rilis !',
+                icon : 'error',
+                text : 'Silahkan Cek Koneksi Internet Anda'
+            });
+            </script>";
         }
-    }
 
+    }
+    function showFormJQuery_transOff(){
+        $this->setIsadmin(true);
+        require_once './views/transaction/transaction_jquery_form_trans_off.php';
+    }
     function showAllJQuery_trans_off()
     {
+        $mdl_transcation_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
+
+        $mdl_transaction_log = new transaction_log();
+        $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        $mdl_trans_payment = new transaction_payment();
+        $ctrl_trans_payment = new transaction_paymentController($mdl_trans_payment,$this->dbh);
+
+        $mdl_trans_buyer    = new transaction_buyer();
+        $ctrl_trans_buyer   = new transaction_buyerController($mdl_trans_buyer,$this->dbh);
+
+        $sql = "SELECT * FROM `transaction` WHERE type_trans=2";
+        
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        $sisa = intval($last % $limit);
+
+        if ($sisa > 0) {
+            $last = $last - $sisa;
+        } else if ($last - $limit < 0) {
+            $last = 0;
+        } else {
+            $last = $last - $limit;
+        }
+
+        $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+        if ($skip + $limit > $last) {
+            $next = $last;
+        } else if ($skip == 0) {
+            $next = $skip + $limit + 1;
+        } else {
+            $next = $skip + $limit;
+        }
+        $first = 0;
+
+        $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+        $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+        $transaction_list = $this->createList($sql);
+        $isadmin = $this->isadmin;
+        $ispublic = $this->ispublic;
+        $isread = $this->isread;
+        $isconfirm = $this->isconfirm;
+        $isentry = $this->isentry;
+        $isupdate = $this->isupdate;
+        $isdelete = $this->isdelete;
+        $isprint = $this->isprint;
+        $isexport = $this->isexport;
+        $isimport = $this->isimport;
+
         require_once './views/transaction/transaction_jquery_trans_off.php';
-        // require_once './views/transaction/test.php';
     }
 
     function saveTransJualOff()
@@ -480,6 +567,13 @@ class transactionController extends transactionControllerGenerate
         $part = isset($_POST['part']) ? $_POST['part'] : "";
         $qtyBeli = isset($_POST['qtyBeli']) ? $_POST['qtyBeli'] : "";
         $price = isset($_POST['price']) ? $_POST['price'] : "";
+        $method_pay = isset($_POST['metod_pay']) ? $_POST['metod_pay']:"";
+        $paymenn = isset($_POST['paymenn'])?$_POST['paymenn']:"";
+        $pay_akun = isset($_POST['pay_akun'])?$_POST['pay_akun']:"";
+        $gTotal = isset($_POST['gTotal']) ? $_POST['gTotal'] : "" ;
+        $buyer_name = isset($_POST['buyer_name'])?$_POST['buyer_name'] : "";
+	    $buyer_phone = isset($_POST['buyer_phone'])?$_POST['buyer_phone'] : "";
+	    $buyer_address = isset($_POST['buyer_address'])?$_POST['buyer_address'] : "";
 
         if ($part != null || $id != "") {
 
@@ -490,6 +584,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setType_trans(2);
             $this->transaction->setQtyTotal($total);
             $this->transaction->setQtyRelease($total);
+            $this->transaction->setTrans_total($gTotal);
             $this->transaction->setTrans_status(1);
             $this->transaction->setCreated_by($user);
             $this->transaction->setCreated_at($dateTime);
@@ -510,13 +605,67 @@ class transactionController extends transactionControllerGenerate
                 $mdl_trans_dtl->setQty($qty);
                 $mdl_trans_dtl->setHarga($priceSet);
                 $ctrl_trans_dtl->saveData();
-                
+
                 $total += $qty;
+                $getStock = $ctrl_mst_stok->showData($part);
+
+                //transaction log
+                $mdl_trans_log->setTrans_id($this->getLastId());
+                $mdl_trans_log->setTrans_type(2);
+                $mdl_trans_log->setQty_before($getStock->getQty_stock());
+                $mdl_trans_log->setQty_after($getStock->getQty_stock() - $qty);
+                $mdl_trans_log->setCreated_by($user);
+                $mdl_trans_log->setCreated_at($dateTime);
+                $mdl_trans_log->setUpdated_by('');
+                $mdl_trans_log->setUpdated_at('');
+                $ctrl_trans_log->saveData();
+
+                //master_stock
+                $mdl_mst_stok->setKd_product($part);
+                $mdl_mst_stok->setQty_stock($getStock->getQty_stock() - $qty);
+                $mdl_mst_stok->setQty_stock_promo($getStock->getQty_stock_promo());
+                $mdl_mst_stok->setCreated_by($getStock->getCreated_by());
+                $mdl_mst_stok->setUpdated_by($user);
+                $mdl_mst_stok->setCreated_at($getStock->getCreated_at());
+                $mdl_mst_stok->setUpdated_at(date('Y-m-d h:i:s'));
+                $ctrl_mst_stok->saveData();
             }
 
+            //paymen transaction
+            // $mdl_trans_payment->setId($id);
+            $mdl_trans_payment->setTrans_id($this->getLastId());
+            $mdl_trans_payment->setMethod($method_pay);
+            $mdl_trans_payment->setPayment($method_pay=='1'?'Tunai':$paymenn);
+            $mdl_trans_payment->setPayment_akun($pay_akun);
+            $mdl_trans_payment->setCreated_by($user);
+            $mdl_trans_payment->setCreated_at(date('Y-m-d h:i:s'));
+            $mdl_trans_payment->setUpdated_by($user);
+            $mdl_trans_payment->setUpdated_at(date('Y-m-d h:i:s'));
+            $ctrl_trans_payment->saveData();
+
+            //buyer transaction
+            // $mdl_trans_buyer->setId($id);
+            $mdl_trans_buyer->setTrans_id($this->getLastId());
+            $mdl_trans_buyer->setBuyer_name($buyer_name);
+            $mdl_trans_buyer->setBuyer_phone($buyer_phone);
+            $mdl_trans_buyer->setBuyer_address($buyer_address);            
+            $ctrl_trans_buyer->saveData();
+
             //Update Total
-            $queryExe = "UPDATE `transaction` set qtyTotal='$total',qtyRelease='$total' where id='".$this->getLastId()."'";
-            $this->dbh->query($queryExe); 
+            $queryExe = "UPDATE `transaction` set qtyTotal='$total',qtyRelease='$total' where id='" . $this->getLastId() . "'";
+            $this->dbh->query($queryExe);
+
+            // echo "<script language='javascript' type='text/javascript'>Swal.fire({title : 'Succes',text:'Data Tersimpan',icon:'success'});</script>";
+            echo "<script>alert(Success\nData Tersimpan);</script>";
+            // $this->showAllJQuery_trans_off();
+            require_once './views/transaction/transaction_jquery_trans_off.php';
+        } else {
+            echo "Swal.fire({
+                title:'Gagal!',
+                text:'Transaksi Offline not saved',
+                icon:'error'
+
+            })";
         }
 
 

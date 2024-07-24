@@ -9,6 +9,13 @@
 
     class transaction_buyerController extends transaction_buyerControllerGenerate
     {
+        function showDataBytransId($transid){
+            $sql = "SELECT * FROM transaction_buyer WHERE trans_id = '".$this->toolsController->replacecharFind($transid,$this->dbh)."'";
 
+            $row = $this->dbh->query($sql)->fetch();
+            $this->loadData($this->transaction_buyer, $row);
+            
+            return $this->transaction_buyer;
+        }
     }
 ?>

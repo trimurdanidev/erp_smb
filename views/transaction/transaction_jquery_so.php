@@ -170,14 +170,19 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
     (function () {
         $('form').ajaxForm({
             beforeSubmit: function () {
+
                 if (confirm('Anda yakin save data ? ') == false) {
                     return false;
                 }
                 $('#submit').prop('disabled', true);
             },
             complete: function (xhr) {
-                alert($.trim(xhr.responseText));
-                // alert('Berhasil Tersimpan'));
+                Swal.fire($.trim(xhr.responseText));
+                // Swal.fire({
+                //     title: "Upload Succes",
+                //     text : "",
+                //     icon : "success",
+                // });
                 showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
             }
         });
@@ -227,12 +232,12 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     text: "Stock Opname has been Released.",
                     icon: "success"
                 });
-            } else if(result.isDenied){
+            } else if (result.isDenied) {
                 Swal.fire({
                     title: "Not Released!",
                     text: "",
                     icon: "info"
-                }); 
+                });
             }
         });
     }

@@ -222,15 +222,15 @@
 
                 
         function loadData($master_pay_transfer,$row){
-	    $master_pay_transfer->setId($row['id']);
-	    $master_pay_transfer->setTransfer($row['transfer']);
-	    $master_pay_transfer->setImg($row['img']);
-	    $master_pay_transfer->setName_akun($row['name_akun']);
-	    $master_pay_transfer->setRek_akun($row['rek_akun']);
-	    $master_pay_transfer->setCreated_by($row['created_by']);
-	    $master_pay_transfer->setCreated_at($row['created_at']);
-	    $master_pay_transfer->setUpdated_by($row['updated_by']);
-	    $master_pay_transfer->setUpdated_at($row['updated_at']);
+	    $master_pay_transfer->setId(isset($row['id'])?$row['id']:"");
+	    $master_pay_transfer->setTransfer(isset($row['transfer'])?$row['transfer']:"");
+	    $master_pay_transfer->setImg(isset($row['img'])?$row['img']:"");
+	    $master_pay_transfer->setName_akun(isset($row['name_akun'])?$row['name_akun']:"");
+	    $master_pay_transfer->setRek_akun(isset($row['rek_akun'])?$row['rek_akun']:"");
+	    $master_pay_transfer->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $master_pay_transfer->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $master_pay_transfer->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $master_pay_transfer->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 

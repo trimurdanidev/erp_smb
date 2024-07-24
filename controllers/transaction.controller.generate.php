@@ -93,6 +93,7 @@
 	    $sql .= "`type_trans`,";
 	    $sql .= "`qtyTotal`,";
 	    $sql .= "`qtyRelease`,";
+	    $sql .= "`trans_total`,";
 	    $sql .= "`trans_status`,";
 	    $sql .= "`created_by`,";
 	    $sql .= "`created_at`,";
@@ -106,6 +107,7 @@
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getType_trans(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getQtyTotal(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getQtyRelease(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getTrans_total(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getTrans_status(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getCreated_by(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getCreated_at(), $this->dbh)."',";
@@ -126,6 +128,7 @@
 	    $sql .= "`type_trans` = '".$this->toolsController->replacecharSave($this->transaction->getType_trans(),$this->dbh)."',";
 	    $sql .= "`qtyTotal` = '".$this->toolsController->replacecharSave($this->transaction->getQtyTotal(),$this->dbh)."',";
 	    $sql .= "`qtyRelease` = '".$this->toolsController->replacecharSave($this->transaction->getQtyRelease(),$this->dbh)."',";
+	    $sql .= "`trans_total` = '".$this->toolsController->replacecharSave($this->transaction->getTrans_total(),$this->dbh)."',";
 	    $sql .= "`trans_status` = '".$this->toolsController->replacecharSave($this->transaction->getTrans_status(),$this->dbh)."',";
 	    $sql .= "`created_by` = '".$this->toolsController->replacecharSave($this->transaction->getCreated_by(),$this->dbh)."',";
 	    $sql .= "`created_at` = '".$this->toolsController->replacecharSave($this->transaction->getCreated_at(),$this->dbh)."',";
@@ -234,6 +237,7 @@
 	    $transaction->setType_trans(isset($row['type_trans'])?$row['type_trans']:"");
 	    $transaction->setQtyTotal(isset($row['qtyTotal'])?$row['qtyTotal']:"");
 	    $transaction->setQtyRelease(isset($row['qtyRelease'])?$row['qtyRelease']:"");
+	    $transaction->setTrans_total(isset($row['trans_total'])?$row['trans_total']:"");
 	    $transaction->setTrans_status(isset($row['trans_status'])?$row['trans_status']:"");
 	    $transaction->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
 	    $transaction->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
@@ -415,6 +419,7 @@
 	    $type_trans = isset($_POST['type_trans'])?$_POST['type_trans'] : "";
 	    $qtyTotal = isset($_POST['qtyTotal'])?$_POST['qtyTotal'] : "";
 	    $qtyRelease = isset($_POST['qtyRelease'])?$_POST['qtyRelease'] : "";
+	    $trans_total = isset($_POST['trans_total'])?$_POST['trans_total'] : "";
 	    $trans_status = isset($_POST['trans_status'])?$_POST['trans_status'] : "";
 	    $created_by = isset($_POST['created_by'])?$_POST['created_by'] : "";
 	    $created_at = isset($_POST['created_at'])?$_POST['created_at'] : "";
@@ -426,6 +431,7 @@
 	    $this->transaction->setType_trans($type_trans);
 	    $this->transaction->setQtyTotal($qtyTotal);
 	    $this->transaction->setQtyRelease($qtyRelease);
+	    $this->transaction->setTrans_total($trans_total);
 	    $this->transaction->setTrans_status($trans_status);
 	    $this->transaction->setCreated_by($created_by);
 	    $this->transaction->setCreated_at($created_at);

@@ -210,11 +210,11 @@
 
                 
         function loadData($transaction_buyer,$row){
-	    $transaction_buyer->setId(isset($row['id']));
-	    $transaction_buyer->setTrans_id(isset($row['trans_id']));
-	    $transaction_buyer->setBuyer_name(isset($row['buyer_name']));
-	    $transaction_buyer->setBuyer_phone(isset($row['buyer_phone']));
-	    $transaction_buyer->setBuyer_address(isset($row['buyer_address']));
+	    $transaction_buyer->setId(isset($row['id'])?$row['id']:"");
+	    $transaction_buyer->setTrans_id(isset($row['trans_id'])?$row['trans_id']:"");
+	    $transaction_buyer->setBuyer_name(isset($row['buyer_name'])?$row['buyer_name']:"");
+	    $transaction_buyer->setBuyer_phone(isset($row['buyer_phone'])?$row['buyer_phone']:"");
+	    $transaction_buyer->setBuyer_address(isset($row['buyer_address'])?$row['buyer_address']:"");
 
         }
 

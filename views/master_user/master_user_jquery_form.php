@@ -10,11 +10,11 @@
                      cache: false, 
                      data : post_data,
                      success : function(x){
-                         alert("Data User Sudah Tersimpan");
+                         Swal.fire("Data User Sudah Tersimpan");
                          showMenu('content', 'index.php?model=master_user&action=showAllJQuery&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
                      }, 
                      error : function(){
-                        alert("Error");
+                        Swal.fire("Error");
                      }
                 });
                 return false;

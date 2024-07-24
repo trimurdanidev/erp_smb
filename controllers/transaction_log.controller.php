@@ -17,5 +17,14 @@
             
             return $this->transaction_log;
         }
+        
+        function sDataByTransId($transid){
+            $sql = "SELECT a .* FROM transaction_log a inner join transaction_detail b on a.trans_id = b.trans_id WHERE a .id = '".$this->toolsController->replacecharFind($transid,$this->dbh)."'";
+
+            $row = $this->dbh->query($sql)->fetch();
+            $this->loadData($this->transaction_log, $row);
+            
+            return $this->transaction_log;
+        }
     }
 ?>

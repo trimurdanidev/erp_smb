@@ -10,11 +10,11 @@
                      cache: false, 
                      data : post_data,
                      success : function(x){
-                         alert(x);
+                         Swal.fire(x);
                          showMenu('content', 'index.php?model=graph_model&action=showAllJQuery&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
                      }, 
                      error : function(){
-                        alert("Error");
+                        Swal.fire("Error");
                      }
                 });
                 return false;
