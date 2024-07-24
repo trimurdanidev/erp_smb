@@ -231,18 +231,18 @@
 
                 
         function loadData($transaction,$row){
-	    $transaction->setId($row['id']);
-	    $transaction->setNo_trans($row['no_trans']);
-	    $transaction->setTanggal($row['tanggal']);
-	    $transaction->setType_trans($row['type_trans']);
-	    $transaction->setQtyTotal($row['qtyTotal']);
-	    $transaction->setQtyRelease($row['qtyRelease']);
-	    $transaction->setTrans_total($row['trans_total']);
-	    $transaction->setTrans_status($row['trans_status']);
-	    $transaction->setCreated_by($row['created_by']);
-	    $transaction->setCreated_at($row['created_at']);
-	    $transaction->setUpdated_by($row['updated_by']);
-	    $transaction->setUpdated_at($row['updated_at']);
+	    $transaction->setId(isset($row['id'])?$row['id']:"");
+	    $transaction->setNo_trans(isset($row['no_trans'])?$row['no_trans']:"");
+	    $transaction->setTanggal(isset($row['tanggal'])?$row['tanggal']:"");
+	    $transaction->setType_trans(isset($row['type_trans'])?$row['type_trans']:"");
+	    $transaction->setQtyTotal(isset($row['qtyTotal'])?$row['qtyTotal']:"");
+	    $transaction->setQtyRelease(isset($row['qtyRelease'])?$row['qtyRelease']:"");
+	    $transaction->setTrans_total(isset($row['trans_total'])?$row['trans_total']:"");
+	    $transaction->setTrans_status(isset($row['trans_status'])?$row['trans_status']:"");
+	    $transaction->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $transaction->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $transaction->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $transaction->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 

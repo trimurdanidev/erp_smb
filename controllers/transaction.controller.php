@@ -456,12 +456,73 @@ class transactionController extends transactionControllerGenerate
             });
             </script>";
         }
-    }
 
+    }
+    function showFormJQuery_transOff(){
+        $this->setIsadmin(true);
+        require_once './views/transaction/transaction_jquery_form_trans_off.php';
+    }
     function showAllJQuery_trans_off()
     {
+        $mdl_transcation_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
+
+        $mdl_transaction_log = new transaction_log();
+        $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        $mdl_trans_payment = new transaction_payment();
+        $ctrl_trans_payment = new transaction_paymentController($mdl_trans_payment,$this->dbh);
+
+        $mdl_trans_buyer    = new transaction_buyer();
+        $ctrl_trans_buyer   = new transaction_buyerController($mdl_trans_buyer,$this->dbh);
+
+        $sql = "SELECT * FROM `transaction` WHERE type_trans=2";
+        
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        $sisa = intval($last % $limit);
+
+        if ($sisa > 0) {
+            $last = $last - $sisa;
+        } else if ($last - $limit < 0) {
+            $last = 0;
+        } else {
+            $last = $last - $limit;
+        }
+
+        $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+        if ($skip + $limit > $last) {
+            $next = $last;
+        } else if ($skip == 0) {
+            $next = $skip + $limit + 1;
+        } else {
+            $next = $skip + $limit;
+        }
+        $first = 0;
+
+        $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+        $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+        $transaction_list = $this->createList($sql);
+        $isadmin = $this->isadmin;
+        $ispublic = $this->ispublic;
+        $isread = $this->isread;
+        $isconfirm = $this->isconfirm;
+        $isentry = $this->isentry;
+        $isupdate = $this->isupdate;
+        $isdelete = $this->isdelete;
+        $isprint = $this->isprint;
+        $isexport = $this->isexport;
+        $isimport = $this->isimport;
+
         require_once './views/transaction/transaction_jquery_trans_off.php';
-        // require_once './views/transaction/test.php';
     }
 
     function saveTransJualOff()
@@ -574,7 +635,7 @@ class transactionController extends transactionControllerGenerate
             // $mdl_trans_payment->setId($id);
             $mdl_trans_payment->setTrans_id($this->getLastId());
             $mdl_trans_payment->setMethod($method_pay);
-            $mdl_trans_payment->setPayment($paymenn);
+            $mdl_trans_payment->setPayment($method_pay=='1'?'Tunai':$paymenn);
             $mdl_trans_payment->setPayment_akun($pay_akun);
             $mdl_trans_payment->setCreated_by($user);
             $mdl_trans_payment->setCreated_at(date('Y-m-d h:i:s'));
