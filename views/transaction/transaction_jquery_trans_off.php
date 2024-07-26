@@ -8,6 +8,7 @@
     <?php
     $mdl_pay_transfer = new master_pay_transfer();
     $ctrl_pay_transfer = new master_pay_transferController($mdl_pay_transfer, $this->dbh);
+    $arr_payment = $ctrl_pay_transfer->showDataAll();
 
     $mdl_trans_log = new transaction_log();
     $ctrl_trans_log = new transaction_logController($mdl_trans_log, $this->dbh);
@@ -40,7 +41,7 @@
                 <?php
                 $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
                 $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
-                $stsId = isset($_REQUEST["sts"]) ? $_REQUEST["sts"] : "";
+                $paymn = isset($_REQUEST["payment"]) ? $_REQUEST["payment"] : "";
                 ?>
                 <td><span class="glyphicon glyphicon-search"></span></td>
                 <td>
@@ -54,16 +55,18 @@
                         class="form form-control" placeholder="To Date" onchange="serchData()">
                 </td>
                 <td>
-                    <select name="sts" id="sts" class="form form-control" onchange="serchData()">
-                        <option value="0,1" <?php echo $stsId == '0,1' ? "selected" : ""; ?>>All Status</option>
-                        <option value="0" <?php echo $stsId == '0' ? "selected" : ""; ?>>Pending</option>
-                        <option value="1" <?php echo $stsId == '1' ? "selected" : ""; ?>>Success</option>
+                    <select name="payment" id="payment" class="form form-control" onchange="serchData()">
+                        <option value="">All Pembayaran</option>
+                        <?php foreach ($arr_payment as $key => $value) { ?>
+                            <option value="<?php echo $value->getTransfer();?>" <?php echo $value->getTransfer()==$paymn?'selected':'';?>><?php echo $value->getTransfer();?></option>
+                        <?php }?>
+                        <option value="Tunai">TUNAI</option>
                     </select>
                 </td>
                 <td>
                     <input type="hidden" name="getFrom" id="getFrom" value="<?php echo $fromDate; ?>">
                     <input type="hidden" name="getTo" id="getTo" value="<?php echo $toDate; ?>">
-                    <input type="hidden" name="getStatus" id="getStatus" value="<?php echo $stsId; ?>">
+                    <input type="hidden" name="getPayment" id="getPayment" value="<?php echo $paymn; ?>">
                 </td>
                 <td>
                     <button type="button" onclick="resetFilter()" class="btn btn-default"><span
@@ -109,8 +112,8 @@
                         $getBuyer = $ctrl_trans_buyer->showDataBytransId($trans_off->getId());
                         $getPaymen = $ctrl_trans_pay->showDataBytransId($trans_off->getId());
                         $getIconPayment = $ctrl_pay_transfer->showDataSingle($getPaymen->getPayment());
-                        $grandTotal += $trans_off->getTrans_total()!=null?$trans_off->getTrans_total():0;
-                        $qtyTotalAll += $trans_off->getQtyRelease()!=null?$trans_off->getQtyRelease():0;
+                        $grandTotal += $trans_off->getTrans_total() != null ? $trans_off->getTrans_total() : 0;
+                        $qtyTotalAll += $trans_off->getQtyRelease() != null ? $trans_off->getQtyRelease() : 0;
                         ?>
                         <td>
                             <?php echo $no++; ?>
@@ -165,7 +168,7 @@
                                             <h4><span class="glyphicon glyphicon-th-list"></span>
                                                 <?php echo $trans_off->getNo_trans(); ?>
                                             </h4>
-                                            <?php if ($trans_off->getId()== null || $trans_off->getId() == "") {
+                                            <?php if ($trans_off->getId() == null || $trans_off->getId() == "") {
                                                 ?>
                                                 <table class="table table-striped">
                                                     <td align="center"><b>Detail Penjualan Tidak Tersedia</b></td>
@@ -236,7 +239,9 @@
                                                             } ?>
                                                             <tr>
                                                                 <td colspan="6" class="text-left"><b>Total</b></td>
-                                                                <td class="text-center"><b><?php echo number_format(floatVal($totalPnjl));?></b></td>
+                                                                <td class="text-center"><b>
+                                                                        <?php echo number_format(floatVal($totalPnjl)); ?>
+                                                                    </b></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -244,23 +249,28 @@
                                             <?php } ?>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal"><span class="glyphicon glyphicon-eye-close"></span> Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span
+                                                    class="glyphicon glyphicon-eye-close"></span> Close</button>
                                             <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <button class="btn btn-primary" onclick="previewFaktur('<?php echo $trans_off->getId();?>','<?php echo $trans_off->getNo_trans();?>')"><span class="glyphicon glyphicon-book"></span> Faktur</button>
                         </td>
                     </tr>
                     <?php
                     }
                     ?>
-                    <tr>
-                        <td colspan="5"><b>Total</b></td>
-                        <td colspan="4"><b><?php echo $qtyTotalAll;?> Pcs</b></td>
-                        <td><b><?php echo number_format(floatVal($grandTotal));?></b></td>
-                    </tr>
+                <tr>
+                    <td colspan="5"><b>Total</b></td>
+                    <td colspan="4"><b>
+                            <?php echo $qtyTotalAll; ?> Pcs
+                        </b></td>
+                    <td colspan="3"><b>
+                            <?php echo number_format(floatVal($grandTotal)); ?>
+                        </b></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -268,7 +278,28 @@
 
 </html>
 <script language="javascript" type="text/javascript">
+    function serchData() {
+        var payment = $('#payment option:selected').val();
+        var dari = $('#dari').val();
+        var sampai = $('#sampai').val();
+        var param = {};
 
+        param['payment'] = payment;
+        param['dari'] = dari;
+        param['sampai'] = sampai;
+
+        $.post('index.php?model=transaction&action=showAllJQuery_trans_off_by_search', param, function (data) {
+            $('#content').html(data);
+        });
+    }
+
+    function resetFilter() {
+        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off');
+    }
+
+    function previewFaktur(id,notrans){
+        window.open("index.php?model=transaction&action=preview_FakturOffline&id="+id+"&notrans="+notrans);
+    }
 </script>
 <style>
     .ac_results {

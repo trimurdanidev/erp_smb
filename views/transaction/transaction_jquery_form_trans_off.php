@@ -197,8 +197,8 @@
                     </div>
                     <div id="hasil_detail_pay_tr" style="display: none;">
                         <p id="printh_pay_tr" style="color: blue;"></p>
-                        <input type="text" name="paymenn" id="paymenn" value="">
-                        <input type="text" name="pay_akun" id="pay_akun" value="">
+                        <input type="hidden" name="paymenn" id="paymenn" value="">
+                        <input type="hidden" name="pay_akun" id="pay_akun" value="">
                     </div>
                 </td>
             </tr>
@@ -356,8 +356,23 @@
 
     $(document).ready(function () {
         $("#part").tokenInput("index.php?model=master_product&action=searchProdmulti");
+        
     });
 
+    (function () {
+        $('form').ajaxForm({
+            beforeSubmit:function(){
+                if (confirm('Anda yakin save data ? ') == false) {
+                    return false;
+                }
+                $('#submit').prop('disabled', true);
+            },
+            complete: function(xhr){
+                Swal.fire($.trim(xhr.responseText));
+                showMenu('content','index.php?model=transaction&action=showAllJQuery_trans_off');
+            }
+        });
+    })();
 </script>
 <style>
     .ac_results {
