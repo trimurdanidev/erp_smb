@@ -458,7 +458,8 @@ class transactionController extends transactionControllerGenerate
         }
 
     }
-    function showFormJQuery_transOff(){
+    function showFormJQuery_transOff()
+    {
         $this->setIsadmin(true);
         require_once './views/transaction/transaction_jquery_form_trans_off.php';
     }
@@ -474,13 +475,93 @@ class transactionController extends transactionControllerGenerate
         $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
 
         $mdl_trans_payment = new transaction_payment();
-        $ctrl_trans_payment = new transaction_paymentController($mdl_trans_payment,$this->dbh);
+        $ctrl_trans_payment = new transaction_paymentController($mdl_trans_payment, $this->dbh);
 
-        $mdl_trans_buyer    = new transaction_buyer();
-        $ctrl_trans_buyer   = new transaction_buyerController($mdl_trans_buyer,$this->dbh);
+        $mdl_trans_buyer = new transaction_buyer();
+        $ctrl_trans_buyer = new transaction_buyerController($mdl_trans_buyer, $this->dbh);
 
-        $sql = "SELECT * FROM `transaction` WHERE type_trans=2";
-        
+
+        $sql = "SELECT * FROM `transaction` WHERE type_trans=2 order by id desc";
+
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        $sisa = intval($last % $limit);
+
+        if ($sisa > 0) {
+            $last = $last - $sisa;
+        } else if ($last - $limit < 0) {
+            $last = 0;
+        } else {
+            $last = $last - $limit;
+        }
+
+        $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+        if ($skip + $limit > $last) {
+            $next = $last;
+        } else if ($skip == 0) {
+            $next = $skip + $limit + 1;
+        } else {
+            $next = $skip + $limit;
+        }
+        $first = 0;
+
+        $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+        $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+        $transaction_list = $this->createList($sql);
+        $isadmin = $this->isadmin;
+        $ispublic = $this->ispublic;
+        $isread = $this->isread;
+        $isconfirm = $this->isconfirm;
+        $isentry = $this->isentry;
+        $isupdate = $this->isupdate;
+        $isdelete = $this->isdelete;
+        $isprint = $this->isprint;
+        $isexport = $this->isexport;
+        $isimport = $this->isimport;
+
+        require_once './views/transaction/transaction_jquery_trans_off.php';
+    }
+
+    function showAllJQuery_trans_off_by_search()
+    {
+        $mdl_transcation_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
+
+        $mdl_transaction_log = new transaction_log();
+        $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        $mdl_trans_payment = new transaction_payment();
+        $ctrl_trans_payment = new transaction_paymentController($mdl_trans_payment, $this->dbh);
+
+        $mdl_trans_buyer = new transaction_buyer();
+        $ctrl_trans_buyer = new transaction_buyerController($mdl_trans_buyer, $this->dbh);
+
+        $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
+        $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
+        $pyment = isset($_REQUEST["payment"]) ? $_REQUEST["payment"] : "";
+
+        if ($pyment == null || $pyment == "") {
+            $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
+            INNER JOIN transaction_payment d ON d.`trans_id` = a.id
+            INNER JOIN transaction_buyer f ON f.trans_id = a.id 
+            WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' 
+            ORDER BY a.`created_at` DESC";
+        } else {
+            $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
+            INNER JOIN transaction_payment d ON d.`trans_id` = a.id
+            INNER JOIN transaction_buyer f ON f.trans_id = a.id
+            WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.payment='$pyment' 
+            ORDER BY a.`created_at` DESC";
+        }
+
         $last = $this->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
@@ -567,13 +648,13 @@ class transactionController extends transactionControllerGenerate
         $part = isset($_POST['part']) ? $_POST['part'] : "";
         $qtyBeli = isset($_POST['qtyBeli']) ? $_POST['qtyBeli'] : "";
         $price = isset($_POST['price']) ? $_POST['price'] : "";
-        $method_pay = isset($_POST['metod_pay']) ? $_POST['metod_pay']:"";
-        $paymenn = isset($_POST['paymenn'])?$_POST['paymenn']:"";
-        $pay_akun = isset($_POST['pay_akun'])?$_POST['pay_akun']:"";
-        $gTotal = isset($_POST['gTotal']) ? $_POST['gTotal'] : "" ;
-        $buyer_name = isset($_POST['buyer_name'])?$_POST['buyer_name'] : "";
-	    $buyer_phone = isset($_POST['buyer_phone'])?$_POST['buyer_phone'] : "";
-	    $buyer_address = isset($_POST['buyer_address'])?$_POST['buyer_address'] : "";
+        $method_pay = isset($_POST['metod_pay']) ? $_POST['metod_pay'] : "";
+        $paymenn = isset($_POST['paymenn']) ? $_POST['paymenn'] : "";
+        $pay_akun = isset($_POST['pay_akun']) ? $_POST['pay_akun'] : "";
+        $gTotal = isset($_POST['gTotal']) ? $_POST['gTotal'] : "";
+        $buyer_name = isset($_POST['buyer_name']) ? $_POST['buyer_name'] : "";
+        $buyer_phone = isset($_POST['buyer_phone']) ? $_POST['buyer_phone'] : "";
+        $buyer_address = isset($_POST['buyer_address']) ? $_POST['buyer_address'] : "";
 
         if ($part != null || $id != "") {
 
@@ -635,7 +716,7 @@ class transactionController extends transactionControllerGenerate
             // $mdl_trans_payment->setId($id);
             $mdl_trans_payment->setTrans_id($this->getLastId());
             $mdl_trans_payment->setMethod($method_pay);
-            $mdl_trans_payment->setPayment($method_pay=='1'?'Tunai':$paymenn);
+            $mdl_trans_payment->setPayment($method_pay == '1' ? 'Tunai' : $paymenn);
             $mdl_trans_payment->setPayment_akun($pay_akun);
             $mdl_trans_payment->setCreated_by($user);
             $mdl_trans_payment->setCreated_at(date('Y-m-d h:i:s'));
@@ -648,17 +729,14 @@ class transactionController extends transactionControllerGenerate
             $mdl_trans_buyer->setTrans_id($this->getLastId());
             $mdl_trans_buyer->setBuyer_name($buyer_name);
             $mdl_trans_buyer->setBuyer_phone($buyer_phone);
-            $mdl_trans_buyer->setBuyer_address($buyer_address);            
+            $mdl_trans_buyer->setBuyer_address($buyer_address);
             $ctrl_trans_buyer->saveData();
 
             //Update Total
             $queryExe = "UPDATE `transaction` set qtyTotal='$total',qtyRelease='$total' where id='" . $this->getLastId() . "'";
             $this->dbh->query($queryExe);
 
-            // echo "<script language='javascript' type='text/javascript'>Swal.fire({title : 'Succes',text:'Data Tersimpan',icon:'success'});</script>";
-            echo "<script>alert(Success\nData Tersimpan);</script>";
-            // $this->showAllJQuery_trans_off();
-            require_once './views/transaction/transaction_jquery_trans_off.php';
+            echo "Success\nData Tersimpan";
         } else {
             echo "Swal.fire({
                 title:'Gagal!',
@@ -668,6 +746,11 @@ class transactionController extends transactionControllerGenerate
             })";
         }
 
+
+    }
+
+    function preview_FakturOffline(){
+        require_once './views/document/faktur_penjualan_offline.php';
 
     }
 }
