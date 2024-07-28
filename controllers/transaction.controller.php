@@ -154,9 +154,9 @@ class transactionController extends transactionControllerGenerate
         $stsId = isset($_REQUEST["sts"]) ? $_REQUEST["sts"] : "";
 
         $sql = "SELECT a.* FROM `upload_trans_log` a
-        LEFT JOIN transaction_detail b ON a.id = b.`trans_id`
-        INNER JOIN transaction_log c ON c.`trans_id` = a.`id`
-        INNER JOIN `transaction` d ON d.`id` = a.`id`
+        INNER JOIN `transaction` d ON d.`upload_trans_log_id` = a.`id`
+        INNER JOIN transaction_detail b ON d.id = b.`trans_id`
+        INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
         WHERE d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId)
         GROUP BY a.`id` 
         ORDER BY a.`created_at` DESC";
@@ -257,6 +257,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setTrans_total(0);
             $this->transaction->setTrans_status(0);
             $this->transaction->setCreated_by($user);
+            $this->transaction->setUpload_trans_log_id('');
             $this->transaction->setCreated_at($dateTime);
             $this->transaction->setUpdated_by('');
             $this->transaction->setUpdated_at('');
@@ -289,6 +290,7 @@ class transactionController extends transactionControllerGenerate
                 $count_from_stock = $ctrl_stock->checkData($kd_prod);
 
                 if ($count_from_product == 0 && $count_from_stock == 0):
+                    // echo "konsalah1";
                     echo "Gagal Upload!!\nKode Product $kd_prod - $nm_prod Belum Ada di Master Produk & Master Stok";
                     //delete trans & upload log
                     $this->deleteData($this->getLastId());
@@ -296,6 +298,7 @@ class transactionController extends transactionControllerGenerate
                     // echo "konsalah0";
                     return false;
                 elseif ($count_from_product == 0):
+                    // echo "konsalah2";
                     echo "Gagal Upload !!\nKode Product $kd_prod - $nm_prod Belum Ada di Master Produk";
                     //delete trans & upload log
                     $this->deleteData($this->getLastId());
@@ -303,6 +306,7 @@ class transactionController extends transactionControllerGenerate
                     // echo "konsalah1";
                     return false;
                 elseif ($count_from_stock == 0):
+                    // echo "konsalah3";
                     // echo "Gagal Upload !\nKode Product $kd_prod - $nm_prod Belum Ada di Master Stock";
                     //delete trans & upload log
                     $this->deleteData($this->getLastId());
@@ -370,6 +374,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setTrans_total(0);
             $this->transaction->setQtyRelease($showUpdate_trs->getQtyRelease());
             $this->transaction->setCreated_by($showUpdate_trs->getCreated_by());
+            $this->transaction->setUpload_trans_log_id($ctrl_upload_tr_log->getLastId());
             $this->transaction->setCreated_at($showUpdate_trs->getCreated_at());
             $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
             $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
@@ -444,6 +449,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setTrans_total(0);
             $this->transaction->setTrans_status(1);
             $this->transaction->setCreated_by($getTransaction->getCreated_by());
+            $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
             $this->transaction->setCreated_at($getTransaction->getCreated_at());
             $this->transaction->setUpdated_by($user);
             $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
@@ -671,6 +677,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setTrans_total($gTotal);
             $this->transaction->setTrans_status(1);
             $this->transaction->setCreated_by($user);
+            $this->transaction->setUpload_trans_log_id('');
             $this->transaction->setCreated_at($dateTime);
             $this->transaction->setUpdated_by($user);
             $this->transaction->setUpdated_at($dateTime);
@@ -776,6 +783,15 @@ class transactionController extends transactionControllerGenerate
 
         require_once './views/document/faktur_penjualan_offline.php';
 
+    }
+
+    function showDataLogUpload($idLog){
+        $sql = "SELECT * FROM transaction WHERE upload_trans_log_id = '".$this->toolsController->replacecharFind($idLog,$this->dbh)."'";
+
+        $row = $this->dbh->query($sql)->fetch();
+        $this->loadData($this->transaction, $row);
+        
+        return $this->transaction;
     }
 }
 ?>

@@ -304,6 +304,7 @@
             }
         }
         function showAllJQuery(){
+            $this->setIsadmin(true);
             if ($this->ispublic || $this->isadmin || $this->isread ){
                 $last = $this->countDataAll();
                 $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;

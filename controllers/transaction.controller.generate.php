@@ -96,6 +96,7 @@
 	    $sql .= "`trans_total`,";
 	    $sql .= "`trans_status`,";
 	    $sql .= "`created_by`,";
+	    $sql .= "`upload_trans_log_id`,";
 	    $sql .= "`created_at`,";
 	    $sql .= "`updated_by`,";
 	    $sql .= "`updated_at` ";
@@ -110,6 +111,7 @@
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getTrans_total(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getTrans_status(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getCreated_by(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getUpload_trans_log_id(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getCreated_at(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getUpdated_by(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction->getUpdated_at(), $this->dbh)."' ";
@@ -131,6 +133,7 @@
 	    $sql .= "`trans_total` = '".$this->toolsController->replacecharSave($this->transaction->getTrans_total(),$this->dbh)."',";
 	    $sql .= "`trans_status` = '".$this->toolsController->replacecharSave($this->transaction->getTrans_status(),$this->dbh)."',";
 	    $sql .= "`created_by` = '".$this->toolsController->replacecharSave($this->transaction->getCreated_by(),$this->dbh)."',";
+	    $sql .= "`upload_trans_log_id` = '".$this->toolsController->replacecharSave($this->transaction->getUpload_trans_log_id(),$this->dbh)."',";
 	    $sql .= "`created_at` = '".$this->toolsController->replacecharSave($this->transaction->getCreated_at(),$this->dbh)."',";
 	    $sql .= "`updated_by` = '".$this->toolsController->replacecharSave($this->transaction->getUpdated_by(),$this->dbh)."',";
 	    $sql .= "`updated_at` = '".$this->toolsController->replacecharSave($this->transaction->getUpdated_at(),$this->dbh)."' ";
@@ -231,18 +234,19 @@
 
                 
         function loadData($transaction,$row){
-	    $transaction->setId(isset($row['id'])?$row['id']:"");
-	    $transaction->setNo_trans(isset($row['no_trans'])?$row['no_trans']:"");
-	    $transaction->setTanggal(isset($row['tanggal'])?$row['tanggal']:"");
-	    $transaction->setType_trans(isset($row['type_trans'])?$row['type_trans']:"");
-	    $transaction->setQtyTotal(isset($row['qtyTotal'])?$row['qtyTotal']:"");
-	    $transaction->setQtyRelease(isset($row['qtyRelease'])?$row['qtyRelease']:"");
-	    $transaction->setTrans_total(isset($row['trans_total'])?$row['trans_total']:"");
-	    $transaction->setTrans_status(isset($row['trans_status'])?$row['trans_status']:"");
-	    $transaction->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
-	    $transaction->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
-	    $transaction->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
-	    $transaction->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
+	    $transaction->setId(isset($row['id'])?$row['id'] : "");
+	    $transaction->setNo_trans(isset($row['no_trans'])?$row['no_trans'] : "");
+	    $transaction->setTanggal(isset($row['tanggal'])?$row['tanggal'] : "");
+	    $transaction->setType_trans(isset($row['type_trans'])?$row['type_trans'] : "");
+	    $transaction->setQtyTotal(isset($row['qtyTotal'])?$row['qtyTotal'] : "");
+	    $transaction->setQtyRelease(isset($row['qtyRelease'])?$row['qtyRelease'] : "");
+	    $transaction->setTrans_total(isset($row['trans_total'])?$row['trans_total'] : "");
+	    $transaction->setTrans_status(isset($row['trans_status'])?$row['trans_status'] : "");
+	    $transaction->setCreated_by(isset($row['created_by'])?$row['created_by'] : "");
+	    $transaction->setUpload_trans_log_id(isset($row['upload_trans_log_id'])?$row['upload_trans_log_id'] : "");
+	    $transaction->setCreated_at(isset($row['created_at'])?$row['created_at'] : "");
+	    $transaction->setUpdated_by(isset($row['updated_by'])?$row['updated_by'] : "");
+	    $transaction->setUpdated_at(isset($row['updated_at'])?$row['updated_at'] : "");
 
         }
 
@@ -422,6 +426,7 @@
 	    $trans_total = isset($_POST['trans_total'])?$_POST['trans_total'] : "";
 	    $trans_status = isset($_POST['trans_status'])?$_POST['trans_status'] : "";
 	    $created_by = isset($_POST['created_by'])?$_POST['created_by'] : "";
+	    $upload_trans_log_id = isset($_POST['upload_trans_log_id'])?$_POST['upload_trans_log_id'] : "";
 	    $created_at = isset($_POST['created_at'])?$_POST['created_at'] : "";
 	    $updated_by = isset($_POST['updated_by'])?$_POST['updated_by'] : "";
 	    $updated_at = isset($_POST['updated_at'])?$_POST['updated_at'] : "";
@@ -434,6 +439,7 @@
 	    $this->transaction->setTrans_total($trans_total);
 	    $this->transaction->setTrans_status($trans_status);
 	    $this->transaction->setCreated_by($created_by);
+	    $this->transaction->setUpload_trans_log_id($upload_trans_log_id);
 	    $this->transaction->setCreated_at($created_at);
 	    $this->transaction->setUpdated_by($updated_by);
 	    $this->transaction->setUpdated_at($updated_at);            
