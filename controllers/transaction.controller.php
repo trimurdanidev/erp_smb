@@ -34,6 +34,9 @@ require_once './controllers/master_pay_transfer.controller.generate.php';
 require_once './models/transaction_buyer.class.php';
 require_once './controllers/transaction_buyer.controller.php';
 require_once './controllers/transaction_buyer.controller.generate.php';
+require_once './models/initial_company.class.php';
+require_once './controllers/initial_company.controller.generate.php';
+require_once './controllers/initial_company.controller.php';
 
 if (!isset($_SESSION)) {
     session_start();
@@ -750,6 +753,27 @@ class transactionController extends transactionControllerGenerate
     }
 
     function preview_FakturOffline(){
+        $idfaktur = isset($_REQUEST['id'])?$_REQUEST['id']:"";
+        $nofaktur = isset($_REQUEST['notrans'])?$_REQUEST['notrans']:"";
+
+        $mdl_transaction_buyer      = new transaction_buyer();
+        $ctrl_transaction_buyer     = new transaction_buyerController($mdl_transaction_buyer,$this->dbh);
+
+        $mdl_master_user_detail     = new master_user_detail();
+        $ctrl_master_user_detail    = new master_user_detailController($mdl_master_user_detail,$this->dbh);
+
+        $mdl_transaction_dtl        = new transaction_detail();
+        $ctrl_transaction_dtl       = new transaction_detailController($mdl_transaction_dtl,$this->dbh);
+
+        $mdl_transaction_payment    = new transaction_payment();
+        $ctrl_transaction_payment   = new transaction_paymentController($mdl_transaction_payment,$this->dbh);
+
+        $showBuyer                  = $ctrl_transaction_buyer->showDataBytransId($idfaktur);
+        $showHeadTran               = $this->showData($idfaktur);  
+        $showKarTrans               = $ctrl_master_user_detail->showData_byUsernya($showHeadTran->getCreated_by());
+        $showDtlTrans               = $ctrl_transaction_dtl->showDataDtlArray($idfaktur);
+        $showTransPay               =$ctrl_transaction_payment->showDataBytransId($idfaktur);
+
         require_once './views/document/faktur_penjualan_offline.php';
 
     }

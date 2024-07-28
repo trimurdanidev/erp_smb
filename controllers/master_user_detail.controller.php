@@ -48,5 +48,14 @@
             $execute = $this->dbh->query($sql);
         }
 
+        function showData_byUsernya($user){
+            $sql = "SELECT * FROM master_user_detail WHERE user = '".$this->toolsController->replacecharFind($user,$this->dbh)."'";
+
+            $row = $this->dbh->query($sql)->fetch();
+            $this->loadData($this->master_user_detail, $row);
+            
+            return $this->master_user_detail;
+        }
+
     }
 ?>

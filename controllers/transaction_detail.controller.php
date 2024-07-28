@@ -14,7 +14,6 @@
 
             // $row = $this->dbh->query($sql)->fetch();
             // $this->loadData($this->transaction_detail, $row);
-            
             return $this->createList($sql);
         }
     }
