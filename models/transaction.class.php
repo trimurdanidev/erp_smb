@@ -10,6 +10,7 @@
 	var $trans_total;
 	var $trans_status;
 	var $created_by;
+	var $upload_trans_log_id;
 	var $created_at;
 	var $updated_by;
 	var $updated_at;
@@ -78,6 +79,13 @@
 
 	public function setCreated_by($created_by) {
 	   $this->created_by = $created_by;
+	}
+	public function getUpload_trans_log_id() {
+	   return $this->upload_trans_log_id;
+	}
+
+	public function setUpload_trans_log_id($upload_trans_log_id) {
+	   $this->upload_trans_log_id = $upload_trans_log_id;
 	}
 	public function getCreated_at() {
 	   return $this->created_at;

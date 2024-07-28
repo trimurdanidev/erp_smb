@@ -111,7 +111,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     <?php
                     $no = 1;
                     foreach ($transaction_list as $upload_list) {
-                        $getTrans = $ctrl_transaction->showData($upload_list->getId());
+                        $getTrans = $ctrl_transaction->showDataLogUpload($upload_list->getId());
                         $sts = "";
                         $stringsts = "";
                         if ($getTrans->getTrans_status() == '0') {
