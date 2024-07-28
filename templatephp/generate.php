@@ -169,7 +169,7 @@
 
             $updateData = "";
 
-            $LoadRecord = "\t    $<<table>>->set<<Field>>(\$row['<<field>>']);".PHP_EOL;
+            $LoadRecord = "\t    $<<table>>->set<<Field>>(isset(\$row['<<field>>'])?\$row['<<field>>'] : \"\");".PHP_EOL;
             $LoadRecords = "";
             $loadData = "";
             

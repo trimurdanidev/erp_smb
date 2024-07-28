@@ -1,496 +1,330 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="./views/document/style.css" rel="stylesheet" />
-    <title>Faktur Penjualan</title>
+    <title>Faktur Penjualan-
+        <?php echo $nofaktur; ?>
+    </title>
 </head>
 
 <body>
     <style>
         body {
             margin-top: 20px;
-            color: #484b51;
+            background: #eee;
         }
 
-        .text-secondary-d1 {
-            color: #728299 !important;
+        .container {
+            background: #FAFAFA;
         }
 
-        .page-header {
-            margin: 0 0 1rem;
-            padding-bottom: 1rem;
-            padding-top: .5rem;
-            border-bottom: 1px dotted #e2e2e2;
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-pack: justify;
-            justify-content: space-between;
-            -ms-flex-align: center;
-            align-items: center;
+        .invoice {
+            background: #fff;
+            padding: 20px
         }
 
-        .page-title {
-            padding: 0;
-            margin: 0;
-            font-size: 1.75rem;
-            font-weight: 300;
+        .invoice-company {
+            font-size: 20px
         }
 
-        .brc-default-l1 {
-            border-color: #dce9f0 !important;
+        .invoice-header {
+            margin: 0 -20px;
+            background: #f0f3f4;
+            padding: 20px
         }
 
-        .ml-n1,
-        .mx-n1 {
-            margin-left: -.25rem !important;
+        .invoice-date,
+        .invoice-from,
+        .invoice-to {
+            display: table-cell;
+            width: 1%
         }
 
-        .mr-n1,
-        .mx-n1 {
-            margin-right: -.25rem !important;
+        .invoice-from,
+        .invoice-to {
+            padding-right: 20px
         }
 
-        .mb-4,
-        .my-4 {
-            margin-bottom: 1.5rem !important;
+        .invoice-date .date,
+        .invoice-from strong,
+        .invoice-to strong {
+            font-size: 16px;
+            font-weight: 600
         }
 
-        hr {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            border: 0;
-            border-top: 1px solid rgba(0, 0, 0, .1);
+        .invoice-date {
+            text-align: right;
+            padding-left: 20px
         }
 
-        .text-grey-m2 {
-            color: #888a8d !important;
+        .invoice-price {
+            background: #f0f3f4;
+            display: table;
+            width: 100%
         }
 
-        .text-success-m2 {
-            color: #86bd68 !important;
+        .invoice-price .invoice-price-left,
+        .invoice-price .invoice-price-right {
+            display: table-cell;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            width: 75%;
+            position: relative;
+            vertical-align: middle
         }
 
-        .font-bolder,
-        .text-600 {
-            font-weight: 600 !important;
+        .invoice-price .invoice-price-left .sub-price {
+            display: table-cell;
+            vertical-align: middle;
+            padding: 0 20px
         }
 
-        .text-110 {
-            font-size: 110% !important;
+        .invoice-price small {
+            font-size: 12px;
+            font-weight: 400;
+            display: block
         }
 
-        .text-blue {
-            color: #478fcc !important;
+        .invoice-price .invoice-price-row {
+            display: table;
+            float: left
         }
 
-        .pb-25,
-        .py-25 {
-            padding-bottom: .75rem !important;
+        .invoice-price .invoice-price-right {
+            width: 25%;
+            background: #2d353c;
+            color: #fff;
+            font-size: 28px;
+            text-align: right;
+            vertical-align: bottom;
+            font-weight: 300
         }
 
-        .pt-25,
-        .py-25 {
-            padding-top: .75rem !important;
+        .invoice-price .invoice-price-right small {
+            display: block;
+            opacity: .6;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 12px
         }
 
-        .bgc-default-tp1 {
-            background-color: rgba(121, 169, 197, .92) !important;
+        .invoice-footer {
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            font-size: 10px
         }
 
-        .bgc-default-l4,
-        .bgc-h-default-l4:hover {
-            background-color: #f3f8fa !important;
+        .invoice-note {
+            color: #999;
+            margin-top: 80px;
+            font-size: 85%
         }
 
-        .page-header .page-tools {
-            -ms-flex-item-align: end;
-            align-self: flex-end;
+        .invoice>div:not(.invoice-footer) {
+            margin-bottom: 20px
         }
 
-        .btn-light {
-            color: #757984;
-            background-color: #f5f6f9;
-            border-color: #dddfe4;
-        }
-
-        .w-2 {
-            width: 1rem;
-        }
-
-        .text-120 {
-            font-size: 120% !important;
-        }
-
-        .text-primary-m1 {
-            color: #4087d4 !important;
-        }
-
-        .text-danger-m1 {
-            color: #dd4949 !important;
-        }
-
-        .text-blue-m2 {
-            color: #68a3d5 !important;
-        }
-
-        .text-150 {
-            font-size: 150% !important;
-        }
-
-        .text-60 {
-            font-size: 60% !important;
-        }
-
-        .text-grey-m1 {
-            color: #7b7d81 !important;
-        }
-
-        .align-bottom {
-            vertical-align: bottom !important;
-        }
-
-        body {
-            margin-top: 20px;
-            color: #484b51;
-        }
-
-        .text-secondary-d1 {
-            color: #728299 !important;
-        }
-
-        .page-header {
-            margin: 0 0 1rem;
-            padding-bottom: 1rem;
-            padding-top: .5rem;
-            border-bottom: 1px dotted #e2e2e2;
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-pack: justify;
-            justify-content: space-between;
-            -ms-flex-align: center;
-            align-items: center;
-        }
-
-        .page-title {
-            padding: 0;
-            margin: 0;
-            font-size: 1.75rem;
-            font-weight: 300;
-        }
-
-        .brc-default-l1 {
-            border-color: #dce9f0 !important;
-        }
-
-        .ml-n1,
-        .mx-n1 {
-            margin-left: -.25rem !important;
-        }
-
-        .mr-n1,
-        .mx-n1 {
-            margin-right: -.25rem !important;
-        }
-
-        .mb-4,
-        .my-4 {
-            margin-bottom: 1.5rem !important;
-        }
-
-        hr {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            border: 0;
-            border-top: 1px solid rgba(0, 0, 0, .1);
-        }
-
-        .text-grey-m2 {
-            color: #888a8d !important;
-        }
-
-        .text-success-m2 {
-            color: #86bd68 !important;
-        }
-
-        .font-bolder,
-        .text-600 {
-            font-weight: 600 !important;
-        }
-
-        .text-110 {
-            font-size: 110% !important;
-        }
-
-        .text-blue {
-            color: #478fcc !important;
-        }
-
-        .pb-25,
-        .py-25 {
-            padding-bottom: .75rem !important;
-        }
-
-        .pt-25,
-        .py-25 {
-            padding-top: .75rem !important;
-        }
-
-        .bgc-default-tp1 {
-            background-color: rgba(121, 169, 197, .92) !important;
-        }
-
-        .bgc-default-l4,
-        .bgc-h-default-l4:hover {
-            background-color: #f3f8fa !important;
-        }
-
-        .page-header .page-tools {
-            -ms-flex-item-align: end;
-            align-self: flex-end;
-        }
-
-        .btn-light {
-            color: #757984;
-            background-color: #f5f6f9;
-            border-color: #dddfe4;
-        }
-
-        .w-2 {
-            width: 1rem;
-        }
-
-        .text-120 {
-            font-size: 120% !important;
-        }
-
-        .text-primary-m1 {
-            color: #4087d4 !important;
-        }
-
-        .text-danger-m1 {
-            color: #dd4949 !important;
-        }
-
-        .text-blue-m2 {
-            color: #68a3d5 !important;
-        }
-
-        .text-150 {
-            font-size: 150% !important;
-        }
-
-        .text-60 {
-            font-size: 60% !important;
-        }
-
-        .text-grey-m1 {
-            color: #7b7d81 !important;
-        }
-
-        .align-bottom {
-            vertical-align: bottom !important;
+        .btn.btn-white,
+        .btn.btn-white.disabled,
+        .btn.btn-white.disabled:focus,
+        .btn.btn-white.disabled:hover,
+        .btn.btn-white[disabled],
+        .btn.btn-white[disabled]:focus,
+        .btn.btn-white[disabled]:hover {
+            color: #2d353c;
+            background: #fff;
+            border-color: #d9dfe3;
         }
     </style>
-    <div class="page-content container">
-        <div class="page-header text-blue-d2">
-            <h1 class="page-title text-secondary-d1">
-                Invoice
-                <small class="page-info">
-                    <i class="fa fa-angle-double-right text-80"></i>
-                    ID: #111-222
-                </small>
-            </h1>
 
-            <div class="page-tools">
-                <div class="action-buttons">
-                    <a class="btn bg-white btn-light mx-1px text-95" href="#" data-title="Print">
-                        <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
-                        Print
-                    </a>
-                    <a class="btn bg-white btn-light mx-1px text-95" href="#" data-title="PDF">
-                        <i class="mr-1 fa fa-file-pdf-o text-danger-m1 text-120 w-2"></i>
-                        Export
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="container px-0">
-            <div class="row mt-4">
-                <div class="col-12 col-lg-12">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="text-center text-150">
-                                <i class="fa fa-book fa-2x text-success-m2 mr-1"></i>
-                                <span class="text-default-d3">Bootdey.com</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- .row -->
-
-                    <hr class="row brc-default-l1 mx-n1 mb-4" />
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div>
-                                <span class="text-sm text-grey-m2 align-middle">To:</span>
-                                <span class="text-600 text-110 text-blue align-middle">Alex Doe</span>
-                            </div>
-                            <div class="text-grey-m2">
-                                <div class="my-1">
-                                    Street, City
-                                </div>
-                                <div class="my-1">
-                                    State, Country
-                                </div>
-                                <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b
-                                        class="text-600">111-111-111</b></div>
-                            </div>
-                        </div>
-                        <!-- /.col -->
-
-                        <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
-                            <hr class="d-sm-none" />
-                            <div class="text-grey-m2">
-                                <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
-                                    Invoice
-                                </div>
-
-                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span
-                                        class="text-600 text-90">ID:</span> #111-222</div>
-
-                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span
-                                        class="text-600 text-90">Issue Date:</span> Oct 12, 2019</div>
-
-                                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span
-                                        class="text-600 text-90">Status:</span> <span
-                                        class="badge badge-warning badge-pill px-25">Unpaid</span></div>
-                            </div>
-                        </div>
-                        <!-- /.col -->
-                    </div>
-
-                    <div class="mt-4">
-                        <div class="row text-600 text-white bgc-default-tp1 py-25">
-                            <div class="d-none d-sm-block col-1">#</div>
-                            <div class="col-9 col-sm-5">Description</div>
-                            <div class="d-none d-sm-block col-4 col-sm-2">Qty</div>
-                            <div class="d-none d-sm-block col-sm-2">Unit Price</div>
-                            <div class="col-2">Amount</div>
-                        </div>
-
-                        <div class="text-95 text-secondary-d3">
-                            <div class="row mb-2 mb-sm-0 py-25">
-                                <div class="d-none d-sm-block col-1">1</div>
-                                <div class="col-9 col-sm-5">Domain registration</div>
-                                <div class="d-none d-sm-block col-2">2</div>
-                                <div class="d-none d-sm-block col-2 text-95">$10</div>
-                                <div class="col-2 text-secondary-d2">$20</div>
-                            </div>
-
-                            <div class="row mb-2 mb-sm-0 py-25 bgc-default-l4">
-                                <div class="d-none d-sm-block col-1">2</div>
-                                <div class="col-9 col-sm-5">Web hosting</div>
-                                <div class="d-none d-sm-block col-2">1</div>
-                                <div class="d-none d-sm-block col-2 text-95">$15</div>
-                                <div class="col-2 text-secondary-d2">$15</div>
-                            </div>
-
-                            <div class="row mb-2 mb-sm-0 py-25">
-                                <div class="d-none d-sm-block col-1">3</div>
-                                <div class="col-9 col-sm-5">Software development</div>
-                                <div class="d-none d-sm-block col-2">--</div>
-                                <div class="d-none d-sm-block col-2 text-95">$1,000</div>
-                                <div class="col-2 text-secondary-d2">$1,000</div>
-                            </div>
-
-                            <div class="row mb-2 mb-sm-0 py-25 bgc-default-l4">
-                                <div class="d-none d-sm-block col-1">4</div>
-                                <div class="col-9 col-sm-5">Consulting</div>
-                                <div class="d-none d-sm-block col-2">1 Year</div>
-                                <div class="d-none d-sm-block col-2 text-95">$500</div>
-                                <div class="col-2 text-secondary-d2">$500</div>
-                            </div>
-                        </div>
-
-                        <div class="row border-b-2 brc-default-l2"></div>
-
-                        <!-- or use a table instead -->
-                        <!--
-            <div class="table-responsive">
-                <table class="table table-striped table-borderless border-0 border-b-2 brc-default-l1">
-                    <thead class="bg-none bgc-default-tp1">
-                        <tr class="text-white">
-                            <th class="opacity-2">#</th>
-                            <th>Description</th>
-                            <th>Qty</th>
-                            <th>Unit Price</th>
-                            <th width="140">Amount</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="text-95 text-secondary-d3">
-                        <tr></tr>
+    <?php
+    $mdl_part = new master_product();
+    $ctrl_part = new master_productController($mdl_part, $this->dbh);
+    ?>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="container">
+        <div class="col-md-12">
+            <div class="invoice">
+                <!-- begin invoice-company -->
+                <div class="invoice-company text-inverse f-w-600">
+                    <span class="pull-right hidden-print">
+                        <a href="javascript:;" class="btn btn-sm btn-white m-b-10 p-l-5"><i
+                                class="fa fa-file t-plus-1 text-danger fa-fw fa-lg"></i> Export as PDF</a>
+                        <a href="javascript:;" onclick="window.print()" class="btn btn-sm btn-white m-b-10 p-l-5"><i
+                                class="fa fa-print t-plus-1 fa-fw fa-lg"></i> Print</a>
+                    </span>
+                    <table>
+                        <!-- <tr>
+                            <td rowspan="5"><img src="./images/SMB_logo_tengah.jpg" alt="" width="100" height="90"></td>
+                        </tr> -->
                         <tr>
-                            <td>1</td>
-                            <td>Domain registration</td>
-                            <td>2</td>
-                            <td class="text-95">$10</td>
-                            <td class="text-secondary-d2">$20</td>
-                        </tr> 
-                    </tbody>
-                </table>
-            </div>
-            -->
+                            <td>
+                                <h3><b><u>FAKTUR PENJUALAN</u></b></h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <!-- Jl. H. DJain No.31, RT.007/RW.003, Jatikramat, Kec. Jatiasih, Kota Bks, Jawa Barat 17421 -->
+                            </td>
+                        </tr>
+                    </table>
 
-                        <div class="row mt-3">
-                            <div class="col-12 col-sm-7 text-grey-d2 text-95 mt-2 mt-lg-0">
-                                Extra note such as company or payment information...
-                            </div>
-
-                            <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
-                                <div class="row my-2">
-                                    <div class="col-7 text-right">
-                                        SubTotal
-                                    </div>
-                                    <div class="col-5">
-                                        <span class="text-120 text-secondary-d1">$2,250</span>
-                                    </div>
-                                </div>
-
-                                <div class="row my-2">
-                                    <div class="col-7 text-right">
-                                        Tax (10%)
-                                    </div>
-                                    <div class="col-5">
-                                        <span class="text-110 text-secondary-d1">$225</span>
-                                    </div>
-                                </div>
-
-                                <div class="row my-2 align-items-center bgc-primary-l3 p-2">
-                                    <div class="col-7 text-right">
-                                        Total Amount
-                                    </div>
-                                    <div class="col-5">
-                                        <span class="text-150 text-success-d3 opacity-2">$2,475</span>
-                                    </div>
-                                </div>
-                            </div>
+                </div>
+                <!-- end invoice-company -->
+                <!-- begin invoice-header -->
+                <div class="invoice-header">
+                    <div class="invoice-from">
+                        <small>From :</small>
+                        <address class="m-t-5 m-b-5">
+                            <strong class="text-inverse">Sparepart Motor Bekasi</strong><br>
+                            Jl. H. DJain No.31<br>
+                            RT.007/RW.003, Jatikramat, Kec. Jatiasih<br>
+                            Kota Bks, Jawa Barat 17421<br>
+                            0898-9163-219
+                        </address>
+                    </div>
+                    <div class="invoice-to">
+                        <small>To :</small>
+                        <address class="m-t-5 m-b-5">
+                            Nama Pelanggan :<strong class="text-inverse">
+                                <?php echo $showBuyer->getBuyer_name() != "" ? $showBuyer->getBuyer_name() : "-"; ?>
+                            </strong><br>
+                            No .Telepon :
+                            <?php echo $showBuyer->getBuyer_phone() != "" ? $showBuyer->getBuyer_phone() : "-"; ?><br>
+                            Alamat :
+                            <?php echo $showBuyer->getBuyer_address() != "" ? $showBuyer->getBuyer_address() : "-"; ?><br>
+                        </address>
+                    </div>
+                    <div class="invoice-date">
+                        <small>Detail Transaksi : </small>
+                        <div class="date text-inverse m-t-5">No. Transaksi :
+                            <?php echo $nofaktur; ?>
                         </div>
-
-                        <hr />
-
-                        <div>
-                            <span class="text-secondary-d1 text-105">Thank you for your business</span>
-                            <a href="#" class="btn btn-info btn-bold px-4 float-right mt-3 mt-lg-0">Pay Now</a>
+                        <div class="invoice-detail">
+                            Tanggal :
+                            <?php echo $showHeadTran->getTanggal(); ?><br>
+                            User :
+                            <?php echo $showHeadTran->getCreated_by(); ?><br>
+                            User Akses :
+                            <?php echo $showKarTrans->getGroupcode(); ?><br>
                         </div>
                     </div>
                 </div>
+                <!-- end invoice-header -->
+                <!-- begin invoice-content -->
+                <div class="invoice-content">
+                    <!-- begin table-responsive -->
+                    <div class="table-responsive">
+                        <table class="table table-invoice">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">No</th>
+                                    <th class="text-left">Kode Part</th>
+                                    <th class="text-left">Nama Part</th>
+                                    <th class="text-center" width="10%">Quantity</th>
+                                    <th class="text-center" width="10%">Harga</th>
+                                    <th class="text-center" width="20%">Diskon</th>
+                                    <th class="text-center" width="20%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <?php
+                                    $no = 1;
+                                    $subTotal = 0;
+                                    foreach ($showDtlTrans as $val_faktur) {
+                                        $showPart = $ctrl_part->showDataByKode($val_faktur->getKd_product());
+                                        $subTotal += $val_faktur->getQty() * $val_faktur->getHarga();
+                                        ?>
+
+                                        <td class="text-left">
+                                            <?php echo $no++; ?>
+                                        </td>
+                                        <td class="text-left">
+                                            <?php echo $val_faktur->getKd_product(); ?>
+                                        </td>
+                                        <td class="text-inverse">
+                                            <?php echo $showPart->getNm_product(); ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <?php echo $val_faktur->getQty(); ?> Pcs
+                                        </td>
+                                        <td class="text-center">
+                                            <?php echo number_format(floatval($val_faktur->getHarga())); ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <?php echo number_format(floatval(0)); ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <?php echo number_format(floatval($val_faktur->getQty() * $val_faktur->getHarga())); ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- end table-responsive -->
+                    <!-- begin invoice-price -->
+                    <div class="invoice-price">
+                        <div class="invoice-price-left">
+                            <div class="invoice-price-row">
+                                <div class="sub-price">
+                                    <small>SUBTOTAL</small>
+                                    <span class="text-inverse"><?php echo number_format(floatval($subTotal))?></span>
+                                </div>
+                                <div class="sub-price">
+                                    <i class="fa fa-plus text-muted"></i>
+                                </div>
+                                <div class="sub-price">
+                                    <small>PAJAK PPN (11%)</small>
+                                    <span class="text-inverse"><?php echo floatval(0);?></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="invoice-price-right">
+                            <small>TOTAL</small> <span class="f-w-600">Rp. <?php echo number_format(floatval($subTotal))?></span>
+                        </div>
+                    </div>
+                    <!-- end invoice-price -->
+                </div>
+                <!-- end invoice-content -->
+                <!-- begin invoice-note -->
+                Pembayaran : <?php echo $showTransPay->getMethod()=='1'?'Tunai':"Transfer";?>
+                <b><?php echo $showTransPay->getPayment()!=""?$showTransPay->getPayment():"";?></b>
+                <b>(<?php echo $showTransPay->getPayment_akun()!=""?$showTransPay->getPayment_akun():"";?>)</b>
+                <div class="invoice-note">
+                    <table>
+                        <tr>
+                            <td>
+                                Hormat Kami,<br><br><br><br>
+                                (  <?php echo $showHeadTran->getCreated_by()?>  )<br>
+                            </td>
+                            <td></td>
+                            <!-- <td></td> -->
+                            <!-- <td>
+                                Pelanggan,<br><br><br><br>
+                                (  <?php echo $showBuyer->getBuyer_name()!=""?$showBuyer->getBuyer_name():"-"?>  )
+                            </td> -->
+                        </tr>
+                    </table>
+                    <!-- * If you have any questions concerning this invoice, contact [Name, Phone Number, Email] -->
+                </div>
+                <!-- end invoice-note -->
+                <!-- begin invoice-footer -->
+                <div class="invoice-footer">
+                    <p class="text-center m-b-5 f-w-600">
+                        THANK YOU FOR YOUR ORDER
+                    </p>
+                    <p class="text-center">
+                        <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe"></i> erp-smb.com</span>
+                        <!-- <span class="m-r-10"><i class="fa fa-fw fa-lg fa-phone-volume"></i> :016-18192302</span> -->
+                        <span class="m-r-10"><i class="fa fa-fw fa-lg fa-envelope"></i> smbpart@gmail.com</span>
+                    </p>
+                </div>
+                <!-- end invoice-footer -->
             </div>
         </div>
     </div>
