@@ -470,7 +470,20 @@ class transactionController extends transactionControllerGenerate
     function showFormJQuery_transOff()
     {
         $this->setIsadmin(true);
-        require_once './views/transaction/transaction_jquery_form_trans_off.php';
+        $cekSO = $this->cekSOnotConfirm();
+        if ($cekSO > 0) {
+            echo "<script language='javascript' type='text/javascript'>
+            Swal.fire({
+                title : 'Gagal ! Ada Transaksi Stock Opname Belum Terilis',
+                icon : 'error',
+                text : 'Mohon Selesaikan Stock Opname Terlebih Dahhulu '
+            });
+            </script>";
+            return false;
+        } else {
+            require_once './views/transaction/transaction_jquery_form_trans_off.php';
+        }
+
     }
     function showAllJQuery_trans_off()
     {
@@ -759,39 +772,51 @@ class transactionController extends transactionControllerGenerate
 
     }
 
-    function preview_FakturOffline(){
-        $idfaktur = isset($_REQUEST['id'])?$_REQUEST['id']:"";
-        $nofaktur = isset($_REQUEST['notrans'])?$_REQUEST['notrans']:"";
+    function preview_FakturOffline()
+    {
+        $idfaktur = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+        $nofaktur = isset($_REQUEST['notrans']) ? $_REQUEST['notrans'] : "";
 
-        $mdl_transaction_buyer      = new transaction_buyer();
-        $ctrl_transaction_buyer     = new transaction_buyerController($mdl_transaction_buyer,$this->dbh);
+        $mdl_transaction_buyer = new transaction_buyer();
+        $ctrl_transaction_buyer = new transaction_buyerController($mdl_transaction_buyer, $this->dbh);
 
-        $mdl_master_user_detail     = new master_user_detail();
-        $ctrl_master_user_detail    = new master_user_detailController($mdl_master_user_detail,$this->dbh);
+        $mdl_master_user_detail = new master_user_detail();
+        $ctrl_master_user_detail = new master_user_detailController($mdl_master_user_detail, $this->dbh);
 
-        $mdl_transaction_dtl        = new transaction_detail();
-        $ctrl_transaction_dtl       = new transaction_detailController($mdl_transaction_dtl,$this->dbh);
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
 
-        $mdl_transaction_payment    = new transaction_payment();
-        $ctrl_transaction_payment   = new transaction_paymentController($mdl_transaction_payment,$this->dbh);
+        $mdl_transaction_payment = new transaction_payment();
+        $ctrl_transaction_payment = new transaction_paymentController($mdl_transaction_payment, $this->dbh);
 
-        $showBuyer                  = $ctrl_transaction_buyer->showDataBytransId($idfaktur);
-        $showHeadTran               = $this->showData($idfaktur);  
-        $showKarTrans               = $ctrl_master_user_detail->showData_byUsernya($showHeadTran->getCreated_by());
-        $showDtlTrans               = $ctrl_transaction_dtl->showDataDtlArray($idfaktur);
-        $showTransPay               =$ctrl_transaction_payment->showDataBytransId($idfaktur);
+        $showBuyer = $ctrl_transaction_buyer->showDataBytransId($idfaktur);
+        $showHeadTran = $this->showData($idfaktur);
+        $showKarTrans = $ctrl_master_user_detail->showData_byUsernya($showHeadTran->getCreated_by());
+        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($idfaktur);
+        $showTransPay = $ctrl_transaction_payment->showDataBytransId($idfaktur);
 
         require_once './views/document/faktur_penjualan_offline.php';
 
     }
 
-    function showDataLogUpload($idLog){
-        $sql = "SELECT * FROM transaction WHERE upload_trans_log_id = '".$this->toolsController->replacecharFind($idLog,$this->dbh)."'";
+    function showDataLogUpload($idLog)
+    {
+        $sql = "SELECT * FROM transaction WHERE upload_trans_log_id = '" . $this->toolsController->replacecharFind($idLog, $this->dbh) . "'";
 
         $row = $this->dbh->query($sql)->fetch();
         $this->loadData($this->transaction, $row);
-        
+
         return $this->transaction;
+    }
+
+    function cekSOnotConfirm()
+    {
+        $sql = "SELECT count(*) FROM `transaction` a 
+        -- INNER JOIN upload_trans_log b ON b.`id` = a.`upload_trans_log_id` 
+        WHERE type_trans='3' and trans_status ='0'";
+
+        $row = $this->dbh->query($sql)->fetch();
+        return $row[0];
     }
 }
 ?>
