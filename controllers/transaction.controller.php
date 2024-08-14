@@ -37,6 +37,10 @@ require_once './controllers/transaction_buyer.controller.generate.php';
 require_once './models/initial_company.class.php';
 require_once './controllers/initial_company.controller.generate.php';
 require_once './controllers/initial_company.controller.php';
+require_once './fpdf/fpdf.php';
+require_once './models/report_query.class.php';
+require_once './controllers/report_query.controller.generate.php';
+require_once './controllers/report_query.controller.php';
 
 if (!isset($_SESSION)) {
     session_start();
@@ -120,7 +124,7 @@ class transactionController extends transactionControllerGenerate
         $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
         $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-        $transaction_list = $ctrl_upload_tr_log->showDataAllLimit();
+        $transaction_list = $ctrl_upload_tr_log->showDataAll_SOLimit();
         $isadmin = $this->isadmin;
         $ispublic = $this->ispublic;
         $isread = $this->isread;
@@ -157,7 +161,7 @@ class transactionController extends transactionControllerGenerate
         INNER JOIN `transaction` d ON d.`upload_trans_log_id` = a.`id`
         INNER JOIN transaction_detail b ON d.id = b.`trans_id`
         INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
-        WHERE d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId)
+        WHERE d.type_trans='3' and d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId)
         GROUP BY a.`id` 
         ORDER BY a.`created_at` DESC";
 
@@ -392,7 +396,7 @@ class transactionController extends transactionControllerGenerate
         return $this->createList($sql);
     }
 
-    function showDetailJQuery_so()
+    function showDetailJQuery()
     {
         $this->setIsadmin(true);
 
@@ -401,10 +405,24 @@ class transactionController extends transactionControllerGenerate
 
 
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+        $tipe = isset($_REQUEST['tipe']) ? $_REQUEST['tipe'] : "";
+
         $getTrans = $this->showData($id);
         $showDetail = $ctrl_trans_dettail->showDataDtlArray($id);
 
-        require_once './views/transaction/transaction_jquery_so_detail.php';
+        switch ($tipe) {
+            case '3':
+                # code...
+                require_once './views/transaction/transaction_jquery_so_detail.php';
+                break;
+            case '4':
+                # code...
+                require_once './views/transaction/transaction_jquery_restok_detail.php';
+                break;
+            default:
+                # code...
+                break;
+        }
     }
 
     function confirmSO()
@@ -812,11 +830,563 @@ class transactionController extends transactionControllerGenerate
     function cekSOnotConfirm()
     {
         $sql = "SELECT count(*) FROM `transaction` a 
-        -- INNER JOIN upload_trans_log b ON b.`id` = a.`upload_trans_log_id` 
+        INNER JOIN upload_trans_log b ON b.`id` = a.`upload_trans_log_id` 
         WHERE type_trans='3' and trans_status ='0'";
 
         $row = $this->dbh->query($sql)->fetch();
         return $row[0];
+    }
+
+    function createPDFFaktur($idfaktur = "")
+    {
+        $idPrintPDF = $idfaktur != "" ? $idfaktur : $_REQUEST['id'];
+
+        $mdl_transaction_buyer = new transaction_buyer();
+        $ctrl_transaction_buyer = new transaction_buyerController($mdl_transaction_buyer, $this->dbh);
+
+        $mdl_master_user_detail = new master_user_detail();
+        $ctrl_master_user_detail = new master_user_detailController($mdl_master_user_detail, $this->dbh);
+
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+
+        $mdl_transaction_payment = new transaction_payment();
+        $ctrl_transaction_payment = new transaction_paymentController($mdl_transaction_payment, $this->dbh);
+
+        $mdl_mast_produk = new master_product();
+        $ctrl_mast_produk = new master_productController($mdl_mast_produk, $this->dbh);
+
+        $showBuyer = $ctrl_transaction_buyer->showDataBytransId($idfaktur);
+        $showHeadTran = $this->showData($idfaktur);
+        $showKarTrans = $ctrl_master_user_detail->showData_byUsernya($showHeadTran->getCreated_by());
+        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($idfaktur);
+        $showTransPay = $ctrl_transaction_payment->showDataBytransId($idfaktur);
+
+
+
+        $title1 = "FAKTUR PENJUALAN";
+
+        $pdfin = new FPDF('P', 'mm', 'Legal');
+
+        // membuat halaman baru
+        $pdfin->AddPage();
+        $pdfin->SetTopMargin(6);
+        $pdfin->SetLeftMargin(6);
+        $pdfin->SetAutoPageBreak(20, 4);
+        // setting jenis font yang akan digunakan
+        $pdfin->SetFont('Arial', 'BU', 16);
+        $pdfin->Cell(192, 5, $title1, 0, 1, 'L');
+        $pdfin->Cell(200, 6, '', 0, 1);
+
+        $pdfin->SetFont('Arial', '', 9);
+        $pdfin->Cell(192, 7, "From :", 0, 1, 'L');
+        $pdfin->SetFont('Arial', 'B', 9);
+        $pdfin->Cell(0, 0, "Sparepart Motor Bekasi", 0, 0, 'L');
+        $pdfin->SetFont('Arial', '', 9);
+        $pdfin->Cell(0, 0, "Jl. H. DJain No.31", 0, 0, 'L');
+
+        $pdfin->Cell(180, 7, "Sparepart Motor Bekasi", 0, 1, 'L');
+
+        $pdfin->SetFont('Times', 'B', 9);
+        $pdfin->Cell(50, 5, 'No. Transaksi : ' . $showHeadTran->getNo_trans(), 0, 2, 'L');
+        // $pdfin->Cell(130,5,$getHeader->getCmpnyaddress(),0,0,'L');
+        // $pdfin->Cell(50,5,'Delivery Date: '.date("d/m/Y",strtotime($doDate)),0,1,'L');
+        // $pdfin->Cell(130,5,strtoupper($getHeader->getCmpnycity()),0,0,'L');            
+        // $pdfin->Cell(50,5,'Customer Reff: '.$poRef,0,1,'L');
+        $pdfin->Cell(10, 5, '', 0, 1);
+        // $pdfin->Cell(130,5,'Delivered To: '.$deliveryTo,0,0,'L');
+        // $pdfin->Cell(50,5,'No. Picking List: '.$noPicking,0,1,'L');
+        // $pdfin->Cell(130,5,$deliveryName,0,0,'L');
+        // $pdfin->Cell(50,5,'No. PO: '.$poCust,0,1,'L');
+        // Memberikan space kebawah agar tidak terlalu rapat
+        $pdfin->Cell(10, 8, '', 0, 1);
+
+        $pdfin->SetFont('Courier', 'B', 9);
+        $pdfin->Cell(10, 8, 'No', 1, 0, 'C');
+        $pdfin->Cell(30, 8, 'Kode Part', 1, 0, 'C');
+        $pdfin->Cell(112, 8, 'Nama Part', 1, 0, 'C');
+        $pdfin->Cell(15, 8, 'Quantity', 1, 0, 'C');
+        $pdfin->Cell(15, 8, 'Harga', 1, 0, 'C');
+        $pdfin->Cell(20, 8, 'Diskon', 1, 1, 'C');
+        // $pdfin->SetFont('Total', '', 9);
+
+        $no = 1;
+        $totInnerQty = 0;
+        $totWeight = 0;
+        $totPcsQty = 0;
+        $totVolume = 0;
+        $gtotalPcs = 0;
+
+        foreach ($showDtlTrans as $row) {
+            $getPart = $ctrl_mast_produk->showDataByKode($row->getKd_product());
+
+            $pdfin->Cell(10, 6, $no, 1, 0, 'C');
+            $pdfin->Cell(30, 6, $row->getKd_product(), 1, 0, 'C');
+            $pdfin->Cell(112, 6, $getPart->getNm_product(), 1, 0, 'L');
+            $pdfin->Cell(15, 6, number_format($row->getQty()), 1, 0, 'R');
+            $pdfin->Cell(15, 6, number_format($row->getHarga()), 1, 0, 'R');
+            $pdfin->Cell(20, 6, number_format(0), 1, 1, 'R');
+
+            $no++;
+        }
+
+        $pdfin->Cell(10, 2, '', 0, 1);
+        $pdfin->SetFont('Courier', '', 9);
+        $pdfin->Cell(50, 4, 'Total Inner Qty: ', 0, 0, 'L');
+        $pdfin->Cell(30, 4, number_format($totInnerQty), 0, 0, 'R');
+        $pdfin->Cell(44, 4, '', 0, 0, 'C');
+        $pdfin->Cell(50, 4, 'Total Wt. (Kgs):', 0, 0, 'L');
+        $pdfin->Cell(29, 4, number_format($totWeight), 0, 1, 'R');
+
+        $pdfin->Cell(50, 4, 'Total Pcs Qty: ', 0, 0, 'L');
+        $pdfin->Cell(30, 4, number_format($totPcsQty), 0, 0, 'R');
+        $pdfin->Cell(44, 4, '', 0, 0, 'C');
+        $pdfin->Cell(50, 4, 'Total Volume (m3):', 0, 0, 'L');
+        $pdfin->Cell(29, 4, number_format($totVolume), 0, 1, 'R');
+
+        $pdfin->Cell(50, 4, 'Grand Total Pcs: ', 0, 0, 'L');
+        $pdfin->Cell(30, 4, number_format($gtotalPcs), 0, 1, 'R');
+
+        $pdfin->Cell(200, 4, '----------------------------------------------------------------------------------------------------------', 0, 0, 'L');
+
+        $fileName = $idfaktur;
+
+        // auto save file for windows path using wamp server
+        //$pdf->Output('F', 'E:\\wamp\\www\\scm_mb\\views\\surat_jalan_tracking_log\\pdf_files\\'.$fileName.'.pdf');            
+        // auto save file for linux path
+        // $pdfin->Output('F', '/var/www/html/scm_mb/views/surat_jalan_tracking_log/pdf_files/'.$fileName.'.pdf');
+        $pdfin->Output('F', './views/document/pdf_files/' . $fileName . '.pdf');
+
+        // for browser view
+        //$pdfin->Output();    
+    }
+
+    function openPDFFile()
+    {
+        $idFaktur = $_REQUEST['id'];
+
+        // for linux path
+        // $pathFile = '/var/www/html/scm_mb/views/surat_jalan_tracking_log/pdf_files/'.$idFaktur.'.pdf';
+
+        // for widows path in wampserver
+        $pathFile = 'D:\\xampp8\\htdocs\\erp_smb\\views\\document\\pdf_files\\' . $idFaktur . '.pdf';
+
+        if (file_exists($pathFile)) {
+            //echo "The file $pathFile exists";
+            header("location:./views/surat_jalan_tracking_log/pdf_files/" . $idFaktur . ".pdf");
+        } else {
+            echo "The file $pathFile does not exists";
+            $this->createPDFFaktur($idFaktur);
+            header("location:./views/document/pdf_files/" . $idFaktur . ".pdf");
+        }
+    }
+
+
+    function showAllJQuery_restok()
+    {
+        $this->setIsadmin(true);
+        $cekSO = $this->cekSOnotConfirm();
+        if ($cekSO > 0) {
+            echo "<script language='javascript' type='text/javascript'>
+            Swal.fire({
+                title : 'Gagal ! Ada Transaksi Stock Opname Belum Terilis',
+                icon : 'error',
+                text : 'Mohon Selesaikan Stock Opname Terlebih Dahhulu '
+            });
+            </script>";
+            return false;
+        } else {
+
+            $mdl_transcation_dtl = new transaction_detail();
+            $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
+
+            $mdl_transaction_log = new transaction_log();
+            $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+            $mdl_trans_type = new transaction_type();
+            $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+            $mdl_upload_tr_log = new upload_trans_log();
+            $ctrl_upload_tr_log = new upload_trans_logController($mdl_upload_tr_log, $this->dbh);
+
+
+
+            $last = $this->countDataAll();
+            $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+            $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+            $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+            $sisa = intval($last % $limit);
+
+            if ($sisa > 0) {
+                $last = $last - $sisa;
+            } else if ($last - $limit < 0) {
+                $last = 0;
+            } else {
+                $last = $last - $limit;
+            }
+
+            $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+            if ($skip + $limit > $last) {
+                $next = $last;
+            } else if ($skip == 0) {
+                $next = $skip + $limit + 1;
+            } else {
+                $next = $skip + $limit;
+            }
+            $first = 0;
+
+            $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+            $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+            $transaction_list = $ctrl_upload_tr_log->showDataAll_restokLimit();
+            $isadmin = $this->isadmin;
+            $ispublic = $this->ispublic;
+            $isread = $this->isread;
+            $isconfirm = $this->isconfirm;
+            $isentry = $this->isentry;
+            $isupdate = $this->isupdate;
+            $isdelete = $this->isdelete;
+            $isprint = $this->isprint;
+            $isexport = $this->isexport;
+            $isimport = $this->isimport;
+
+            require_once './views/transaction/transaction_jquery_restok.php';
+        }
+    }
+
+    function saveUploadRestok()
+    {
+        $this->setIsadmin(true);
+        require_once './Excel/SimpleXLS.php';
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+
+        $mdl_transaction_log = new transaction_log();
+        $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        $mdl_upload_tr_log = new upload_trans_log();
+        $ctrl_upload_tr_log = new upload_trans_logController($mdl_upload_tr_log, $this->dbh);
+
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+
+        $mdl_product = new master_product();
+        $ctrl_product = new master_productController($mdl_product, $this->dbh);
+
+        $user = $this->user;
+        $numbering = $this->showDataNomorTerakhir(4);
+
+        if (count($numbering) > 0) {
+            $nomorakhir = $numbering['id'] + 1;
+        }
+
+        $id = isset($_POST['id']) ? $_POST['id'] : "";
+        $generateNotrans = 'RS' . date('dmy') . '-' . sprintf('%06s', $nomorakhir);
+        $no_trans = isset($generateNotrans) ? $generateNotrans : "";
+        $dateTime = date('Y-m-d h:i:s');
+        $getFile_name = $_FILES['file_restok']['name'];
+        $getThe_file = $_FILES['file_restok']['tmp_name'];
+        $targetFile = "uploads/excel_upload/" . $getFile_name;
+        $uploadok = move_uploaded_file($getThe_file, $targetFile);
+
+        if ($dataSheet = SimpleXLS::parse("$targetFile")) {
+            // print_r( $xlsx->rows() );
+            $total = 0;
+
+            //transaction
+            $this->transaction->setId($id);
+            $this->transaction->setNo_trans($no_trans);
+            $this->transaction->setTanggal($dateTime);
+            $this->transaction->setType_trans(4);
+            $this->transaction->setQtyTotal($total);
+            $this->transaction->setQtyRelease(0);
+            $this->transaction->setTrans_total(0);
+            $this->transaction->setTrans_status(0);
+            $this->transaction->setCreated_by($user);
+            $this->transaction->setUpload_trans_log_id('');
+            $this->transaction->setCreated_at($dateTime);
+            $this->transaction->setUpdated_by('');
+            $this->transaction->setUpdated_at('');
+            $this->saveData();
+
+            //upload_trans_log
+            // $mdl_upload_tr_log->setId($id);
+            $mdl_upload_tr_log->setTrans_type(4);
+            $mdl_upload_tr_log->setTrans_descrip('IN RE-STOCK TGL.' . date('d-m-Y') . " OLEH " . $user);
+            $mdl_upload_tr_log->setJumlah_data(0);
+            $mdl_upload_tr_log->setCreated_by($user);
+            $mdl_upload_tr_log->setCreated_at($dateTime);
+            $mdl_upload_tr_log->setUpdated_by('');
+            $mdl_upload_tr_log->setUpdated_at('');
+            $ctrl_upload_tr_log->saveData();
+
+            foreach ($dataSheet->rows() as $k => $r) {
+                if ($k === 0) {
+                    $header_values = $r;
+                    continue;
+                }
+                $jml_data = $k++;
+                $cul_no = $r[0];
+                $cul_kd_prod = str_replace("#", "", str_replace(" ", "", $r[1]));
+                $cul_nm_prod = $r[2];
+                $cul_qty_stok = $r[3];
+                $cul_qty = $r[4];
+                $ket = $r[5];
+                // echo print_r($kd_prod."-".$nm_prod."-".$qty."-".$ket."<br>");
+
+                $count_from_product = $ctrl_product->checkDataByKode($cul_kd_prod);
+                $count_from_stock = $ctrl_stock->checkData($cul_kd_prod);
+
+                if ($count_from_product == 0 && $count_from_stock == 0):
+                    echo "Gagal Upload!!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk & Master Stok";
+                    //delete trans & upload log
+                    $this->deleteData($this->getLastId());
+                    $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                    return false;
+                elseif ($count_from_product == 0):
+                    echo "Gagal Upload !!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk";
+                    //delete trans & upload log
+                    $this->deleteData($this->getLastId());
+                    $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                    return false;
+                elseif ($count_from_stock == 0):
+                    //delete trans & upload log
+                    $this->deleteData($this->getLastId());
+                    $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                    // echo "Kon salah 2";
+                    return false;
+                else:
+                    //get_stock_produk
+                    $getStock = $ctrl_stock->showData($cul_kd_prod);
+                    $getHarga = $ctrl_product->showDataByKode($cul_kd_prod);
+                    $total += $cul_qty;
+
+                    //transaction_detail
+                    // $mdl_transaction_dtl->setId($id);
+                    $mdl_transaction_dtl->setTrans_id($this->getLastId());
+                    $mdl_transaction_dtl->setKd_product($cul_kd_prod);
+                    $mdl_transaction_dtl->setQty($cul_qty);
+                    $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                    $ctrl_transaction_dtl->saveData();
+
+                    //transaction_log
+                    // $mdl_transaction_log->setId($id);
+                    $mdl_transaction_log->setTrans_id($this->getLastId());
+                    $mdl_transaction_log->setTrans_type(4);
+                    $mdl_transaction_log->setQty_before($getStock->getQty_stock());
+                    $mdl_transaction_log->setQty_after($getStock->getQty_stock() + $cul_qty);
+                    $mdl_transaction_log->setCreated_by($user);
+                    $mdl_transaction_log->setCreated_at($dateTime);
+                    $mdl_transaction_log->setUpdated_by('');
+                    $mdl_transaction_log->setUpdated_at('');
+                    $ctrl_transaction_log->saveData();
+
+                    //master_stock
+                    // $mdl_stock->setKd_product($kd_prod);
+                    // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
+                    // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
+                    // $mdl_stock->setCreated_by($getStock->getCreated_by());
+                    // $mdl_stock->setUpdated_by($user);
+                    // $mdl_stock->setCreated_at($getStock->getCreated_at());
+                    // $mdl_stock->setUpdated_at($dateTime);
+                    // $ctrl_stock->saveData();
+
+                endif;
+            }
+
+            $showUpdadte_upl = $ctrl_upload_tr_log->showData($ctrl_upload_tr_log->getLastId());
+            $showUpdate_trs = $this->showData($this->getLastId());
+
+            $mdl_upload_tr_log->setId($showUpdadte_upl->getId());
+            $mdl_upload_tr_log->setTrans_type($showUpdadte_upl->getTrans_type());
+            $mdl_upload_tr_log->setTrans_descrip($showUpdadte_upl->getTrans_descrip());
+            $mdl_upload_tr_log->setJumlah_data($jml_data);
+            $mdl_upload_tr_log->setCreated_by($showUpdadte_upl->getCreated_by());
+            $mdl_upload_tr_log->setCreated_at($showUpdadte_upl->getCreated_at());
+            $mdl_upload_tr_log->setUpdated_by($showUpdadte_upl->getUpdated_by());
+            $mdl_upload_tr_log->setUpdated_at($showUpdadte_upl->getUpdated_at());
+            $ctrl_upload_tr_log->saveData();
+
+            $this->transaction->setId($showUpdate_trs->getId());
+            $this->transaction->setNo_trans($showUpdate_trs->getNo_trans());
+            $this->transaction->setTanggal($showUpdate_trs->getTanggal());
+            $this->transaction->setType_trans($showUpdate_trs->getType_trans());
+            $this->transaction->setQtyTotal($total);
+            $this->transaction->setTrans_total(0);
+            $this->transaction->setQtyRelease($showUpdate_trs->getQtyRelease());
+            $this->transaction->setCreated_by($showUpdate_trs->getCreated_by());
+            $this->transaction->setUpload_trans_log_id($ctrl_upload_tr_log->getLastId());
+            $this->transaction->setCreated_at($showUpdate_trs->getCreated_at());
+            $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
+            $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
+            $this->saveData();
+            echo "Uploas Success";
+        } else {
+            echo SimpleXLS::parseError();
+        }
+    }
+
+    function confirmRestock()
+    {
+        $this->setIsadmin(true);
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+        $user = $this->user;
+        $total = 0;
+
+        $getTransaction = $this->showData($id);
+
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+
+        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+
+
+        if ($id != "") {
+            foreach ($showDtlTrans as $valDetail) {
+                $getStok = $ctrl_stock->showData($valDetail->getKd_product());
+                $total += $valDetail->getQty();
+                //master_stock
+                $mdl_stock->setKd_product($valDetail->getKd_product());
+                $mdl_stock->setQty_stock($getStok->getQty_stock() + $valDetail->getQty());
+                $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
+                $mdl_stock->setCreated_by($getStok->getCreated_by());
+                $mdl_stock->setUpdated_by($user);
+                $mdl_stock->setCreated_at($getStok->getCreated_at());
+                $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
+                $ctrl_stock->saveData();
+            }
+            //transaction
+            $this->transaction->setId($id);
+            $this->transaction->setNo_trans($getTransaction->getNo_trans());
+            $this->transaction->setTanggal($getTransaction->getTanggal());
+            $this->transaction->setType_trans($getTransaction->getType_trans());
+            $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
+            $this->transaction->setQtyRelease($total);
+            $this->transaction->setTrans_total(0);
+            $this->transaction->setTrans_status(1);
+            $this->transaction->setCreated_by($getTransaction->getCreated_by());
+            $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
+            $this->transaction->setCreated_at($getTransaction->getCreated_at());
+            $this->transaction->setUpdated_by($user);
+            $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+            $this->updateData();
+            // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
+            $this->showAllJQuery_restok();
+        } else {
+            echo "<script language='javascript' type='text/javascript'>
+            Swal.fire({
+                title : 'Gagal Rilis !',
+                icon : 'error',
+                text : 'Silahkan Cek Koneksi Internet Anda'
+            });
+            </script>";
+        }
+
+    }
+
+    public function export_stock()
+    {
+
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockController($mdl_stock, $this->dbh);
+
+        $mdl_report_query = new report_query();
+        $ctrl_report_query = new report_queryController($mdl_report_query, $this->dbh);
+
+        $sql = "SELECT @noq:=@noq+1 `No`, a.* FROM (
+                SELECT concat('#',a.`kd_product`) `Kode Part`, b.`nm_product` `Part`, a.`qty_stock` `Stock`, 0 `Qty Restok (Isi Disini)`,'RESTOK' `Ket` FROM master_stock a
+                INNER JOIN master_product b ON a.`kd_product` = b.`kd_product`
+                ORDER BY Part 
+                ) AS a,(SELECT @noq:=0) AS noq;";
+
+        header("Content-Type:application/xls", false);
+        header("Content-Disposition: attachment; filename=" . $ctrl_stock->getModulename() . ".xls");
+        if ($ctrl_stock->getModulename() != "report_query") {
+            $report_query = new report_query();
+            $report_query_controller = new report_queryController($report_query, $this->dbh);
+            echo $report_query_controller->generatetableviewExcel($sql);
+        } else {
+            echo $ctrl_report_query->generatetableviewExcel($sql);
+        }
+    }
+
+
+    function showAllJQuery_reStock_by_data()
+    {
+        $mdl_transcation_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
+
+        $mdl_transaction_log = new transaction_log();
+        $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        $mdl_upload_tr_log = new upload_trans_log();
+        $ctrl_upload_tr_log = new upload_trans_logController($mdl_upload_tr_log, $this->dbh);
+
+        $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
+        $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
+        $stsId = isset($_REQUEST["sts"]) ? $_REQUEST["sts"] : "";
+
+        $sql = "SELECT a.* FROM `upload_trans_log` a
+        INNER JOIN `transaction` d ON d.`upload_trans_log_id` = a.`id`
+        INNER JOIN transaction_detail b ON d.id = b.`trans_id`
+        INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
+        WHERE d.type_trans='4' and d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId)
+        GROUP BY a.`id` 
+        ORDER BY a.`created_at` DESC";
+
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        $sisa = intval($last % $limit);
+
+        if ($sisa > 0) {
+            $last = $last - $sisa;
+        } else if ($last - $limit < 0) {
+            $last = 0;
+        } else {
+            $last = $last - $limit;
+        }
+
+        $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+        if ($skip + $limit > $last) {
+            $next = $last;
+        } else if ($skip == 0) {
+            $next = $skip + $limit + 1;
+        } else {
+            $next = $skip + $limit;
+        }
+        $first = 0;
+
+        $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+        $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+        $transaction_list = $ctrl_upload_tr_log->createList($sql);
+        $isadmin = $this->isadmin;
+        $ispublic = $this->ispublic;
+        $isread = $this->isread;
+        $isconfirm = $this->isconfirm;
+        $isentry = $this->isentry;
+        $isupdate = $this->isupdate;
+        $isdelete = $this->isdelete;
+        $isprint = $this->isprint;
+        $isexport = $this->isexport;
+        $isimport = $this->isimport;
+
+        require_once './views/transaction/transaction_jquery_restok.php';
     }
 }
 ?>
