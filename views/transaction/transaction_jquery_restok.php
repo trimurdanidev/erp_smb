@@ -1,8 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Stock Opname</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restok</title>
 </head>
+
 <?php
 $mdl_transaction = new transaction();
 $ctrl_transaction = new transactionController($mdl_transaction, $this->dbh);
@@ -12,31 +17,30 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
 ?>
 
 <body>
-    <h2>Transaction Stock Opname</h2>
+    <h2>Transaction Restok</h2>
+    <h3>(Penambahan Stok)</h3><br>
     <div id="upload">
 
-        <form name="frmUpload" id="frmUpload" action="index.php?model=transaction&action=saveUploadSo" method="POST"
+        <form name="frmUpload" id="frmUpload" action="index.php?model=transaction&action=saveUploadRestok" method="POST"
             enctype="multipart/form-data">
             <table border="1" cellpadding="2" style="border-collapse: collapse;" width="50%">
                 <tr>
-                    <td><button class="btn btn-orange" onclick="downloadTemplate()"
-                            title="Download Format Template Excel SO"> <span class="glyphicon glyphicon-save"></span>
-                            Download Template</button>
+                    <td><a href="index.php?model=transaction&action=export_stock&search=<?php echo $search; ?>"><span class="glyphicon glyphicon-export"></span>Export Stok Terupdate</a>
                     </td>
                 </tr>
                 <tr>
-                    <td class="textBold">Upload Excel Stock Opname</td>
+                    <td class="textBold">Upload Excel Restok</td>
                     <td>
-                        <input type="file" style="text-align: left;" class="form form-control" name="stock_so"
-                            id="stock_so" size="10"
+                        <input type="file" style="text-align: left;" class="form form-control" name="file_restok"
+                            id="file_restok" size="10"
                             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                            title="Pilih Document Excel SO" required />
+                            title="Pilih Excel Export Terupdate Yang Sudah Di Restok" required />
                     </td>
                 </tr>
                 <tr>
                     <td></td>
                     <td style="text-align: left"><button type="submit" name="submit" id="submit" value=""
-                            class="btn btn-facebook" title="Proses Upload Excel SO"><span
+                            class="btn btn-red" title="Proses Upload Restok"><span
                                 class="glyphicon glyphicon-upload"></span>
                             Proses</button>
                     </td>
@@ -45,6 +49,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
             </table>
         </form>
     </div>
+
     <br>
     <br>
     <div id="upload_log">
@@ -165,7 +170,6 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
 </body>
 
 </html>
-<br>
 <script language="javascript" type="text/javascript">
     (function () {
         $('form').ajaxForm({
@@ -183,7 +187,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                 //     text : "",
                 //     icon : "success",
                 // });
-                showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
+                showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
             }
         });
     })();
@@ -196,27 +200,9 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         }
     }
 
-    function downloadTemplate() {
-        window.open('./uploads/Template/FOMAT_STOCK_OPNAME.xls');
-    }
-
-    function ClosedetailTrans() {
-        var area = document.getElementById('detTrans');
-        area.style.display = "none";
-    }
-
-    function detailTrans(id) {
-        var area = document.getElementById('detTrans');
-        var tipe = 3;
-        if (area.style.display = "block") {
-            showMenu('detTrans', 'index.php?model=transaction&action=showDetailJQuery&id=' + id + '&tipe=' + tipe) ;
-        }
-
-    }
-
     function ReleaseTrans(id) {
         Swal.fire({
-            title: "Are you sure Release Stock Opname?",
+            title: "Are you sure Release Re-Stock?",
             text: "",
             icon: "question",
             showCancelButton: true,
@@ -225,12 +211,12 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
             confirmButtonText: "Yes"
         }).then((result) => {
             if (result.isConfirmed) {
-                site = "index.php?model=transaction&action=confirmSO&id=" + id;
+                site = "index.php?model=transaction&action=confirmRestock&id=" + id;
                 target = "content";
                 showMenu(target, site);
                 Swal.fire({
                     title: "Released!",
-                    text: "Stock Opname has been Released.",
+                    text: "Re-Stock has been Released.",
                     icon: "success"
                 });
             } else if (result.isDenied) {
@@ -243,6 +229,21 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         });
     }
 
+    function ClosedetailTrans() {
+        var area = document.getElementById('detTrans');
+        area.style.display = "none";
+    }
+
+    function detailTrans(id) {
+        var area = document.getElementById('detTrans');
+        var tipe = 4;
+        if (area.style.display = "block") {
+            showMenu('detTrans', 'index.php?model=transaction&action=showDetailJQuery&id=' + id + '&tipe='+ tipe);
+        }
+
+    }
+
+
     function serchData() {
         var sts = $('#sts option:selected').val();
         var dari = $('#dari').val();
@@ -253,12 +254,13 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         param['dari'] = dari;
         param['sampai'] = sampai;
 
-        $.post('index.php?model=transaction&action=showAllJQuery_so_by_data', param, function (data) {
+        $.post('index.php?model=transaction&action=showAllJQuery_reStock_by_data', param, function (data) {
             $('#content').html(data);
         });
     }
 
     function resetFilter() {
-        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so');
+        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok');
     }
+
 </script>

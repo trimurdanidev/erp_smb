@@ -242,22 +242,22 @@
 
                 
         function loadData($master_module,$row){
-	    $master_module->setId($row['id']);
-	    $master_module->setModule($row['module']);
-	    $master_module->setDescriptionhead($row['descriptionhead']);
-	    $master_module->setDescription($row['description']);
-	    $master_module->setPicture($row['picture']);
-	    $master_module->setClasscolour($row['classcolour']);
-	    $master_module->setOnclick($row['onclick']);
-	    $master_module->setOnclicksubmenu($row['onclicksubmenu']);
-	    $master_module->setParentid($row['parentid']);
-	    $master_module->setPublic($row['public']);
-	    $master_module->setEntrytime($row['entrytime']);
-	    $master_module->setEntryuser($row['entryuser']);
-	    $master_module->setEntryip($row['entryip']);
-	    $master_module->setUpdatetime($row['updatetime']);
-	    $master_module->setUpdateuser($row['updateuser']);
-	    $master_module->setUpdateip($row['updateip']);
+	    $master_module->setId(isset($row['id'])?$row['id']:"");
+	    $master_module->setModule(isset($row['module'])?$row['module']:"");
+	    $master_module->setDescriptionhead(isset($row['descriptionhead'])?$row['descriptionhead']:"");
+	    $master_module->setDescription(isset($row['description'])?$row['description']:"");
+	    $master_module->setPicture(isset($row['picture'])?$row['picture']:"");
+	    $master_module->setClasscolour(isset($row['classcolour'])?$row['classcolour']:"");
+	    $master_module->setOnclick(isset($row['onclick'])?$row['onclick']:"");
+	    $master_module->setOnclicksubmenu(isset($row['onclicksubmenu'])?$row['onclicksubmenu']:"");
+	    $master_module->setParentid(isset($row['parentid'])?$row['parentid']:"");
+	    $master_module->setPublic(isset($row['public'])?$row['public']:"");
+	    $master_module->setEntrytime(isset($row['entrytime'])?$row['entrytime']:"");
+	    $master_module->setEntryuser(isset($row['entryuser'])?$row['entryuser']:"");
+	    $master_module->setEntryip(isset($row['entryip'])?$row['entryip']:"");
+	    $master_module->setUpdatetime(isset($row['updatetime'])?$row['updatetime']:"");
+	    $master_module->setUpdateuser(isset($row['updateuser'])?$row['updateuser']:"");
+	    $master_module->setUpdateip(isset($row['updateip'])?$row['updateip']:"");
 
         }
 
