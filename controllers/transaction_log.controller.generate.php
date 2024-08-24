@@ -89,6 +89,7 @@
             $sql .= " ( ";
 	    $sql .= "`id`,";
 	    $sql .= "`trans_id`,";
+	    $sql .= "`kd_product`,";
 	    $sql .= "`trans_type`,";
 	    $sql .= "`qty_before`,";
 	    $sql .= "`qty_after`,";
@@ -100,6 +101,7 @@
             $sql .= " VALUES (";
 	    $sql .= " null,";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_log->getTrans_id(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_log->getKd_product(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_log->getTrans_type(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_log->getQty_before(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_log->getQty_after(), $this->dbh)."',";
@@ -118,6 +120,7 @@
             $sql = "UPDATE transaction_log SET ";
 	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->transaction_log->getId(),$this->dbh)."',";
 	    $sql .= "`trans_id` = '".$this->toolsController->replacecharSave($this->transaction_log->getTrans_id(),$this->dbh)."',";
+	    $sql .= "`kd_product` = '".$this->toolsController->replacecharSave($this->transaction_log->getKd_product(),$this->dbh)."',";
 	    $sql .= "`trans_type` = '".$this->toolsController->replacecharSave($this->transaction_log->getTrans_type(),$this->dbh)."',";
 	    $sql .= "`qty_before` = '".$this->toolsController->replacecharSave($this->transaction_log->getQty_before(),$this->dbh)."',";
 	    $sql .= "`qty_after` = '".$this->toolsController->replacecharSave($this->transaction_log->getQty_after(),$this->dbh)."',";
@@ -169,8 +172,8 @@
                 $search = $_REQUEST["search"] ;
                $where .= " where id like '%".$search."%'";
                $where .= "       or  trans_id like '%".$search."%'";
+               $where .= "       or  kd_product like '%".$search."%'";
                $where .= "       or  trans_type like '%".$search."%'";
-               $where .= "       or  qty_before like '%".$search."%'";
 
             }            
             return $where;
@@ -222,15 +225,16 @@
 
                 
         function loadData($transaction_log,$row){
-	    $transaction_log->setId(isset($row['id'])?$row['id']:"");
-	    $transaction_log->setTrans_id(isset($row['trans_id'])?$row['trans_id']:"");
-	    $transaction_log->setTrans_type(isset($row['trans_type'])?$row['trans_type']:"");
-	    $transaction_log->setQty_before(isset($row['qty_before'])?$row['qty_before']:"");
-	    $transaction_log->setQty_after(isset($row['qty_after'])?$row['qty_after']:"");
-	    $transaction_log->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
-	    $transaction_log->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
-	    $transaction_log->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
-	    $transaction_log->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
+	    $transaction_log->setId(isset($row['id'])?$row['id'] : "");
+	    $transaction_log->setTrans_id(isset($row['trans_id'])?$row['trans_id'] : "");
+	    $transaction_log->setKd_product(isset($row['kd_product'])?$row['kd_product'] : "");
+	    $transaction_log->setTrans_type(isset($row['trans_type'])?$row['trans_type'] : "");
+	    $transaction_log->setQty_before(isset($row['qty_before'])?$row['qty_before'] : "");
+	    $transaction_log->setQty_after(isset($row['qty_after'])?$row['qty_after'] : "");
+	    $transaction_log->setCreated_by(isset($row['created_by'])?$row['created_by'] : "");
+	    $transaction_log->setCreated_at(isset($row['created_at'])?$row['created_at'] : "");
+	    $transaction_log->setUpdated_by(isset($row['updated_by'])?$row['updated_by'] : "");
+	    $transaction_log->setUpdated_at(isset($row['updated_at'])?$row['updated_at'] : "");
 
         }
 
@@ -403,6 +407,7 @@
         function saveFormPost(){
 	    $id = isset($_POST['id'])?$_POST['id'] : "";
 	    $trans_id = isset($_POST['trans_id'])?$_POST['trans_id'] : "";
+	    $kd_product = isset($_POST['kd_product'])?$_POST['kd_product'] : "";
 	    $trans_type = isset($_POST['trans_type'])?$_POST['trans_type'] : "";
 	    $qty_before = isset($_POST['qty_before'])?$_POST['qty_before'] : "";
 	    $qty_after = isset($_POST['qty_after'])?$_POST['qty_after'] : "";
@@ -412,6 +417,7 @@
 	    $updated_at = isset($_POST['updated_at'])?$_POST['updated_at'] : "";
 	    $this->transaction_log->setId($id);
 	    $this->transaction_log->setTrans_id($trans_id);
+	    $this->transaction_log->setKd_product($kd_product);
 	    $this->transaction_log->setTrans_type($trans_type);
 	    $this->transaction_log->setQty_before($qty_before);
 	    $this->transaction_log->setQty_after($qty_after);
@@ -422,14 +428,13 @@
             $this->saveData();
         }
         public function saveData(){
-            $this->setIsadmin(true);
             $check = $this->checkData($this->transaction_log->getId());
             if($check == 0){
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isentry)){
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    // echo "Berhasil Tersimpan \n";
+                    //echo "Data is Inserted";
                 }else{
                     //echo "You cannot insert data this module";
                 }

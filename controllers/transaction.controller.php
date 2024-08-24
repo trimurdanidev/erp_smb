@@ -819,6 +819,7 @@ class transactionController extends transactionControllerGenerate
 
     function showDataLogUpload($idLog)
     {
+        $this->setIsadmin(true);
         $sql = "SELECT * FROM transaction WHERE upload_trans_log_id = '" . $this->toolsController->replacecharFind($idLog, $this->dbh) . "'";
 
         $row = $this->dbh->query($sql)->fetch();
@@ -829,6 +830,7 @@ class transactionController extends transactionControllerGenerate
 
     function cekSOnotConfirm()
     {
+        $this->setIsadmin(true);
         $sql = "SELECT count(*) FROM `transaction` a 
         INNER JOIN upload_trans_log b ON b.`id` = a.`upload_trans_log_id` 
         WHERE type_trans='3' and trans_status ='0'";
@@ -963,6 +965,7 @@ class transactionController extends transactionControllerGenerate
 
     function openPDFFile()
     {
+        $this->setIsadmin(true);
         $idFaktur = $_REQUEST['id'];
 
         // for linux path
@@ -1177,6 +1180,7 @@ class transactionController extends transactionControllerGenerate
                     //transaction_log
                     // $mdl_transaction_log->setId($id);
                     $mdl_transaction_log->setTrans_id($this->getLastId());
+                    $mdl_transaction_log->setKd_product($cul_kd_prod);
                     $mdl_transaction_log->setTrans_type(4);
                     $mdl_transaction_log->setQty_before($getStock->getQty_stock());
                     $mdl_transaction_log->setQty_after($getStock->getQty_stock() + $cul_qty);
@@ -1295,6 +1299,7 @@ class transactionController extends transactionControllerGenerate
     public function export_stock()
     {
 
+        $this->setIsadmin(true);
         $mdl_stock = new master_stock();
         $ctrl_stock = new master_stockController($mdl_stock, $this->dbh);
 

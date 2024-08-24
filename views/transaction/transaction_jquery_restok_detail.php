@@ -31,7 +31,10 @@
                 <th>Qty Stock</th>
                 <th>Qty Restock</th>
                 <th>Qty After Restock</th>
-                <th>#</th>
+                <th>Status</th>
+                <th>
+                    <center><b>#</b></center>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -40,15 +43,18 @@
                 $sts = $getTrans->getTrans_status();
                 $stsPrint = "";
                 $stsColor = "";
+                $ttleProdukDtl = "";
                 switch ($sts) {
                     case 0:
                         $stsPrint = "fa fa-clock-o";
                         $stsColor = "color:red;";
+                        $$ttleProdukDtl = "Quantity Pending";
                         break;
 
                     case 1:
                         $stsPrint = "fa fa-check";
                         $stsColor = "color:green;";
+                        $$ttleProdukDtl = "Quantity Success";
                         break;
                 }
 
@@ -61,7 +67,7 @@
                 $number = 1;
                 foreach ($showDetail as $valDetail) {
                     $getProduct = $ctrl_product->showDataByKode($valDetail->getKd_product());
-                    $getTrLog = $ctrl_tr_log->showDataByTransId($valDetail->getId(), $valDetail->getKd_product());
+                    $getTrLog = $ctrl_tr_log->showDataByTransIdSingle($getTrans->getId(), $valDetail->getKd_product());
                     ?>
                     <td>
                         <?php echo $number++; ?>
@@ -84,7 +90,49 @@
 
                     </td>
                     <td>
-                        <span style="<?php echo $stsColor; ?>" class="<?php echo $stsPrint; ?>"></span>
+                        <span style="<?php echo $stsColor; ?>" title="<?php echo $ttleProdukDtl; ?>"
+                            class="<?php echo $stsPrint; ?>"></span>
+                    </td>
+                    <td>
+                        <?php if ($getTrans->getTrans_status() == 0) { ?>
+                            <button type="button" class="btn btn-default" title="Edit Quantity" data-toggle="modal"
+                                data-target="#QtyEdtRes<?php echo $valDetail->getId(); ?>"><span
+                                    class="glyphicon glyphicon-edit"></span>
+                                Edit</button>
+                        <?php } ?>
+                        <div class="modal fade" id="QtyEdtRes<?php echo $valDetail->getId(); ?>" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4>Edit Quantity</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <br>
+                                        <p>
+                                            <?php echo $valDetail->getKd_product() . "-" . $getProduct->getNm_product(); ?>
+                                        </p>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form name="frmEdit" id="frmEdit" method="POST"
+                                            action="index.php?model=transaction_detail&action=simpanEditRestock">
+                                            <input type="hidden" name="idItem" id="idItem"
+                                                value="<?php echo $valDetail->getId(); ?>" />
+                                            <label for="exampleFormControlTextarea1">Quantity Restock</label>
+                                            <input type="text" class="form-control" name="qtyEdtRes" id="qtyEdtRes"
+                                                onkeypress="validate(event);" value="<?php echo $valDetail->getQty(); ?>" />
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary"><span
+                                                        class="glyphicon glyphicon-ok"></span>
+                                                    Simpan</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal"><span
+                                                        class="glyphicon glyphicon-remove"></span> Batal</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                     </td>
                 </tr>
             <?php }
@@ -97,8 +145,31 @@
 
 </html>
 <script language="javascript" type="text/javascript">
+    (function () {
+        $('form').ajaxForm({
+            beforeSubmit: function () {
+            },
+            complete: function (xhr) {
+                Swal.fire($.trim(xhr.responseText));
+                $("#QtyEdtRes").hide();
+                $('.modal-backdrop').hide();
+                showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok');
+            }
+        });
+    })();
+
     function ClosedetailTrans() {
         var area = document.getElementById('detTrans');
         area.style.display = "none";
     }
+
+    function validate(evt) {
+        var e = evt || window.event;
+        var key = e.keyCode || e.which;
+        if ((key < 48 || key > 57) && !(key == 8 || key == 9 || key == 13 || key == 37 || key == 39 || key == 46)) {
+            e.returnValue = false;
+            if (e.preventDefault) e.preventDefault();
+        }
+    }
+
 </script>

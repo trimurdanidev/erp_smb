@@ -148,7 +148,7 @@
         
         function showData($id){
             $sql = "SELECT * FROM transaction WHERE id = '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
-
+            
             $row = $this->dbh->query($sql)->fetch();
             $this->loadData($this->transaction, $row);
             
