@@ -26,5 +26,14 @@
             
             return $this->transaction_log;
         }
+
+        function showDataByTransIdSingle($transid,$kd_prod){
+            $sql = "SELECT * FROM transaction_log WHERE trans_id = '".$this->toolsController->replacecharFind($transid,$this->dbh)."'  AND `kd_product`= '".$this->toolsController->replacecharFind($kd_prod,$this->dbh)."'";
+            
+            $row = $this->dbh->query($sql)->fetch();
+            $this->loadData($this->transaction_log, $row);
+            
+            return $this->transaction_log;
+        }
     }
 ?>

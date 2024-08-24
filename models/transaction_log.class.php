@@ -3,6 +3,7 @@
     {
 	var $id;
 	var $trans_id;
+	var $kd_product;
 	var $trans_type;
 	var $qty_before;
 	var $qty_after;
@@ -26,6 +27,13 @@
 
 	public function setTrans_id($trans_id) {
 	   $this->trans_id = $trans_id;
+	}
+	public function getKd_product() {
+	   return $this->kd_product;
+	}
+
+	public function setKd_product($kd_product) {
+	   $this->kd_product = $kd_product;
 	}
 	public function getTrans_type() {
 	   return $this->trans_type;
