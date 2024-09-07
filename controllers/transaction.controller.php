@@ -335,6 +335,7 @@ class transactionController extends transactionControllerGenerate
                     //transaction_log
                     // $mdl_transaction_log->setId($id);
                     $mdl_transaction_log->setTrans_id($this->getLastId());
+                    $mdl_transaction_log->setKd_product($kd_prod);
                     $mdl_transaction_log->setTrans_type(3);
                     $mdl_transaction_log->setQty_before($getStock->getQty_stock());
                     $mdl_transaction_log->setQty_after($qty);
@@ -733,6 +734,7 @@ class transactionController extends transactionControllerGenerate
 
                 //transaction log
                 $mdl_trans_log->setTrans_id($this->getLastId());
+                $mdl_trans_log->setKd_product($part);
                 $mdl_trans_log->setTrans_type(2);
                 $mdl_trans_log->setQty_before($getStock->getQty_stock());
                 $mdl_trans_log->setQty_after($getStock->getQty_stock() - $qty);
@@ -998,6 +1000,7 @@ class transactionController extends transactionControllerGenerate
             });
             </script>";
             return false;
+            // require_once './views/transaction/transaction_jquery_so.php';
         } else {
 
             $mdl_transcation_dtl = new transaction_detail();
@@ -1394,4 +1397,4 @@ class transactionController extends transactionControllerGenerate
         require_once './views/transaction/transaction_jquery_restok.php';
     }
 }
-?>
+?>  
