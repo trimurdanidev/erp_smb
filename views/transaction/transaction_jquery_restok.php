@@ -174,6 +174,16 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                 if (confirm('Anda yakin save data ? ') == false) {
                     return false;
                 }
+
+                Swal.fire({
+                    title: 'Uploading...',
+                    html: 'Please wait...',
+                    allowOutsideClick: false,
+                    showLoaderOnConfirm: true,
+                });
+                swal.showLoading();
+
+
                 $('#submit').prop('disabled', true);
             },
             complete: function (xhr) {

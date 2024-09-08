@@ -78,6 +78,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                             <option value="0,1" <?php echo $stsId == '0,1' ? "selected" : ""; ?>>All Status</option>
                             <option value="0" <?php echo $stsId == '0' ? "selected" : ""; ?>>Pending</option>
                             <option value="1" <?php echo $stsId == '1' ? "selected" : ""; ?>>Success</option>
+                            <option value="2" <?php echo $stsId == '2' ? "selected" : ""; ?>>Cancelled</option>
                         </select>
                     </td>
                     <td>
@@ -117,9 +118,12 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         if ($getTrans->getTrans_status() == '0') {
                             $sts = "fa fa-clock-o";
                             $stringsts = "Pending";
-                        } else {
+                        } else if ($getTrans->getTrans_status() == '1') {
                             $sts = "fa fa-check";
                             $stringsts = "Success";
+                        } else {
+                            $sts = "fa fa-close";
+                            $stringsts = "Cancelled";
                         }
 
                         ?>
@@ -151,6 +155,9 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                                 <button type="button" class="btn btn-green" title="Release Transaksi"
                                     onclick="ReleaseTrans('<?php echo $getTrans->getId(); ?>')"><span
                                         class="glyphicon glyphicon-thumbs-up"></span> Release</button>
+                                <button type="button" class="btn btn-orange" title="Cancel Transaksi"
+                                    onclick="CancelSOTrans('<?php echo $getTrans->getId(); ?>')"><span
+                                        class="glyphicon glyphicon-ban-circle"></span> Cancel</button>
                             <?php } ?>
                         </td>
 
@@ -174,6 +181,21 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                 if (confirm('Anda yakin save data ? ') == false) {
                     return false;
                 }
+
+                Swal.fire({
+                    title: 'Uploading...',
+                    html: 'Please wait...',
+                    allowOutsideClick: false,
+                    showLoaderOnConfirm: true,
+                });
+                swal.showLoading();
+
+                // this.carsSvc.getCars().then((cars: ICar[]) => {
+                //     swal.close();
+                //     this.setData(cars);
+                //     // show a new success swal here?
+                // });
+
                 $('#submit').prop('disabled', true);
             },
             complete: function (xhr) {
@@ -209,9 +231,38 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         var area = document.getElementById('detTrans');
         var tipe = 3;
         if (area.style.display = "block") {
-            showMenu('detTrans', 'index.php?model=transaction&action=showDetailJQuery&id=' + id + '&tipe=' + tipe) ;
+            showMenu('detTrans', 'index.php?model=transaction&action=showDetailJQuery&id=' + id + '&tipe=' + tipe);
         }
 
+    }
+
+    function CancelSOTrans(id) {
+        Swal.fire({
+            title: "Are you sure Cancel Stock Opname?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                site = "index.php?model=transaction&action=CancelSO&id=" + id;
+                target = "content";
+                showMenu(target, site);
+                Swal.fire({
+                    title: "Cancelled!",
+                    text: "Stock Opname has been Cancelled.",
+                    icon: "success"
+                });
+            } else if (result.isDenied) {
+                Swal.fire({
+                    title: "Not Cancelled!",
+                    text: "",
+                    icon: "info"
+                });
+            }
+        });
     }
 
     function ReleaseTrans(id) {
