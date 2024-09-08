@@ -978,7 +978,8 @@ class transactionController extends transactionControllerGenerate
 
         if (file_exists($pathFile)) {
             //echo "The file $pathFile exists";
-            header("location:./views/surat_jalan_tracking_log/pdf_files/" . $idFaktur . ".pdf");
+            // header("location:./views/surat_jalan_tracking_log/pdf_files/" . $idFaktur . ".pdf");
+            header("location:./views/document/pdf_files/" . $idFaktur . ".pdf");
         } else {
             echo "The file $pathFile does not exists";
             $this->createPDFFaktur($idFaktur);
@@ -1396,5 +1397,72 @@ class transactionController extends transactionControllerGenerate
 
         require_once './views/transaction/transaction_jquery_restok.php';
     }
+
+    function CancelSO()
+    {
+        $this->setIsadmin(true);
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+        $user = $this->user;
+        $total = 0;
+        $dateTime = date('Y-m-d h:i:s');
+
+        $getTransaction = $this->showData($id);
+
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+
+        $mdl_tran_log = new transaction_log();
+        $ctrl_tran_log = new transaction_logController($mdl_tran_log, $this->dbh);
+
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+
+        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+
+
+        if ($id != "") {
+            foreach ($showDtlTrans as $valDetail) {
+                $getPrdLog = $ctrl_tran_log->showDataByTransId($id,$valDetail->getKd_product());
+                $total += $valDetail->getQty();
+                // transaction log
+                $mdl_tran_log->setId($getPrdLog->getId());
+                $mdl_tran_log->setTrans_id($getPrdLog->getTrans_id());
+                $mdl_tran_log->setKd_product($getPrdLog->getKd_product());
+                $mdl_tran_log->setTrans_type($getPrdLog->getTrans_type());
+                $mdl_tran_log->setQty_before($getPrdLog->getQty_before());
+                $mdl_tran_log->setQty_after(0);
+                $mdl_tran_log->setCreated_by($getPrdLog->getCreated_by());
+                $mdl_tran_log->setCreated_at($getPrdLog->getCreated_at());
+                $mdl_tran_log->setUpdated_by($user);
+                $mdl_tran_log->setUpdated_at($dateTime);
+                $ctrl_tran_log->saveData();
+            }
+            //transaction
+            $this->transaction->setId($id);
+            $this->transaction->setNo_trans($getTransaction->getNo_trans());
+            $this->transaction->setTanggal($getTransaction->getTanggal());
+            $this->transaction->setType_trans($getTransaction->getType_trans());
+            $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
+            $this->transaction->setQtyRelease(0);
+            $this->transaction->setTrans_total(0);
+            $this->transaction->setTrans_status(2);
+            $this->transaction->setCreated_by($getTransaction->getCreated_by());
+            $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
+            $this->transaction->setCreated_at($getTransaction->getCreated_at());
+            $this->transaction->setUpdated_by($user);
+            $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+            $this->updateData();
+            // echo "<script>alert('Stock Opname Berhasil Cancel');</script>";
+            $this->showAllJQuery_so();
+        } else {
+            echo "<script language='javascript' type='text/javascript'>
+            Swal.fire({
+                title : 'Gagal Cancel !',
+                icon : 'error',
+                text : 'Silahkan Cek Koneksi Internet Anda'
+            });
+            </script>";
+        }
+    }
 }
-?>  
+?>

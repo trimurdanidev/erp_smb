@@ -365,6 +365,15 @@
                 if (confirm('Anda yakin save data ? ') == false) {
                     return false;
                 }
+
+                Swal.fire({
+                    title: 'Saving...',
+                    html: 'Please wait...',
+                    allowOutsideClick: false,
+                    showLoaderOnConfirm: true,
+                });
+                swal.showLoading();
+
                 $('#submit').prop('disabled', true);
             },
             complete: function(xhr){
