@@ -21,7 +21,8 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
             enctype="multipart/form-data">
             <table border="1" cellpadding="2" style="border-collapse: collapse;" width="50%">
                 <tr>
-                    <td><a href="index.php?model=transaction&action=export_stock&search=<?php echo $search; ?>"><span class="glyphicon glyphicon-export"></span>Export Stok Terupdate</a>
+                    <td><a href="index.php?model=transaction&action=export_stock&search=<?php echo $search; ?>"><span
+                                class="glyphicon glyphicon-export"></span> Export Stok Terupdate</a>
                     </td>
                 </tr>
                 <tr>
@@ -77,7 +78,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     <td>
                         <select name="sts" id="sts" class="form form-control" onchange="serchData()">
                             <option value="0,1" <?php echo $stsId == '0,1' ? "selected" : ""; ?>>All Status</option>
-                            <option value="0" <?php echo $stsId == '0' ? "selected" : ""; ?>>Pending</option>
+                            <option value="0" <?php echo $stsId == '0' ? "selected" : ""; ?>>On Process</option>
                             <option value="1" <?php echo $stsId == '1' ? "selected" : ""; ?>>Success</option>
                         </select>
                     </td>
@@ -118,11 +119,13 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         if ($getTrans->getTrans_status() == '0') {
                             $sts = "fa fa-clock-o";
                             $stringsts = "Pending";
-                        } else {
+                        } else if ($getTrans->getTrans_status() == '1') {
                             $sts = "fa fa-check";
                             $stringsts = "Success";
+                        } else if ($getTrans->getTrans_status() == '2') {
+                            $sts = "fa fa-close";
+                            $stringsts = "Cancelled";
                         }
-
                         ?>
                         <td>
                             <?php echo $no++; ?>
@@ -150,8 +153,11 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                                         class="glyphicon glyphicon-eye-open"></span> Details</button></a>
                             <?php if ($getTrans->getTrans_status() == '0') { ?>
                                 <button type="button" class="btn btn-green" title="Release Transaksi"
-                                    onclick="ReleaseTrans('<?php echo $getTrans->getId(); ?>')"><span
+                                    onclick="ReleaseTrans('<?php echo $getTrans->getId(); ?>','<?php echo $getTrans->getNo_trans(); ?>')"><span
                                         class="glyphicon glyphicon-thumbs-up"></span> Release</button>
+                                <button type="button" class="btn btn-red" title="Cancel Transaksi"
+                                    onclick="CancelTrans('<?php echo $getTrans->getId(); ?>','<?php echo $getTrans->getNo_trans(); ?>')"><span
+                                        class="glyphicon glyphicon-ban-circle"></span> Cancel</button>
                             <?php } ?>
                         </td>
 
@@ -188,11 +194,6 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
             },
             complete: function (xhr) {
                 Swal.fire($.trim(xhr.responseText));
-                // Swal.fire({
-                //     title: "Upload Succes",
-                //     text : "",
-                //     icon : "success",
-                // });
                 showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok&skip=<?php echo $skip ?>&search=<?php echo $search ?>');
             }
         });
@@ -206,9 +207,9 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         }
     }
 
-    function ReleaseTrans(id) {
+    function ReleaseTrans(id, notrans) {
         Swal.fire({
-            title: "Are you sure Release Re-Stock?",
+            title: "Are you sure Release Re-Stock\nNo." + notrans + " ?",
             text: "",
             icon: "question",
             showCancelButton: true,
@@ -222,7 +223,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                 showMenu(target, site);
                 Swal.fire({
                     title: "Released!",
-                    text: "Re-Stock has been Released.",
+                    text: "Re-Stock No." + notrans + " has been Released.",
                     icon: "success"
                 });
             } else if (result.isDenied) {
@@ -244,7 +245,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         var area = document.getElementById('detTrans');
         var tipe = 4;
         if (area.style.display = "block") {
-            showMenu('detTrans', 'index.php?model=transaction&action=showDetailJQuery&id=' + id + '&tipe='+ tipe);
+            showMenu('detTrans', 'index.php?model=transaction&action=showDetailJQuery&id=' + id + '&tipe=' + tipe);
         }
 
     }
@@ -269,4 +270,32 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok');
     }
 
+    function CancelTrans(id, notrans) {
+        Swal.fire({
+            title: "Are you sure Cancel Restok No." + notrans + " ?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                site = "index.php?model=transaction&action=CancelSO&id=" + id;
+                target = "content";
+                showMenu(target, site);
+                Swal.fire({
+                    title: "Cancelled!",
+                    text: "Restok No." + notrans + " has been Cancelled.",
+                    icon: "success"
+                });
+            } else if (result.isDenied) {
+                Swal.fire({
+                    title: "Not Cancelled!",
+                    text: "",
+                    icon: "info"
+                });
+            }
+        });
+    }
 </script>

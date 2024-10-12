@@ -50,6 +50,11 @@
                         $stsPrint = "fa fa-check";
                         $stsColor = "color:green;";
                         break;
+
+                    case 2:
+                        $stsPrint = "glyphicon glyphicon-remove-circle";
+                        $stsColor = "color:red;";
+                        break;
                 }
 
                 $mdl_product = new master_product();
