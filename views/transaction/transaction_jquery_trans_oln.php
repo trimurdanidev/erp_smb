@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Transaction Offline</title>
+    <title>Transaction Online</title>
 </head>
 
 <body>
@@ -24,8 +24,11 @@
 
     $mdl_mst_part = new master_product();
     $ctrl_mst_part = new master_productController($mdl_mst_part, $this->dbh);
+
+    $mdl_uplod_tr = new upload_trans_log();
+    $ctrl_uplod_tr = new upload_trans_logController($mdl_uplod_tr, $this->dbh);
     ?>
-    <h2>Transaction Jual Offline</h2>
+    <h2>Transaction Jual Online</h2>
     <div id="header_list">
     </div>
     <br>
@@ -58,8 +61,8 @@
                     <select name="payment" id="payment" class="form form-control" onchange="serchData()">
                         <option value="">All Pembayaran</option>
                         <?php foreach ($arr_payment as $key => $value) { ?>
-                            <option value="<?php echo $value->getTransfer();?>" <?php echo $value->getTransfer()==$paymn?'selected':'';?>><?php echo $value->getTransfer();?></option>
-                        <?php }?>
+                            <option value="<?php echo $value->getTransfer(); ?>" <?php echo $value->getTransfer() == $paymn ? 'selected' : ''; ?>><?php echo $value->getTransfer(); ?></option>
+                        <?php } ?>
                         <option value="Tunai">TUNAI</option>
                     </select>
                 </td>
@@ -79,7 +82,7 @@
                 <td></td>
                 <td>
                     <button type="button" class="btn btn-green"
-                        onclick="showMenu('header_list', 'index.php?model=transaction&action=showFormJQuery_transOff&type=2')"><span
+                        onclick="showMenu('header_list', 'index.php?model=transaction&action=showFormJQuery_transOff&type=1')"><span
                             class="glyphicon glyphicon-plus"></span> Tambah Data</button>
                 </td>
         </table>
@@ -91,11 +94,11 @@
                     <th class="text-left">Tanggal</th>
                     <th class="text-left">No Transaksi</th>
                     <th class="text-left">Deskrip Transaksi</th>
-                    <th class="text-left">Pelanggan</th>
-                    <th class="text-left">Qty Total</th>
                     <th class="text-left">Sub Total</th>
+                    <th class="text-left">Sub Total Release</th>
                     <th class="text-left">Diskon</th>
                     <th class="text-left">Pajak</th>
+                    <th class="text-left">Marketplace</th>
                     <th class="text-left">Total Penjualan</th>
                     <th class="text-left">Pembayaran</th>
                     <th class="text-center">#</th>
@@ -107,43 +110,45 @@
                     $no = 1;
                     $grandTotal = 0;
                     $qtyTotalAll = 0;
-                    foreach ($transaction_list as $trans_off) {
-                        $getTransLog = $ctrl_trans_log->sDataByTransId($trans_off->getId());
-                        $getBuyer = $ctrl_trans_buyer->showDataBytransId($trans_off->getId());
-                        $getPaymen = $ctrl_trans_pay->showDataBytransId($trans_off->getId());
+                    $qtyTotalAllRelease = 0;
+                    foreach ($transaction_list as $trans_onn) {
+                        $getTransLog = $ctrl_trans_log->sDataByTransId($trans_onn->getId());
+                        $getBuyer = $ctrl_trans_buyer->showDataBytransId($trans_onn->getId());
+                        $getPaymen = $ctrl_trans_pay->showDataBytransId($trans_onn->getId());
                         $getIconPayment = $ctrl_pay_transfer->showDataSingle($getPaymen->getPayment());
-                        $grandTotal += $trans_off->getTrans_total() != null ? $trans_off->getTrans_total() : 0;
-                        $qtyTotalAll += $trans_off->getQtyRelease() != null ? $trans_off->getQtyRelease() : 0;
+                        $grandTotal += $trans_onn->getTrans_total() != null ? $trans_onn->getTrans_total() : 0;
+                        $qtyTotalAll += $trans_onn->getQtyTotal() != null ? $trans_onn->getQtyTotal() : 0;
+                        $qtyTotalAllRelease += $trans_onn->getQtyRelease() != null ? $trans_onn->getQtyRelease() : 0;
                         ?>
                         <td>
                             <?php echo $no++; ?>
                         </td>
                         <td>
-                            <?php echo $trans_off->getTanggal(); ?>
+                            <?php echo $trans_onn->getTanggal(); ?>
                         </td>
                         <td>
-                            <?php echo $trans_off->getNo_trans(); ?>
+                            <?php echo $trans_onn->getNo_trans(); ?>
                         </td>
                         <td>
-                            <?php echo "OUT OFFLINE TGL." . $trans_off->getTanggal() . " OLEH " . $trans_off->getCreated_by(); ?>
+                            <?php echo "OUT ONLINE TGL." . $trans_onn->getTanggal() . " OLEH " . $trans_onn->getCreated_by(); ?>
                         </td>
                         <td>
-                            <?php echo $getBuyer->getBuyer_name() != "" ? $getBuyer->getBuyer_name() : "-"; ?>
+                            <?php echo $trans_onn->getQtyTotal(); ?> Pcs
                         </td>
                         <td>
-                            <?php echo $trans_off->getQtyRelease(); ?> Pcs
+                            <?php echo $trans_onn->getQtyRelease(); ?> Pcs
                         </td>
                         <td>
-                            <?php echo number_format(floatVal($trans_off->getTrans_total())); ?>
-                        </td>
-                        <td>
-                            <?php echo "0"; ?>
+                            <?php echo number_format(floatVal($trans_onn->getTrans_total())); ?>
                         </td>
                         <td>
                             <?php echo "0"; ?>
                         </td>
                         <td>
-                            <?php echo number_format(floatVal($trans_off->getTrans_total())); ?>
+                            <?php echo "0"; ?>
+                        </td>
+                        <td>
+                            <?php echo number_format(floatVal($trans_onn->getTrans_total())); ?>
                         </td>
                         <td>
                             <?php if ($getPaymen->getPayment() != null) { ?>
@@ -154,9 +159,9 @@
                             } ?>
                         </td>
                         <td><button type="button" class="btn btn-default" title="Detail Transaksi" data-toggle="modal"
-                                data-target="#modalTrfOff<?php echo $trans_off->getId() ?>"><span
+                                data-target="#modalTrfOff<?php echo $trans_onn->getId() ?>"><span
                                     class="glyphicon glyphicon-eye-open"></span> Details</button>
-                            <div class="modal fade" id="modalTrfOff<?php echo $trans_off->getId() ?>" tabindex="-1"
+                            <div class="modal fade" id="modalTrfOff<?php echo $trans_onn->getId() ?>" tabindex="-1"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -166,9 +171,9 @@
                                         </div>
                                         <div class="modal-body">
                                             <h4><span class="glyphicon glyphicon-th-list"></span>
-                                                <?php echo $trans_off->getNo_trans(); ?>
+                                                <?php echo $trans_onn->getNo_trans(); ?>
                                             </h4>
-                                            <?php if ($trans_off->getId() == null || $trans_off->getId() == "") {
+                                            <?php if ($trans_onn->getId() == null || $trans_onn->getId() == "") {
                                                 ?>
                                                 <table class="table table-striped">
                                                     <td align="center"><b>Detail Penjualan Tidak Tersedia</b></td>
@@ -190,7 +195,7 @@
                                                         </thead>
                                                         <tbody>
                                                             <?php
-                                                            $showDtlTrans = $ctrl_trans_detail->showDataDtlArray($trans_off->getId());
+                                                            $showDtlTrans = $ctrl_trans_detail->showDataDtlArray($trans_onn->getId());
                                                             $index = 1;
                                                             $totalPnjl = 0;
                                                             foreach ($showDtlTrans as $val_part) {
@@ -256,17 +261,29 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" onclick="previewFaktur('<?php echo $trans_off->getId();?>','<?php echo $trans_off->getNo_trans();?>')"><span class="glyphicon glyphicon-book"></span> Faktur</button>
+                            <?php if ($trans_onn->getTrans_status() == '0') { ?>
+                                <button type="button" class="btn btn-green" title="Release Transaksi"
+                                    onclick="ReleaseTrans('<?php echo $trans_onn->getId(); ?>')"><span
+                                        class="glyphicon glyphicon-thumbs-up"></span> Release</button>
+                                <button type="button" class="btn btn-red" title="Cancel Transaksi"
+                                    onclick="CancelTrans('<?php echo $trans_onn->getId(); ?>')"><span
+                                        class="glyphicon glyphicon-remove"></span> Cancel</button>
+                            <?php } ?>
                         </td>
                     </tr>
                     <?php
                     }
                     ?>
                 <tr>
-                    <td colspan="5"><b>Total</b></td>
-                    <td colspan="4"><b>
+                    <td colspan="4"><b>Total</b></td>
+                    <td colspan="1"><b>
                             <?php echo $qtyTotalAll; ?> Pcs
                         </b></td>
+                    <td colspan="3"><b>
+                            <?php echo $qtyTotalAllRelease; ?> Pcs
+                        </b>
+                    </td>
+                    </td>
                     <td colspan="3"><b>
                             <?php echo number_format(floatVal($grandTotal)); ?>
                         </b></td>
@@ -297,8 +314,8 @@
         showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off');
     }
 
-    function previewFaktur(id,notrans){
-        window.open("index.php?model=transaction&action=preview_FakturOffline&id="+id+"&notrans="+notrans);
+    function previewFaktur(id, notrans) {
+        window.open("index.php?model=transaction&action=preview_FakturOffline&id=" + id + "&notrans=" + notrans);
     }
 </script>
 <style>

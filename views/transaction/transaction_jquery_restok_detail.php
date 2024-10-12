@@ -48,13 +48,19 @@
                     case 0:
                         $stsPrint = "fa fa-clock-o";
                         $stsColor = "color:red;";
-                        $$ttleProdukDtl = "Quantity Pending";
+                        $$ttleProdukDtl = "Quantity On Process";
                         break;
 
                     case 1:
                         $stsPrint = "fa fa-check";
                         $stsColor = "color:green;";
                         $$ttleProdukDtl = "Quantity Success";
+                        break;
+
+                    case 2:
+                        $stsPrint = "glyphicon glyphicon-remove-circle";
+                        $stsColor = "color:red;";
+                        $$ttleProdukDtl = "Quantity Cancelled";
                         break;
                 }
 
@@ -64,10 +70,14 @@
                 $mdl_tr_log = new transaction_log();
                 $ctrl_tr_log = new transaction_logController($mdl_tr_log, $this->dbh);
 
+                $mdl_tr_stk = new master_stock();
+                $ctrl_tr_stk = new master_stockController($mdl_tr_stk,$this->dbh);
+
                 $number = 1;
                 foreach ($showDetail as $valDetail) {
                     $getProduct = $ctrl_product->showDataByKode($valDetail->getKd_product());
                     $getTrLog = $ctrl_tr_log->showDataByTransIdSingle($getTrans->getId(), $valDetail->getKd_product());
+                    $getDtlStok = $ctrl_tr_stk->showDtlTransIdSingle($getTrans->getId(), $valDetail->getKd_product());
                     ?>
                     <td>
                         <?php echo $number++; ?>
@@ -79,13 +89,13 @@
                         <?php echo $getProduct->getNm_product(); ?>
                     </td>
                     <td>
-                        <?php echo $getTrLog->getQty_before(); ?>
+                        <?php echo $sts==0 || $sts==1?$getTrLog->getQty_before():$getDtlStok->getQty_stock(); ?>
                     </td>
                     <td>
                         <?php echo $valDetail->getQty(); ?>
                     </td>
                     <td><span style="<?php echo $stsColor; ?>">
-                            <?php echo $getTrLog->getQty_after(); ?>
+                            <?php echo $sts==0 || $sts==1?$getTrLog->getQty_after():$getDtlStok->getQty_stock(); ?>
                         </span>
 
                     </td>

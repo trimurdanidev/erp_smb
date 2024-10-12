@@ -18,10 +18,14 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         <form name="frmUpload" id="frmUpload" action="index.php?model=transaction&action=saveUploadSo" method="POST"
             enctype="multipart/form-data">
             <table border="1" cellpadding="2" style="border-collapse: collapse;" width="50%">
-                <tr>
+                <!-- <tr>
                     <td><button class="btn btn-orange" onclick="downloadTemplate()"
                             title="Download Format Template Excel SO"> <span class="glyphicon glyphicon-save"></span>
                             Download Template</button>
+                    </td>
+                </tr> -->
+                <tr>
+                    <td><a href="index.php?model=transaction&action=export_stock_opname&search=<?php echo $search; ?>"><span class="glyphicon glyphicon-export"></span> Download Template & Stok Update</a>
                     </td>
                 </tr>
                 <tr>
@@ -76,7 +80,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     <td>
                         <select name="sts" id="sts" class="form form-control" onchange="serchData()">
                             <option value="0,1" <?php echo $stsId == '0,1' ? "selected" : ""; ?>>All Status</option>
-                            <option value="0" <?php echo $stsId == '0' ? "selected" : ""; ?>>Pending</option>
+                            <option value="0" <?php echo $stsId == '0' ? "selected" : ""; ?>>On Process</option>
                             <option value="1" <?php echo $stsId == '1' ? "selected" : ""; ?>>Success</option>
                             <option value="2" <?php echo $stsId == '2' ? "selected" : ""; ?>>Cancelled</option>
                         </select>
@@ -121,7 +125,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         } else if ($getTrans->getTrans_status() == '1') {
                             $sts = "fa fa-check";
                             $stringsts = "Success";
-                        } else {
+                        } else if ($getTrans->getTrans_status() == '2'){
                             $sts = "fa fa-close";
                             $stringsts = "Cancelled";
                         }

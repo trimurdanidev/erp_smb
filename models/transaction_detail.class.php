@@ -4,6 +4,7 @@
 	var $id;
 	var $trans_id;
 	var $kd_product;
+	var $trans_descript;
 	var $qty;
 	var $harga;
 
@@ -29,6 +30,13 @@
 
 	public function setKd_product($kd_product) {
 	   $this->kd_product = $kd_product;
+	}
+	public function getTrans_descript() {
+	   return $this->trans_descript;
+	}
+
+	public function setTrans_descript($trans_descript) {
+	   $this->trans_descript = $trans_descript;
 	}
 	public function getQty() {
 	   return $this->qty;
