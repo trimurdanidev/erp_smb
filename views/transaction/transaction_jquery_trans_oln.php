@@ -98,9 +98,8 @@
                     <th class="text-left">Sub Total Release</th>
                     <th class="text-left">Diskon</th>
                     <th class="text-left">Pajak</th>
-                    <th class="text-left">Marketplace</th>
                     <th class="text-left">Total Penjualan</th>
-                    <th class="text-left">Pembayaran</th>
+                    <th class="text-left">Marketplace</th>
                     <th class="text-center">#</th>
                 </tr>
             </thead>
@@ -113,12 +112,17 @@
                     $qtyTotalAllRelease = 0;
                     foreach ($transaction_list as $trans_onn) {
                         $getTransLog = $ctrl_trans_log->sDataByTransId($trans_onn->getId());
-                        $getBuyer = $ctrl_trans_buyer->showDataBytransId($trans_onn->getId());
-                        $getPaymen = $ctrl_trans_pay->showDataBytransId($trans_onn->getId());
-                        $getIconPayment = $ctrl_pay_transfer->showDataSingle($getPaymen->getPayment());
-                        $grandTotal += $trans_onn->getTrans_total() != null ? $trans_onn->getTrans_total() : 0;
                         $qtyTotalAll += $trans_onn->getQtyTotal() != null ? $trans_onn->getQtyTotal() : 0;
                         $qtyTotalAllRelease += $trans_onn->getQtyRelease() != null ? $trans_onn->getQtyRelease() : 0;
+                        $sumTransDetail = $ctrl_trans_detail->getSumOnlineTrans($trans_onn->getId());
+                        $totalan_qty = 0;
+                        $totalan_hg = 0;
+                        foreach ($sumTransDetail as $row) {
+                            // echo $row->getTrans_descript() . "-" . $row->getHarga() . "-" . $row->getQty() . "<br>";
+                            $totalan_qty += $row->getQty();
+                            $totalan_hg += ($row->getHarga() * $row->getQty());
+                        }
+                        $grandTotal += $totalan_hg != null ? $totalan_hg : 0;
                         ?>
                         <td>
                             <?php echo $no++; ?>
@@ -139,24 +143,19 @@
                             <?php echo $trans_onn->getQtyRelease(); ?> Pcs
                         </td>
                         <td>
-                            <?php echo number_format(floatVal($trans_onn->getTrans_total())); ?>
-                        </td>
-                        <td>
                             <?php echo "0"; ?>
                         </td>
                         <td>
                             <?php echo "0"; ?>
                         </td>
                         <td>
-                            <?php echo number_format(floatVal($trans_onn->getTrans_total())); ?>
+                            <?php echo number_format(floatVal($totalan_hg)); ?>
                         </td>
                         <td>
-                            <?php if ($getPaymen->getPayment() != null) { ?>
-                                <img src="./img/icon/<?php echo $getPaymen->getPayment() == 'Tunai' ? 'ico_cash.png' : $getIconPayment->getImg(); ?>"
+                            <?php if ($row->getTrans_descript() != null) { ?>
+                                <img src="./img/icon/ico_<?php echo $row->getTrans_descript(); ?>.png"
                                     style="width:80px; height:70px;">
-                            <?php } else {
-                                "-";
-                            } ?>
+                            <?php } ?>
                         </td>
                         <td><button type="button" class="btn btn-default" title="Detail Transaksi" data-toggle="modal"
                                 data-target="#modalTrfOff<?php echo $trans_onn->getId() ?>"><span
@@ -166,7 +165,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h3 class="modal-title fs-5" id="exampleModalLabel">Detail Penjualan Offline
+                                            <h3 class="modal-title fs-5" id="exampleModalLabel">Detail Penjualan Online
                                             </h3>
                                         </div>
                                         <div class="modal-body">
@@ -263,10 +262,10 @@
                             </div>
                             <?php if ($trans_onn->getTrans_status() == '0') { ?>
                                 <button type="button" class="btn btn-green" title="Release Transaksi"
-                                    onclick="ReleaseTrans('<?php echo $trans_onn->getId(); ?>')"><span
-                                        class="glyphicon glyphicon-thumbs-up"></span> Release</button>
+                                    onclick="ReleaseTrans('<?php echo $trans_onn->getId(); ?>','<?php echo $trans_onn->getNo_trans(); ?>')"><span
+                                        class="glyphicon glyphicon-thumbs-up"></span> Confirm</button>
                                 <button type="button" class="btn btn-red" title="Cancel Transaksi"
-                                    onclick="CancelTrans('<?php echo $trans_onn->getId(); ?>')"><span
+                                    onclick="CancelTrans('<?php echo $trans_onn->getId(); ?>','<?php echo $trans_onn->getNo_trans(); ?>')"><span
                                         class="glyphicon glyphicon-remove"></span> Cancel</button>
                             <?php } ?>
                         </td>
@@ -279,8 +278,16 @@
                     <td colspan="1"><b>
                             <?php echo $qtyTotalAll; ?> Pcs
                         </b></td>
-                    <td colspan="3"><b>
+                    <td colspan="1"><b>
                             <?php echo $qtyTotalAllRelease; ?> Pcs
+                        </b>
+                    </td>
+                    <td colspan="1"><b>
+                            <?php echo '0'; ?>
+                        </b>
+                    </td>
+                    <td colspan="1"><b>
+                            <?php echo '0'; ?>
                         </b>
                     </td>
                     </td>
@@ -311,11 +318,65 @@
     }
 
     function resetFilter() {
-        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off');
+        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln');
     }
 
-    function previewFaktur(id, notrans) {
-        window.open("index.php?model=transaction&action=preview_FakturOffline&id=" + id + "&notrans=" + notrans);
+    function ReleaseTrans(id,notrans) {
+        Swal.fire({
+            title: "Are you sure Confirm Closing Online No." + notrans + " ?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                site = "index.php?model=transaction&action=confirmOnline&id=" + id;
+                target = "content";
+                showMenu(target, site);
+                // Swal.fire({
+                //     title: "Success Confirm",
+                //     text: "Transaksi Online No." + notrans + " has been Confirmed.",
+                //     icon: "success"
+                // });
+            } else if (result.isDenied) {
+                Swal.fire({
+                    title: "Not Confirmed!",
+                    text: "",
+                    icon: "info"
+                });
+            }
+        });
+    }
+
+    function CancelTrans(id,notrans) {
+        Swal.fire({
+            title: "Are you sure Cancel Transaksi Online No." + notrans + " ?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                site = "index.php?model=transaction&action=CancelSO&id=" + id;
+                target = "content";
+                showMenu(target, site);
+                Swal.fire({
+                    title: "Cancelled!",
+                    text: "Transaksi Online No." + notrans + " has been Cancelled.",
+                    icon: "success"
+                });
+            } else if (result.isDenied) {
+                Swal.fire({
+                    title: "Not Cancelled!",
+                    text: "",
+                    icon: "info"
+                });
+            }
+        });
     }
 </script>
 <style>

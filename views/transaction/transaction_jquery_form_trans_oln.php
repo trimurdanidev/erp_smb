@@ -55,7 +55,7 @@
                                 </select>
                             </td>
                             <td>
-                                <button class="btn btn-default" type="button" onclick="export_closing()"
+                                <button class="btn btn-navy" type="button" onclick="export_closing()"
                                     title="Download Format Template Closing & Stok Update"> <span
                                         class="glyphicon glyphicon-save"></span>
                                     Download</button>
