@@ -117,5 +117,14 @@ class transaction_detailController extends transaction_detailControllerGenerate
             </script>";
         }
     }
+
+    public function getSumOnlineTrans($idTrans)
+    {
+        $query = "SELECT /*SUM(qty) `totalQty`,SUM(harga) `totalValue`,trans_descript `transDesc`*/ a .*,b .* FROM `transaction_detail` a inner join `transaction` b on a .trans_id  = b .id WHERE a .trans_id=$idTrans AND a .qty!=0;";
+        $row = $this->createList($query);
+        // $this->loadData($this->transaction_detail, $row);
+                
+        return $row;
+    }
 }
 ?>

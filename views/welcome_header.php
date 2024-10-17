@@ -2,7 +2,7 @@
     <?php
     if($initial_company->getBgfile()==""){
         ?>
-        <img class="img-responsive" src="./images/SMB_logo_tengah.jpg" />
+        <img class="img-responsive" src="./images/smb_logo_new.png" />
         <?php
     }else{
         ?>

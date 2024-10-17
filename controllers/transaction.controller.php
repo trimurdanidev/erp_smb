@@ -1147,82 +1147,86 @@ class transactionController extends transactionControllerGenerate
                 $mdl_upload_tr_log->setUpdated_at('');
                 $ctrl_upload_tr_log->saveData();
 
+                $Hitungbaris = 1;
                 foreach ($dataSheet->rows() as $k => $r) {
-                    if ($k === 0) {
-                        $header_values = $r;
-                        continue;
+                    if ($r[4] > 0) {
+                        if ($k === 0) {
+                            $header_values = $r;
+                            continue;
+                        }
+
+                        $jml_data = $Hitungbaris++;
+                        $cul_no = $r[0];
+                        $cul_kd_prod = str_replace("#", "", str_replace(" ", "", $r[1]));
+                        $cul_nm_prod = $r[2];
+                        $cul_qty_stok = $r[3];
+                        $cul_qty = $r[4];
+                        $ket = $r[5];
+                        // echo print_r($cul_kd_prod."-".$cul_nm_prod."-".$cul_qty."-".$ket."<br>");
+
+                        $count_from_product = $ctrl_product->checkDataByKode($cul_kd_prod);
+                        $count_from_stock = $ctrl_stock->checkData($cul_kd_prod);
+
+                        if ($count_from_product == 0 && $count_from_stock == 0):
+                            echo "Gagal Upload!!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk & Master Stok";
+                            //delete trans & upload log
+                            $this->deleteData($this->getLastId());
+                            $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                            return false;
+                        elseif ($count_from_product == 0):
+                            echo "Gagal Upload !!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk";
+                            //delete trans & upload log
+                            $this->deleteData($this->getLastId());
+                            $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                            return false;
+                        elseif ($count_from_stock == 0):
+                            //delete trans & upload log
+                            $this->deleteData($this->getLastId());
+                            $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                            // echo "Kon salah 2";
+                            return false;
+                        else:
+                            //get_stock_produk
+                            $getStock = $ctrl_stock->showData($cul_kd_prod);
+                            $getHarga = $ctrl_product->showDataByKode($cul_kd_prod);
+                            $total += $cul_qty;
+
+                            //transaction_detail
+                            // $mdl_transaction_dtl->setId($id);
+                            $mdl_transaction_dtl->setTrans_id($this->getLastId());
+                            $mdl_transaction_dtl->setKd_product($cul_kd_prod);
+                            $mdl_transaction_dtl->setTrans_descript("");
+                            $mdl_transaction_dtl->setQty($cul_qty);
+                            $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                            $ctrl_transaction_dtl->saveData();
+
+                            //transaction_log
+                            // $mdl_transaction_log->setId($id);
+                            $mdl_transaction_log->setTrans_id($this->getLastId());
+                            $mdl_transaction_log->setKd_product($cul_kd_prod);
+                            $mdl_transaction_log->setTrans_type(4);
+                            $mdl_transaction_log->setQty_before($getStock->getQty_stock());
+                            $mdl_transaction_log->setQty_after($getStock->getQty_stock() + $cul_qty);
+                            $mdl_transaction_log->setCreated_by($user);
+                            $mdl_transaction_log->setCreated_at($dateTime);
+                            $mdl_transaction_log->setUpdated_by('');
+                            $mdl_transaction_log->setUpdated_at('');
+                            $ctrl_transaction_log->saveData();
+
+                            //master_stock
+                            // $mdl_stock->setKd_product($kd_prod);
+                            // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
+                            // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
+                            // $mdl_stock->setCreated_by($getStock->getCreated_by());
+                            // $mdl_stock->setUpdated_by($user);
+                            // $mdl_stock->setCreated_at($getStock->getCreated_at());
+                            // $mdl_stock->setUpdated_at($dateTime);
+                            // $ctrl_stock->saveData();
+
+                        endif;
                     }
-                    $jml_data = $k++;
-                    $cul_no = $r[0];
-                    $cul_kd_prod = str_replace("#", "", str_replace(" ", "", $r[1]));
-                    $cul_nm_prod = $r[2];
-                    $cul_qty_stok = $r[3];
-                    $cul_qty = $r[4];
-                    $ket = $r[5];
-                    // echo print_r($kd_prod."-".$nm_prod."-".$qty."-".$ket."<br>");
-
-                    $count_from_product = $ctrl_product->checkDataByKode($cul_kd_prod);
-                    $count_from_stock = $ctrl_stock->checkData($cul_kd_prod);
-
-                    if ($count_from_product == 0 && $count_from_stock == 0):
-                        echo "Gagal Upload!!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk & Master Stok";
-                        //delete trans & upload log
-                        $this->deleteData($this->getLastId());
-                        $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                        return false;
-                    elseif ($count_from_product == 0):
-                        echo "Gagal Upload !!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk";
-                        //delete trans & upload log
-                        $this->deleteData($this->getLastId());
-                        $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                        return false;
-                    elseif ($count_from_stock == 0):
-                        //delete trans & upload log
-                        $this->deleteData($this->getLastId());
-                        $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                        // echo "Kon salah 2";
-                        return false;
-                    else:
-                        //get_stock_produk
-                        $getStock = $ctrl_stock->showData($cul_kd_prod);
-                        $getHarga = $ctrl_product->showDataByKode($cul_kd_prod);
-                        $total += $cul_qty;
-
-                        //transaction_detail
-                        // $mdl_transaction_dtl->setId($id);
-                        $mdl_transaction_dtl->setTrans_id($this->getLastId());
-                        $mdl_transaction_dtl->setKd_product($cul_kd_prod);
-                        $mdl_transaction_dtl->setTrans_descript("");
-                        $mdl_transaction_dtl->setQty($cul_qty);
-                        $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
-                        $ctrl_transaction_dtl->saveData();
-
-                        //transaction_log
-                        // $mdl_transaction_log->setId($id);
-                        $mdl_transaction_log->setTrans_id($this->getLastId());
-                        $mdl_transaction_log->setKd_product($cul_kd_prod);
-                        $mdl_transaction_log->setTrans_type(4);
-                        $mdl_transaction_log->setQty_before($getStock->getQty_stock());
-                        $mdl_transaction_log->setQty_after($getStock->getQty_stock() + $cul_qty);
-                        $mdl_transaction_log->setCreated_by($user);
-                        $mdl_transaction_log->setCreated_at($dateTime);
-                        $mdl_transaction_log->setUpdated_by('');
-                        $mdl_transaction_log->setUpdated_at('');
-                        $ctrl_transaction_log->saveData();
-
-                        //master_stock
-                        // $mdl_stock->setKd_product($kd_prod);
-                        // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
-                        // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
-                        // $mdl_stock->setCreated_by($getStock->getCreated_by());
-                        // $mdl_stock->setUpdated_by($user);
-                        // $mdl_stock->setCreated_at($getStock->getCreated_at());
-                        // $mdl_stock->setUpdated_at($dateTime);
-                        // $ctrl_stock->saveData();
-
-                    endif;
                 }
-
+                echo ($Hitungbaris - 1) . " Baris Data Dengan Quantity\n\n";
                 $showUpdadte_upl = $ctrl_upload_tr_log->showData($ctrl_upload_tr_log->getLastId());
                 $showUpdate_trs = $this->showData($this->getLastId());
 
@@ -1249,7 +1253,7 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
                 $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
                 $this->saveData();
-                echo "Uploas Success";
+                echo "Success TerUpload";
             } else {
                 echo SimpleXLS::parseError();
             }
@@ -1477,6 +1481,8 @@ class transactionController extends transactionControllerGenerate
                 $this->showAllJQuery_so();
             elseif ($getPrdLog->getTrans_type() == '4'):
                 $this->showAllJQuery_restok();
+            elseif ($getPrdLog->getTrans_type() == '1'):
+                $this->showAllJQuery_trans_onln();
             endif;
 
         } else {
@@ -1720,83 +1726,87 @@ class transactionController extends transactionControllerGenerate
                 $mdl_upload_tr_log->setUpdated_at('');
                 $ctrl_upload_tr_log->saveData();
 
+                $Hitungbaris = 1;
                 foreach ($dataSheet->rows() as $k => $r) {
-                    if ($k === 0) {
-                        $header_values = $r;
-                        continue;
+                    if ($r[4] > 0) {
+                        if ($k === 0) {
+                            $header_values = $r;
+                            continue;
+                        }
+                        $jml_data = $Hitungbaris++;
+                        $cul_no = $r[0];
+                        $cul_kd_prod = str_replace("#", "", str_replace(" ", "", $r[1]));
+                        $cul_nm_prod = $r[2];
+                        $cul_qty_stok = $r[3];
+                        $cul_qty = $r[4];
+                        $cul_marketplace = $r[5];
+                        $ket = $r[6];
+                        // echo print_r($kd_prod."-".$nm_prod."-".$qty."-".$ket."<br>");
+
+                        $count_from_product = $ctrl_product->checkDataByKode($cul_kd_prod);
+                        $count_from_stock = $ctrl_stock->checkData($cul_kd_prod);
+
+                        if ($count_from_product == 0 && $count_from_stock == 0):
+                            echo "Gagal Upload!!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk & Master Stok";
+                            //delete trans & upload log
+                            $this->deleteData($this->getLastId());
+                            $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                            return false;
+                        elseif ($count_from_product == 0):
+                            echo "Gagal Upload !!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk";
+                            //delete trans & upload log
+                            $this->deleteData($this->getLastId());
+                            $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                            return false;
+                        elseif ($count_from_stock == 0):
+                            //delete trans & upload log
+                            $this->deleteData($this->getLastId());
+                            $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
+                            // echo "Kon salah 2";
+                            return false;
+                        else:
+                            //get_stock_produk
+                            $getStock = $ctrl_stock->showData($cul_kd_prod);
+                            $getHarga = $ctrl_product->showDataByKode($cul_kd_prod);
+                            $total += $cul_qty;
+
+                            //transaction_detail
+                            // $mdl_transaction_dtl->setId($id);
+                            $mdl_transaction_dtl->setTrans_id($this->getLastId());
+                            $mdl_transaction_dtl->setKd_product($cul_kd_prod);
+                            $mdl_transaction_dtl->setTrans_descript($cul_marketplace);
+                            $mdl_transaction_dtl->setQty($cul_qty);
+                            $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                            $ctrl_transaction_dtl->saveData();
+
+                            //transaction_log
+                            // $mdl_transaction_log->setId($id);
+                            $mdl_transaction_log->setTrans_id($this->getLastId());
+                            $mdl_transaction_log->setKd_product($cul_kd_prod);
+                            $mdl_transaction_log->setTrans_type(4);
+                            $mdl_transaction_log->setQty_before($getStock->getQty_stock());
+                            $mdl_transaction_log->setQty_after($getStock->getQty_stock() - $cul_qty);
+                            $mdl_transaction_log->setCreated_by($user);
+                            $mdl_transaction_log->setCreated_at($dateTime);
+                            $mdl_transaction_log->setUpdated_by('');
+                            $mdl_transaction_log->setUpdated_at('');
+                            $ctrl_transaction_log->saveData();
+
+                            //master_stock
+                            // $mdl_stock->setKd_product($kd_prod);
+                            // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
+                            // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
+                            // $mdl_stock->setCreated_by($getStock->getCreated_by());
+                            // $mdl_stock->setUpdated_by($user);
+                            // $mdl_stock->setCreated_at($getStock->getCreated_at());
+                            // $mdl_stock->setUpdated_at($dateTime);
+                            // $ctrl_stock->saveData();
+
+                        endif;
                     }
-                    $jml_data = $k++;
-                    $cul_no = $r[0];
-                    $cul_kd_prod = str_replace("#", "", str_replace(" ", "", $r[1]));
-                    $cul_nm_prod = $r[2];
-                    $cul_qty_stok = $r[3];
-                    $cul_qty = $r[4];
-                    $cul_marketplace = $r[5];
-                    $ket = $r[6];
-                    // echo print_r($kd_prod."-".$nm_prod."-".$qty."-".$ket."<br>");
-
-                    $count_from_product = $ctrl_product->checkDataByKode($cul_kd_prod);
-                    $count_from_stock = $ctrl_stock->checkData($cul_kd_prod);
-
-                    if ($count_from_product == 0 && $count_from_stock == 0):
-                        echo "Gagal Upload!!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk & Master Stok";
-                        //delete trans & upload log
-                        $this->deleteData($this->getLastId());
-                        $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                        return false;
-                    elseif ($count_from_product == 0):
-                        echo "Gagal Upload !!\nKode Product $cul_kd_prod - $cul_nm_prod Belum Ada di Master Produk";
-                        //delete trans & upload log
-                        $this->deleteData($this->getLastId());
-                        $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                        return false;
-                    elseif ($count_from_stock == 0):
-                        //delete trans & upload log
-                        $this->deleteData($this->getLastId());
-                        $ctrl_upload_tr_log->deleteData($ctrl_upload_tr_log->getLastId());
-                        // echo "Kon salah 2";
-                        return false;
-                    else:
-                        //get_stock_produk
-                        $getStock = $ctrl_stock->showData($cul_kd_prod);
-                        $getHarga = $ctrl_product->showDataByKode($cul_kd_prod);
-                        $total += $cul_qty;
-
-                        //transaction_detail
-                        // $mdl_transaction_dtl->setId($id);
-                        $mdl_transaction_dtl->setTrans_id($this->getLastId());
-                        $mdl_transaction_dtl->setKd_product($cul_kd_prod);
-                        $mdl_transaction_dtl->setTrans_descript($cul_marketplace);
-                        $mdl_transaction_dtl->setQty($cul_qty);
-                        $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
-                        $ctrl_transaction_dtl->saveData();
-
-                        //transaction_log
-                        // $mdl_transaction_log->setId($id);
-                        $mdl_transaction_log->setTrans_id($this->getLastId());
-                        $mdl_transaction_log->setKd_product($cul_kd_prod);
-                        $mdl_transaction_log->setTrans_type(4);
-                        $mdl_transaction_log->setQty_before($getStock->getQty_stock());
-                        $mdl_transaction_log->setQty_after($getStock->getQty_stock() - $cul_qty);
-                        $mdl_transaction_log->setCreated_by($user);
-                        $mdl_transaction_log->setCreated_at($dateTime);
-                        $mdl_transaction_log->setUpdated_by('');
-                        $mdl_transaction_log->setUpdated_at('');
-                        $ctrl_transaction_log->saveData();
-
-                        //master_stock
-                        // $mdl_stock->setKd_product($kd_prod);
-                        // $mdl_stock->setQty_stock($getStock->getQty_stock() + $qty);
-                        // $mdl_stock->setQty_stock_promo($getStock->getQty_stock_promo());
-                        // $mdl_stock->setCreated_by($getStock->getCreated_by());
-                        // $mdl_stock->setUpdated_by($user);
-                        // $mdl_stock->setCreated_at($getStock->getCreated_at());
-                        // $mdl_stock->setUpdated_at($dateTime);
-                        // $ctrl_stock->saveData();
-
-                    endif;
                 }
 
+                echo ($Hitungbaris - 1) . " Baris Data Dengan Quantity\n\n";
                 $showUpdadte_upl = $ctrl_upload_tr_log->showData($ctrl_upload_tr_log->getLastId());
                 $showUpdate_trs = $this->showData($this->getLastId());
 
@@ -1823,11 +1833,106 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
                 $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
                 $this->saveData();
-                echo "Uploas Success";
+                echo "Success TerUpload";
             } else {
                 echo SimpleXLS::parseError();
             }
         endif;
+    }
+
+    public function CancelOnn()
+    {
+        # code...
+    }
+
+    public function confirmOnline()
+    {
+        $this->setIsadmin(true);
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+        $user = $this->user;
+        $total = 0;
+
+        $getTransaction = $this->showData($id);
+
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+
+        $mdl_part = new master_product();
+        $ctrl_part = new master_productController($mdl_part, $this->dbh);
+
+        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+
+
+        if ($id != "") {
+            foreach ($showDtlTrans as $valDetail) {
+                $getStok = $ctrl_stock->showData($valDetail->getKd_product());
+                $getPart = $ctrl_part->showDataByKode($valDetail->getKd_product());
+
+                if ($getStok->getQty_stock() > $valDetail->getQty() || $getStok->getQty_stock() == $valDetail->getQty()) {
+
+
+                    $total += $valDetail->getQty();
+                    //master_stock
+                    $mdl_stock->setKd_product($valDetail->getKd_product());
+                    $mdl_stock->setQty_stock($getStok->getQty_stock() - $valDetail->getQty());
+                    $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
+                    $mdl_stock->setCreated_by($getStok->getCreated_by());
+                    $mdl_stock->setUpdated_by($user);
+                    $mdl_stock->setCreated_at($getStok->getCreated_at());
+                    $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
+                    $ctrl_stock->saveData();
+                    $setStatus = 'Y';
+                } else {
+                    // echo "Gagal Confirm!\nStok " . $getPart->getNm_product() . " Tidak Mencukupi.\nSisa Stoknya " . $getStok->getQty_stock() . " Pcs\n";
+                    echo "<script language='javascript' type='text/javascript'>
+                        Swal.fire({
+                        title : 'Gagal Confirm !',
+                        icon : 'error',
+                        text : 'Sisa Stock Tidak Mencukupi'
+                    });
+                    </script>";
+                    $setStatus = 'N';
+                }
+            }
+            //transaction
+            if ($setStatus == 'Y') {
+                $this->transaction->setId($id);
+                $this->transaction->setNo_trans($getTransaction->getNo_trans());
+                $this->transaction->setTanggal($getTransaction->getTanggal());
+                $this->transaction->setType_trans($getTransaction->getType_trans());
+                $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
+                $this->transaction->setQtyRelease($total);
+                $this->transaction->setTrans_total(0);
+                $this->transaction->setTrans_status(1);
+                $this->transaction->setCreated_by($getTransaction->getCreated_by());
+                $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
+                $this->transaction->setCreated_at($getTransaction->getCreated_at());
+                $this->transaction->setUpdated_by($user);
+                $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+                $this->updateData();
+                // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
+                echo "<script language='javascript' type='text/javascript'>
+                Swal.fire({
+                title : 'Gagal Confirm !',
+                icon : 'error',
+                text : 'Silahkan Cek Koneksi Internet Anda'
+            });
+            </script>";
+                $this->showAllJQuery_trans_onln();
+            }
+            $this->showAllJQuery_trans_onln();
+        } else {
+            echo "<script language='javascript' type='text/javascript'>
+                Swal.fire({
+                title : 'Gagal Confirm !',
+                icon : 'error',
+                text : 'Silahkan Cek Koneksi Internet Anda'
+            });
+            </script>";
+        }
     }
 }
 ?>

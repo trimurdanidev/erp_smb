@@ -10,7 +10,7 @@
     
     if($initial_company->getBgfile()==""){
 //        echo "1";?>
-        <img src="./images/SMB_logo.png" style="width:40px;height:40px;">
+        <!-- <img src="./images/smb_logo_new.png" style="width:70;height:40px;"> -->
         
         <?php
     }else{
