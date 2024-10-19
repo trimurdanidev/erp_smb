@@ -98,7 +98,7 @@
 	    $sql .= "`updated_at` ";
             $sql .= ") ";
             $sql .= " VALUES (";
-	    $sql .= " null,";
+	    $sql .= " '',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getTrans_id(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getMethod(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_payment->getPayment(), $this->dbh)."',";

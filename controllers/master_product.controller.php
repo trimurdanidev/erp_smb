@@ -18,6 +18,53 @@ if (!isset($_SESSION)) {
 
 class master_productController extends master_productControllerGenerate
 {
+    function saveFormPost()
+    {
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockController($mdl_stock,$this->dbh);
+
+        $user = $this->user;
+        $id = isset($_POST['id']) ? $_POST['id'] : "";
+        $kd_product = rand();
+        $nm_product = isset($_POST['nm_product']) ? $_POST['nm_product'] : "";
+        $image_product = isset($_POST['image_product']) ? $_POST['image_product'] : "";
+        $hrg_modal = isset($_POST['hrg_modal']) ? $_POST['hrg_modal'] : "";
+        $hrg_jual = isset($_POST['hrg_jual']) ? $_POST['hrg_jual'] : "";
+        $kategori_id = 2;
+        $tipe_id = 1;
+        $sts_aktif = 1;
+        $created_by = $user;
+        $updated_by = isset($_POST['updated_by']) ? $_POST['updated_by'] : "";
+        $created_at = date('Y-m-d h:i:s');
+        $updated_at = isset($_POST['updated_at']) ? $_POST['updated_at'] : "";
+
+        $this->master_product->setId($id);
+        $this->master_product->setKd_product($kd_product);
+        $this->master_product->setNm_product($nm_product);
+        $this->master_product->setImage_product($image_product);
+        $this->master_product->setHrg_modal($hrg_modal);
+        $this->master_product->setHrg_jual($hrg_jual);
+        $this->master_product->setKategori_id($kategori_id);
+        $this->master_product->setTipe_id($tipe_id);
+        $this->master_product->setSts_aktif($sts_aktif);
+        $this->master_product->setCreated_by($created_by);
+        $this->master_product->setUpdated_by($updated_by);
+        $this->master_product->setCreated_at($created_at);
+        $this->master_product->setUpdated_at($updated_at);
+        $this->saveData();
+
+        //stock
+        $mdl_stock->setKd_product($kd_product);
+        $mdl_stock->setQty_stock(0);
+        $mdl_stock->setQty_stock_promo(0);
+        $mdl_stock->setCreated_by($created_by);
+        $mdl_stock->setUpdated_by($updated_by);
+        $mdl_stock->setCreated_at($created_at);
+        $mdl_stock->setUpdated_at($updated_at);
+        $ctrl_stock->saveData();
+
+
+    }
     function showDataByKode($kode)
     {
         $sql = "SELECT * FROM master_product WHERE kd_product= '" . $this->toolsController->replacecharFind($kode, $this->dbh) . "'";
