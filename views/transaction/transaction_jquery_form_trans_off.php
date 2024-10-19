@@ -255,16 +255,20 @@
 
     }
 
-    function hapusElemen(no) {
-        $(no).remove();
+    function hapusElemen(no, id) {
+        var x = $(id).attr('id').split('_');
         var gtotal = $('#gTotal').val()
         var btnHps = $('#' + no[0] + '_hpsDtl').val();
+        var subTtl = $('#' + x[0] + '_ttl').val();
 
-        // Swal.fire(gtotal+btnHps);
-        // var i = 0 ;
-        // $('.tbody tr').each(function () {
-        //     jml = '#t' + ( i + 1 ) + '_ttl';
-        // });
+        // console.log(subTtl);
+        // console.log(gtotal);
+
+        balik = gtotal - subTtl;
+        // console.log(balik)
+        $('#gTotal').val(parseInt(balik))
+        $('#totalnya').val(formatMoney(parseInt(balik)));
+        $(no).remove();
 
     }
 
@@ -282,7 +286,7 @@
         }
 
 
-        var jum = 0; i = 0;
+        var jum = 0; i = 0; jml=0;
         $('.tbody tr').each(function () {
             jml = '#t' + (i + 1) + '_ttl';
             if (price != '' || qtyBeli != '') {
@@ -294,6 +298,7 @@
         });
         $('#gTotal').val(parseInt(jum));
         $('#totalnya').val(formatMoney(parseInt(jum)));
+        $('#' + x[0] + '_edprice').val(formatMoney(parseInt(price)))
     }
 
     function jsBayar(id) {
@@ -354,14 +359,31 @@
         }
     }
 
+    function priceReg(id,evt) {
+        var e = evt || window.event;
+        var key = e.keyCode || e.which;
+        if ((key < 48 || key > 57) && !(key == 8 || key == 9 || key == 13 || key == 37 || key == 39 || key == 46)) {
+            e.returnValue = false;
+            if (e.preventDefault) e.preventDefault();
+        }
+        
+        var x = $(id).attr('id').split('_');
+        var edValue = $('#' + x[0] + '_edprice').val();
+        var setValue = $('#' + x[0] + '_price');
+
+        setValue.val(edValue);
+
+
+    }
+
     $(document).ready(function () {
         $("#part").tokenInput("index.php?model=master_product&action=searchProdmulti");
-        
+
     });
 
     (function () {
         $('form').ajaxForm({
-            beforeSubmit:function(){
+            beforeSubmit: function () {
                 if (confirm('Anda yakin save data ? ') == false) {
                     return false;
                 }
@@ -376,9 +398,9 @@
 
                 $('#submit').prop('disabled', true);
             },
-            complete: function(xhr){
+            complete: function (xhr) {
                 Swal.fire($.trim(xhr.responseText));
-                showMenu('content','index.php?model=transaction&action=showAllJQuery_trans_off');
+                showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off');
             }
         });
     })();
