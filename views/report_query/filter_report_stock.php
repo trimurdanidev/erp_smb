@@ -137,7 +137,8 @@
 
         var id = <?php echo $id; ?>;
         var filename = '<?php echo $report_query->getReportname(); ?>';
-        var page = "index.php?model=report_query&action=showExportTableExcell&id=" + id + "&parameter1=" + parameter1 + "&parameter2=" + parameter2 + "&parameter3=" + parameter3 + "&parameter4=" + parameter4 + "&parameter5=" + parameter5 + "&parameter6=" + parameter6 + "&parameter7=" + parameter7 + "&parameter8=" + parameter8 + "&parameter9=" + parameter9 + "&parameter10=" + parameter10 + "&parameter11=" + parameter11 + "&parameter12=" + parameter12 + "&parameter13=" + parameter13 + "&parameter14=" + parameter14 + '&filename=' + filename + '&parameter15=' + parameter15;
+        // var page = "index.php?model=report_query&action=showExportTableExcell&id=" + id + "&parameter1=" + parameter1 + "&parameter2=" + parameter2 + "&parameter3=" + parameter3 + "&parameter4=" + parameter4 + "&parameter5=" + parameter5 + "&parameter6=" + parameter6 + "&parameter7=" + parameter7 + "&parameter8=" + parameter8 + "&parameter9=" + parameter9 + "&parameter10=" + parameter10 + "&parameter11=" + parameter11 + "&parameter12=" + parameter12 + "&parameter13=" + parameter13 + "&parameter14=" + parameter14 + '&filename=' + filename + '&parameter15=' + parameter15;
+        var page = "index.php?model=report_query&action=showExportTableExcell&id=" + id + "&parameter1=" + parameter1 + '&filename=' + filename ;
 
         var l = 20;
         var t = 20;
