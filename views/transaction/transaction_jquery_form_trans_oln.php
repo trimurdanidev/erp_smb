@@ -24,12 +24,16 @@
     <div class="nav" style="width: 95%;">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#gab">Gabungan (Multi Produk)</a></li>
-            <li><a data-toggle="tab" href="#sat">Satuan (Single Produk)</a></li>
+            <li><a data-toggle="tab" href="#sat" onclick="alert('Under Development');">Satuan (Single Produk)</a></li>
         </ul>
 
         <div class="tab-content">
             <div id="gab" class="tab-pane fade in active">
                 <!-- <h3>Gabungan</h3> -->
+                <div align="right">
+                    <button class="btn btn-red" type="button" onclick="back()" title="Kembali"> <span
+                            class="glyphicon glyphicon-circle-arrow-left"></span> Kembali</button>
+                </div>
                 <br>
                 <br>
                 <form name="frmUpload_j_oln_gab" id="frmUpload_j_oln_gab"
@@ -91,9 +95,13 @@
             </div>
             <div id="sat" class="tab-pane fade">
                 <!-- <h3>Satuan</h3> -->
+                <div align="right">
+                    <button class="btn btn-red" type="button" onclick="back()" title="Kembali"> <span
+                            class="glyphicon glyphicon-circle-arrow-left"></span> Kembali</button>
+                </div>
                 <br>
                 <br>
-                <form name="trans_j_oln_sat" id="trans_j_oln_sat" method="post"
+                <!-- <form name="trans_j_oln_sat" id="trans_j_oln_sat" method="post"
                     action="index.php?model=transaction&action=saveTransJualOff">
                     <table border="1">
                         <tr>
@@ -158,7 +166,6 @@
                                     <option value="">Pilih Metode Pembayaran</option>
                                     <option value="1">Tunai</option>
                                     <option value="2">Transfer</option>
-                                    <!-- <option value="3">QRIS</option> -->
                                 </select>
                             </td>
                         </tr>
@@ -204,7 +211,7 @@
                                                                 src="./img/icon/<?php echo $value->getImg() ?>"
                                                                 style="width:100px; height:95px;"></img>
                                                         </h1>
-                                                        <!-- <input type="text" name="paymenn" id="paymenn" value="<?php echo $value->getTransfer(); ?>"> -->
+                                                        <input type="text" name="paymenn" id="paymenn" value="<?php echo $value->getTransfer(); ?>">
                                                     </div>
                                                     <div class="modal-body">
                                                         <h4><span class="glyphicon glyphicon-th-list"></span> Transfer
@@ -250,11 +257,9 @@
                                                                                     <input type="button" class="btn btn-facebook"
                                                                                         onclick="btnChoose('<?php echo $val_rek->getTransfer(); ?>','<?php echo $val_rek->getId(); ?>','<?php echo $val_rek->getName_akun(); ?>','<?php echo $val_rek->getRek_akun(); ?>')"
                                                                                         value="Pilih" data-dismiss="modal" />
-                                                                                    <!-- <a href="#"
                                                                                     onclick="btnChoose('<?php echo $val_rek->getId(); ?>')"><button
                                                                                     class="btn btn-default"><span
                                                                                     class="glyphicon glyphicon-ok"></span> Pilih
-                                                                                </button></a> -->
 
                                                                                 </td>
                                                                             </tr>
@@ -268,7 +273,7 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
                                                             data-dismiss="modal">Close</button>
-                                                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                                        <button type="button" class="btn btn-primary">Save changes</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -290,7 +295,7 @@
                             </td>
                         </tr>
                     </table>
-                </form>
+                </form> -->
             </div>
         </div>
     </div>
@@ -351,6 +356,11 @@
         // });
 
     }
+
+    $(document).ready(function () {
+        $("#part").tokenInput("index.php?model=master_product&action=searchProdmulti");
+
+    });
 
     function jshitung(id) {
         var x = $(id).attr('id').split('_');
@@ -453,10 +463,13 @@
 
     }
 
-    $(document).ready(function () {
-        $("#part").tokenInput("index.php?model=master_product&action=searchProdmulti");
+    function back() {
+        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln');
+    }
+    // $(document).ready(function () {
+    //     $("#part").tokenInput("index.php?model=master_product&action=searchProdmulti");
 
-    });
+    // });
 
     (function () {
         $('form').ajaxForm({

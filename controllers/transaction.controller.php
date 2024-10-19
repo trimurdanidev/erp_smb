@@ -1934,5 +1934,80 @@ class transactionController extends transactionControllerGenerate
             </script>";
         }
     }
+
+    function showAllJQuery_trans_onn_by_search()
+    {
+        $mdl_transcation_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
+
+        $mdl_transaction_log = new transaction_log();
+        $ctrl_transaction_log = new transaction_logController($mdl_transaction_log, $this->dbh);
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
+        $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
+        $mktplc = isset($_REQUEST["mktplc"]) ? $_REQUEST["mktplc"] : "";
+
+        if ($mktplc == null || $mktplc == "") {
+            $sql = "SELECT DISTINCT b .`trans_descript`,a.* FROM `transaction` a 
+            INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
+            WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' 
+            GROUP BY a.`id`
+            ORDER BY a.`created_at` DESC";
+        } else {
+            $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
+            INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
+            WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc' 
+            GROUP BY a.`id`
+            ORDER BY a.`created_at` DESC";
+        }
+
+        // echo $sql;
+
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        $sisa = intval($last % $limit);
+
+        if ($sisa > 0) {
+            $last = $last - $sisa;
+        } else if ($last - $limit < 0) {
+            $last = 0;
+        } else {
+            $last = $last - $limit;
+        }
+
+        $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+        if ($skip + $limit > $last) {
+            $next = $last;
+        } else if ($skip == 0) {
+            $next = $skip + $limit + 1;
+        } else {
+            $next = $skip + $limit;
+        }
+        $first = 0;
+
+        $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+        $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+        $transaction_list = $this->createList($sql);
+        $isadmin = $this->isadmin;
+        $ispublic = $this->ispublic;
+        $isread = $this->isread;
+        $isconfirm = $this->isconfirm;
+        $isentry = $this->isentry;
+        $isupdate = $this->isupdate;
+        $isdelete = $this->isdelete;
+        $isprint = $this->isprint;
+        $isexport = $this->isexport;
+        $isimport = $this->isimport;
+
+        require_once './views/transaction/transaction_jquery_trans_oln.php';
+    }
 }
 ?>
