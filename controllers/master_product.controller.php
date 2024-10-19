@@ -89,10 +89,10 @@ class master_productController extends master_productControllerGenerate
             $table .= "<input type='hidden' name='part[]' id='part" . $no . "' value='" . $val_part->getKd_product() . "'>";
             $table .= "<td>" . $no . ".</td>";
             $table .= "<td><input type='text' class='form form-control' value='" . $val_part->getNm_product() . "' readonly></td>";
-            $table .= "<td><input type='hidden' name='price[]' id='t" . $no . "_price' value='" . $val_part->getHrg_jual() . "'/><input type='text' value='" . number_format($val_part->getHrg_jual(), 0) . "' class='form form-control' readonly></td>";
+            $table .= "<td><input type='hidden' name='price[]' id='t" . $no . "_price' value='" . $val_part->getHrg_jual() . "'/><input type='text' name='edprice[]' id='t" . $no . "_edprice' value='" . number_format($val_part->getHrg_jual(), 0) . "' class='form form-control' onKeyPress='priceReg(this,event)' onKeyUp='priceReg(this)' ></td>";
             $table .= "<td><input type='text' name='qtyBeli[]' id='t" . $no . "_qtyBeli' class='form form-control' onkeypress='validate(event);' value='' placeholder='Quantity Beli (Pcs)' onblur='jshitung(this)' required /></td>";
             $table .= "<td><input type='hidden' name='ttl[]' id='t" . $no . "_ttl' value=''><input type='text' name='total[]' id='t" . $no . "_total' class='form form-control' readonly></td>";
-            $table .= "<td><button type='button' class='btn btn-default' name='hpsDtl[]' id='t" . $no . "_hpsDtl' onclick='hapusElemen(srow" . $no . "); return false;'><span class='glyphicon glyphicon-remove'></span> Hapus</button></td>";
+            $table .= "<td><button type='button' class='btn btn-default' name='hpsDtl[]' id='t" . $no . "_hpsDtl' onclick='hapusElemen(srow" . $no . ",this); return false;'><span class='glyphicon glyphicon-remove'></span> Hapus</button></td>";
             $table .= "</tr>";
 
         }
