@@ -213,12 +213,12 @@
 
                 
         function loadData($transaction_type,$row){
-	    $transaction_type->setId(isset($row['id']));
-	    $transaction_type->setType_name(isset($row['type_name']));
-	    $transaction_type->setCreated_by(isset($row['created_by']));
-	    $transaction_type->setCreated_at(isset($row['created_at']));
-	    $transaction_type->setUpdated_by(isset($row['updated_by']));
-	    $transaction_type->setUpdated_at(isset($row['updated_at']));
+	    $transaction_type->setId(isset($row['id'])?$row['id']:"");
+	    $transaction_type->setType_name(isset($row['type_name'])?$row['type_name']:"");
+	    $transaction_type->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $transaction_type->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $transaction_type->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $transaction_type->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 
@@ -410,14 +410,14 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    //echo "Data is Inserted";
+                    echo "Data is Inserted";
                 }else{
                     //echo "You cannot insert data this module";
                 }
             } else {
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                     $this->updateData();
-                    //echo "Data is updated";
+                    echo "Data is updated";
                 }else{
                     //echo "You cannot update this module";
                 }

@@ -22,7 +22,7 @@ $(document).ready(function(){
 });
 </script>
 
-<h1>transaction_type</h1>
+<h1>TRANSACTION TYPE</h1>
 <div id="header_list">
 </div>
 <table width="95%" >
