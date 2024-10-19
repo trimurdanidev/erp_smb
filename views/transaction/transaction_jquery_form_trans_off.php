@@ -17,6 +17,14 @@
     $mdl_trans_buyer = new transaction_buyer();
     $ctrl_trans_buyer = new transaction_buyerController($mdl_trans_buyer, $this->dbh);
     ?>
+    <table width="90%">
+        <tr>
+            <td align="right">
+                <button class="btn btn-green" type="button" onclick="back_off()" title="Kembali"> <span
+                        class="glyphicon glyphicon-circle-arrow-left"></span> Kembali</button>
+            </td>
+        </tr>
+    </table>
     <form name="trans_j_off" id="trans_j_off" method="post"
         action="index.php?model=transaction&action=saveTransJualOff">
         <table border="1">
@@ -286,7 +294,7 @@
         }
 
 
-        var jum = 0; i = 0; jml=0;
+        var jum = 0; i = 0; jml = 0;
         $('.tbody tr').each(function () {
             jml = '#t' + (i + 1) + '_ttl';
             if (price != '' || qtyBeli != '') {
@@ -359,14 +367,14 @@
         }
     }
 
-    function priceReg(id,evt) {
+    function priceReg(id, evt) {
         var e = evt || window.event;
         var key = e.keyCode || e.which;
         if ((key < 48 || key > 57) && !(key == 8 || key == 9 || key == 13 || key == 37 || key == 39 || key == 46)) {
             e.returnValue = false;
             if (e.preventDefault) e.preventDefault();
         }
-        
+
         var x = $(id).attr('id').split('_');
         var edValue = $('#' + x[0] + '_edprice').val();
         var setValue = $('#' + x[0] + '_price');
@@ -374,6 +382,10 @@
         setValue.val(edValue);
 
 
+    }
+
+    function back_off() {
+        showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off');
     }
 
     $(document).ready(function () {
