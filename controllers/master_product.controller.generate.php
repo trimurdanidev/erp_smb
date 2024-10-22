@@ -453,14 +453,14 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    //echo "Data is Inserted";
+                    echo "Data is Inserted";
                 }else{
                     //echo "You cannot insert data this module";
                 }
             } else {
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                     $this->updateData();
-                    //echo "Data is updated";
+                    echo "Data is updated";
                 }else{
                     //echo "You cannot update this module";
                 }
