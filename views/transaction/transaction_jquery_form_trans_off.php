@@ -34,6 +34,12 @@
                 </td>
             </tr>
             <tr>
+                <td class="textBold"><span class="glyphicon glyphicon-calendar"></span> Tanggal Transaksi </td>
+                <td>
+                    <input type="date" class="form form-control" name="tanggal" id="tanggal" required="required" title="Tanggal Transaksi">
+                </td>
+            </tr>
+            <tr>
                 <td class="textBold"><span class="fa fa-search"></span> Cari Part *</td>
                 <td><input type="text" nama="part" id='part' class="form form-control"
                         placeholder="Cari Kode Part, Nama Part" required /></td>
