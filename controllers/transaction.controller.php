@@ -1,5 +1,6 @@
 <?php
 use Shuchkin\SimpleXLS;
+use Vtiful\Kernel\Format;
 
 require_once './models/master_user.class.php';
 require_once './controllers/master_user.controller.php';
@@ -687,10 +688,10 @@ class transactionController extends transactionControllerGenerate
         }
 
         $id = isset($_POST['id']) ? $_POST['id'] : "";
-        $generateNotrans = 'OF' . date('dmy') . '-' . sprintf('%06s', $nomorakhir);
-        $no_trans = isset($generateNotrans) ? $generateNotrans : "";
-        $dateTime = date('Y-m-d h:i:s');
         $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : "";
+        $generateNotrans = 'OF' . date('dmy',strtotime($tanggal)) . '-' . sprintf('%06s', $nomorakhir);
+        $no_trans = isset($generateNotrans) ? $generateNotrans : "";
+        $dateTime = date('Y-m-d h:i:s',strtotime($tanggal));
         // $qtyTotal = isset($_POST['qtyTotal']) ? $_POST['qtyTotal'] : "";
         // $qtyRelease = isset($_POST['qtyRelease']) ? $_POST['qtyRelease'] : "";
         // $qtyTotal = 0;
