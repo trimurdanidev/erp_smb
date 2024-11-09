@@ -11,7 +11,7 @@
     {
         function showDataBytransId($transid){
             $sql = "SELECT * FROM transaction_payment WHERE trans_id = '".$this->toolsController->replacecharFind($transid,$this->dbh)."'";
-
+            
             $row = $this->dbh->query($sql)->fetch();
             $this->loadData($this->transaction_payment, $row);
             
