@@ -25,7 +25,8 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     </td>
                 </tr> -->
                 <tr>
-                    <td><a href="index.php?model=transaction&action=export_stock_opname&search=<?php echo $search; ?>"><span class="glyphicon glyphicon-export"></span> Download Template & Stok Update</a>
+                    <td><a href="index.php?model=transaction&action=export_stock_opname&search=<?php echo $search; ?>"><span
+                                class="glyphicon glyphicon-export"></span> Download Template & Stok Update</a>
                     </td>
                 </tr>
                 <tr>
@@ -98,6 +99,21 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     </td>
             </table>
         </form>
+        <table width="95%">
+            <tr>
+                <td align="left">
+                    <img alt="Move First" src="./img/icon/icon_move_first.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so&search=<?php echo $search ?>');">
+                    <img alt="Move Previous" src="./img/icon/icon_move_prev.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so&skip=<?php echo $previous ?>&search=<?php echo $search ?>');">
+                    Page <?php echo $pageactive ?> / <?php echo $pagecount ?>
+                    <img alt="Move Next" src="./img/icon/icon_move_next.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so&skip=<?php echo $next ?>&search=<?php echo $search ?>');">
+                    <img alt="Move Last" src="./img/icon/icon_move_last.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_so&skip=<?php echo $last ?>&search=<?php echo $search ?>');">
+                </td>
+            </tr>
+        </table>
         <table class="table table-striped" style="width: 95%;">
             <thead>
                 <tr>
@@ -125,7 +141,7 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                         } else if ($getTrans->getTrans_status() == '1') {
                             $sts = "fa fa-check";
                             $stringsts = "Success";
-                        } else if ($getTrans->getTrans_status() == '2'){
+                        } else if ($getTrans->getTrans_status() == '2') {
                             $sts = "fa fa-close";
                             $stringsts = "Cancelled";
                         }

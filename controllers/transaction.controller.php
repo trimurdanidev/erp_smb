@@ -96,7 +96,7 @@ class transactionController extends transactionControllerGenerate
         $ctrl_upload_tr_log = new upload_trans_logController($mdl_upload_tr_log, $this->dbh);
 
 
-        $last = $this->countDataAll();
+        $last = $ctrl_upload_tr_log->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -166,7 +166,7 @@ class transactionController extends transactionControllerGenerate
         GROUP BY a.`id` 
         ORDER BY a.`created_at` DESC";
 
-        $last = $this->countDataAll();
+        $last = $ctrl_upload_tr_log->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -1028,8 +1028,9 @@ class transactionController extends transactionControllerGenerate
             $ctrl_upload_tr_log = new upload_trans_logController($mdl_upload_tr_log, $this->dbh);
 
 
-
-            $last = $this->countDataAll();
+            // $last = $this->countDataAll();
+            $last = $ctrl_upload_tr_log->countDataAll();
+            
             $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
             $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
             $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -1338,6 +1339,7 @@ class transactionController extends transactionControllerGenerate
                 INNER JOIN master_product b ON a.`kd_product` = b.`kd_product`
                 ORDER BY Part ASC 
                 ) AS a,(SELECT @noq:=0) AS noq
+                ORDER BY Stock ASC
                 ;";
 
         header("Content-Type:application/xls", false);
@@ -1378,7 +1380,7 @@ class transactionController extends transactionControllerGenerate
         GROUP BY a.`id` 
         ORDER BY a.`created_at` DESC";
 
-        $last = $this->countDataAll();
+        $last = $ctrl_upload_tr_log->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -1718,7 +1720,7 @@ class transactionController extends transactionControllerGenerate
 
                 //upload_trans_log
                 // $mdl_upload_tr_log->setId($id);
-                $mdl_upload_tr_log->setTrans_type(4);
+                $mdl_upload_tr_log->setTrans_type(1);
                 $mdl_upload_tr_log->setTrans_descrip('OUT CLOSING ONLINE TGL.' . date('d-m-Y') . " OLEH " . $user);
                 $mdl_upload_tr_log->setJumlah_data(0);
                 $mdl_upload_tr_log->setCreated_by($user);

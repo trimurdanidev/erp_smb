@@ -18,7 +18,7 @@
         protected $upload_trans_log;
         var $modulename = "upload_trans_log";
         var $dbh;
-        var $limit = 20;
+        var $limit = 10;
         var $user = "None";
         var $ip = "";
         var $isadmin = false;
