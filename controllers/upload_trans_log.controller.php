@@ -14,7 +14,7 @@ class upload_trans_logController extends upload_trans_logControllerGenerate
     {
 
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
-        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : 20;
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $sql = "SELECT * FROM upload_trans_log WHERE trans_type='3' ORDER BY id";
         $sql .= " limit " . $skip . ", " . $limit;
 
@@ -25,9 +25,11 @@ class upload_trans_logController extends upload_trans_logControllerGenerate
     {
 
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
-        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : 20;
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $sql = "SELECT * FROM upload_trans_log WHERE trans_type='4' ORDER BY id";
         $sql .= " limit " . $skip . ", " . $limit;
+
+        // echo $sql;
 
         return $this->createList($sql);
     }

@@ -95,6 +95,21 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
                     </td>
             </table>
         </form>
+        <table width="95%">
+            <tr>
+                <td align="left">
+                    <img alt="Move First" src="./img/icon/icon_move_first.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok&search=<?php echo $search ?>');">
+                    <img alt="Move Previous" src="./img/icon/icon_move_prev.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok&skip=<?php echo $previous ?>&search=<?php echo $search ?>');">
+                    Page <?php echo $pageactive ?> / <?php echo $pagecount ?>
+                    <img alt="Move Next" src="./img/icon/icon_move_next.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok&skip=<?php echo $next ?>&search=<?php echo $search ?>');">
+                    <img alt="Move Last" src="./img/icon/icon_move_last.gif"
+                        onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_restok&skip=<?php echo $last ?>&search=<?php echo $search ?>');">
+                </td>
+            </tr>
+        </table>
         <table class="table table-striped" style="width: 95%;">
             <thead>
                 <tr>
