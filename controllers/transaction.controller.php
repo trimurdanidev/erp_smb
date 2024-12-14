@@ -720,7 +720,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setTrans_total($gTotal);
             $this->transaction->setTrans_status(1);
             $this->transaction->setCreated_by($user);
-            $this->transaction->setUpload_trans_log_id(null);
+            $this->transaction->setUpload_trans_log_id(0);
             $this->transaction->setCreated_at($dateTime);
             $this->transaction->setUpdated_by($user);
             $this->transaction->setUpdated_at($dateTime);
