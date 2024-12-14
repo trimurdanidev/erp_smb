@@ -14,7 +14,7 @@ class transaction_typeController extends transaction_typeControllerGenerate
         $id = isset($_POST['id']) ? $_POST['id'] : "";
         $type_name = isset($_POST['type_name']) ? $_POST['type_name'] : "";
         $created_by = $this->user;
-        $created_at = date('Y-m-d h:i:s');
+        $created_at = date('Y-m-d H:i:s');
         $updated_by = "";
         $updated_at = "";
 
