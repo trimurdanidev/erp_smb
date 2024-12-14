@@ -35,8 +35,8 @@ class master_productController extends master_productControllerGenerate
         $sts_aktif = 1;
         $created_by = $user;
         $updated_by = isset($_POST['updated_by']) ? $_POST['updated_by'] : "";
-        $created_at = date('Y-m-d h:i:s');
-        $updated_at = date('Y-m-d h:i:s');
+        $created_at = date('Y-m-d H:i:s');
+        $updated_at = date('Y-m-d H:i:s');
 
         $this->master_product->setId($id);
         $this->master_product->setKd_product($kd_product);

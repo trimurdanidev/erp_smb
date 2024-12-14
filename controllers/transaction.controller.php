@@ -242,7 +242,7 @@ class transactionController extends transactionControllerGenerate
         $id = isset($_POST['id']) ? $_POST['id'] : "";
         $generateNotrans = 'SO' . date('dmy') . '-' . sprintf('%06s', $nomorakhir);
         $no_trans = isset($generateNotrans) ? $generateNotrans : "";
-        $dateTime = date('Y-m-d h:i:s');
+        $dateTime = date('Y-m-d H:i:s');
         $getFile_name = $_FILES['stock_so']['name'];
         $getThe_file = $_FILES['stock_so']['tmp_name'];
         $targetFile = "uploads/excel_upload/" . $getFile_name;
@@ -458,7 +458,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_stock->setCreated_by($getStok->getCreated_by());
                 $mdl_stock->setUpdated_by($user);
                 $mdl_stock->setCreated_at($getStok->getCreated_at());
-                $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
+                $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
                 $ctrl_stock->saveData();
             }
             //transaction
@@ -474,7 +474,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
             $this->transaction->setCreated_at($getTransaction->getCreated_at());
             $this->transaction->setUpdated_by($user);
-            $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+            $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
             $this->updateData();
             // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
             $this->showAllJQuery_so();
@@ -691,7 +691,7 @@ class transactionController extends transactionControllerGenerate
         $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : "";
         $generateNotrans = 'OF' . date('dmy',strtotime($tanggal)) . '-' . sprintf('%06s', $nomorakhir);
         $no_trans = isset($generateNotrans) ? $generateNotrans : "";
-        $dateTime = date('Y-m-d h:i:s',strtotime($tanggal));
+        $dateTime = date('Y-m-d H:i:s',strtotime($tanggal));
         // $qtyTotal = isset($_POST['qtyTotal']) ? $_POST['qtyTotal'] : "";
         // $qtyRelease = isset($_POST['qtyRelease']) ? $_POST['qtyRelease'] : "";
         // $qtyTotal = 0;
@@ -762,7 +762,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_mst_stok->setCreated_by($getStock->getCreated_by());
                 $mdl_mst_stok->setUpdated_by($user);
                 $mdl_mst_stok->setCreated_at($getStock->getCreated_at());
-                $mdl_mst_stok->setUpdated_at(date('Y-m-d h:i:s'));
+                $mdl_mst_stok->setUpdated_at(date('Y-m-d H:i:s'));
                 $ctrl_mst_stok->saveData();
             }
 
@@ -773,9 +773,9 @@ class transactionController extends transactionControllerGenerate
             $mdl_trans_payment->setPayment($method_pay == '1' ? 'Tunai' : $paymenn);
             $mdl_trans_payment->setPayment_akun($pay_akun);
             $mdl_trans_payment->setCreated_by($user);
-            $mdl_trans_payment->setCreated_at(date('Y-m-d h:i:s'));
+            $mdl_trans_payment->setCreated_at(date('Y-m-d H:i:s'));
             $mdl_trans_payment->setUpdated_by($user);
-            $mdl_trans_payment->setUpdated_at(date('Y-m-d h:i:s'));
+            $mdl_trans_payment->setUpdated_at(date('Y-m-d H:i:s'));
             $ctrl_trans_payment->saveData();
 
             //buyer transaction
@@ -1112,7 +1112,7 @@ class transactionController extends transactionControllerGenerate
             $id = isset($_POST['id']) ? $_POST['id'] : "";
             $generateNotrans = 'RS' . date('dmy') . '-' . sprintf('%06s', $nomorakhir);
             $no_trans = isset($generateNotrans) ? $generateNotrans : "";
-            $dateTime = date('Y-m-d h:i:s');
+            $dateTime = date('Y-m-d H:i:s');
             $getFile_name = $_FILES['file_restok']['name'];
             $getThe_file = $_FILES['file_restok']['tmp_name'];
             $targetFile = "uploads/excel_upload/" . $getFile_name;
@@ -1291,7 +1291,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_stock->setCreated_by($getStok->getCreated_by());
                 $mdl_stock->setUpdated_by($user);
                 $mdl_stock->setCreated_at($getStok->getCreated_at());
-                $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
+                $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
                 $ctrl_stock->saveData();
             }
             //transaction
@@ -1307,7 +1307,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
             $this->transaction->setCreated_at($getTransaction->getCreated_at());
             $this->transaction->setUpdated_by($user);
-            $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+            $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
             $this->updateData();
             // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
             $this->showAllJQuery_restok();
@@ -1430,7 +1430,7 @@ class transactionController extends transactionControllerGenerate
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
         $user = $this->user;
         $total = 0;
-        $dateTime = date('Y-m-d h:i:s');
+        $dateTime = date('Y-m-d H:i:s');
 
         $getTransaction = $this->showData($id);
 
@@ -1476,7 +1476,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
             $this->transaction->setCreated_at($getTransaction->getCreated_at());
             $this->transaction->setUpdated_by($user);
-            $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+            $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
             $this->updateData();
             // echo "<script>alert('Stock Opname Berhasil Cancel');</script>";
 
@@ -1692,7 +1692,7 @@ class transactionController extends transactionControllerGenerate
             $id = isset($_POST['id']) ? $_POST['id'] : "";
             $generateNotrans = 'ON' . date('dmy') . '-' . sprintf('%06s', $nomorakhir);
             $no_trans = isset($generateNotrans) ? $generateNotrans : "";
-            $dateTime = date('Y-m-d h:i:s');
+            $dateTime = date('Y-m-d H:i:s');
             $getFile_name = $_FILES['file_upload']['name'];
             $getThe_file = $_FILES['file_upload']['tmp_name'];
             $targetFile = "uploads/excel_upload/" . $getFile_name;
@@ -1885,7 +1885,7 @@ class transactionController extends transactionControllerGenerate
                     $mdl_stock->setCreated_by($getStok->getCreated_by());
                     $mdl_stock->setUpdated_by($user);
                     $mdl_stock->setCreated_at($getStok->getCreated_at());
-                    $mdl_stock->setUpdated_at(date('Y-m-d h:i:s'));
+                    $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
                     $ctrl_stock->saveData();
                     $setStatus = 'Y';
                 } else {
@@ -1914,7 +1914,7 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
                 $this->transaction->setCreated_at($getTransaction->getCreated_at());
                 $this->transaction->setUpdated_by($user);
-                $this->transaction->setUpdated_at(date('Y-m-d h:i:s'));
+                $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
                 $this->updateData();
                 // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
                 echo "<script language='javascript' type='text/javascript'>
