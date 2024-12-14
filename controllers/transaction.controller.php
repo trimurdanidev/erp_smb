@@ -265,7 +265,7 @@ class transactionController extends transactionControllerGenerate
             $this->transaction->setUpload_trans_log_id('');
             $this->transaction->setCreated_at($dateTime);
             $this->transaction->setUpdated_by('');
-            $this->transaction->setUpdated_at('');
+            $this->transaction->setUpdated_at($dateTime);
             $this->saveData();
 
             //upload_trans_log
@@ -276,7 +276,7 @@ class transactionController extends transactionControllerGenerate
             $mdl_upload_tr_log->setCreated_by($user);
             $mdl_upload_tr_log->setCreated_at($dateTime);
             $mdl_upload_tr_log->setUpdated_by('');
-            $mdl_upload_tr_log->setUpdated_at('');
+            $mdl_upload_tr_log->setUpdated_at($dateTime);
             $ctrl_upload_tr_log->saveData();
 
             foreach ($dataSheet->rows() as $k => $r) {
@@ -345,7 +345,7 @@ class transactionController extends transactionControllerGenerate
                     $mdl_transaction_log->setCreated_by($user);
                     $mdl_transaction_log->setCreated_at($dateTime);
                     $mdl_transaction_log->setUpdated_by('');
-                    $mdl_transaction_log->setUpdated_at('');
+                    $mdl_transaction_log->setUpdated_at($dateTime);
                     $ctrl_transaction_log->saveData();
 
                     //master_stock
@@ -752,7 +752,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_trans_log->setCreated_by($user);
                 $mdl_trans_log->setCreated_at($dateTime);
                 $mdl_trans_log->setUpdated_by('');
-                $mdl_trans_log->setUpdated_at('');
+                $mdl_trans_log->setUpdated_at($dateTime);
                 $ctrl_trans_log->saveData();
 
                 //master_stock
@@ -1135,7 +1135,7 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpload_trans_log_id('');
                 $this->transaction->setCreated_at($dateTime);
                 $this->transaction->setUpdated_by('');
-                $this->transaction->setUpdated_at('');
+                $this->transaction->setUpdated_at($dateTime);
                 $this->saveData();
 
                 //upload_trans_log
@@ -1146,7 +1146,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_upload_tr_log->setCreated_by($user);
                 $mdl_upload_tr_log->setCreated_at($dateTime);
                 $mdl_upload_tr_log->setUpdated_by('');
-                $mdl_upload_tr_log->setUpdated_at('');
+                $mdl_upload_tr_log->setUpdated_at($dateTime);
                 $ctrl_upload_tr_log->saveData();
 
                 $Hitungbaris = 1;
@@ -1212,7 +1212,7 @@ class transactionController extends transactionControllerGenerate
                             $mdl_transaction_log->setCreated_by($user);
                             $mdl_transaction_log->setCreated_at($dateTime);
                             $mdl_transaction_log->setUpdated_by('');
-                            $mdl_transaction_log->setUpdated_at('');
+                            $mdl_transaction_log->setUpdated_at($dateTime);
                             $ctrl_transaction_log->saveData();
 
                             //master_stock
@@ -1715,7 +1715,7 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpload_trans_log_id('');
                 $this->transaction->setCreated_at($dateTime);
                 $this->transaction->setUpdated_by('');
-                $this->transaction->setUpdated_at('');
+                $this->transaction->setUpdated_at($dateTime);
                 $this->saveData();
 
                 //upload_trans_log
@@ -1726,7 +1726,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_upload_tr_log->setCreated_by($user);
                 $mdl_upload_tr_log->setCreated_at($dateTime);
                 $mdl_upload_tr_log->setUpdated_by('');
-                $mdl_upload_tr_log->setUpdated_at('');
+                $mdl_upload_tr_log->setUpdated_at($dateTime);
                 $ctrl_upload_tr_log->saveData();
 
                 $Hitungbaris = 1;
@@ -1792,7 +1792,7 @@ class transactionController extends transactionControllerGenerate
                             $mdl_transaction_log->setCreated_by($user);
                             $mdl_transaction_log->setCreated_at($dateTime);
                             $mdl_transaction_log->setUpdated_by('');
-                            $mdl_transaction_log->setUpdated_at('');
+                            $mdl_transaction_log->setUpdated_at($dateTime);
                             $ctrl_transaction_log->saveData();
 
                             //master_stock
