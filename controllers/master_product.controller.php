@@ -194,7 +194,7 @@ class master_productController extends master_productControllerGenerate
                     $colHargaPart = $row[3];
 
                     $getFirstKategori = $ctrl_prd_kategori->showDataByName($colKatPart);
-                    $countKatPart     = $ctrl_prd_kategori->checkDataByName($colKatPart);
+                    $countKatPart = $ctrl_prd_kategori->checkDataByName($colKatPart);
 
                     if ($countKatPart == 0 || $countKatPart == null):
                         echo "Gagal Upload !!\nKode Product $colKdPart - $colNamaPart Kategorinya Salah";
@@ -232,8 +232,19 @@ class master_productController extends master_productControllerGenerate
                     echo "Gagal Upload !!\n Harga Produk Tidak Disarankan\n\n\n";
                 }
             }
-            echo "Berhasil\n\n".($jml_data) . " Baris Data Terupload\n\n";
+            echo "Berhasil\n\n" . ($jml_data) . " Baris Data Terupload\n\n";
         }
+    }
+
+    function exportFormat()
+    {
+        $filePath = './uploads/Template/FOMAT_UPLOAD_PRODUK.xls';
+
+
+        header("Content-Type:application/xls", false);
+        header("Content-Disposition: attachment; filename=" .basename($filePath));
+
+        readfile($filePath);
     }
 }
 ?>
