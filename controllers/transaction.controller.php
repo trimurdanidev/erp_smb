@@ -1921,6 +1921,7 @@ class transactionController extends transactionControllerGenerate
                     title : 'Berhasil',
                     icon : 'success',
                     text : 'Stock Opname Berhasil Terilis'
+                    });
                     </script>";
                 //     echo "<script language='javascript' type='text/javascript'>
                 //     Swal.fire({
