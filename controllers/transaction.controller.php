@@ -1919,7 +1919,7 @@ class transactionController extends transactionControllerGenerate
                 // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
                 echo "<script language='javascript' type='text/javascript'>
                 Swal.fire({
-                title : 'Gagal Confirm !',
+                title : 'Gagal Confirm !--1',
                 icon : 'error',
                 text : 'Silahkan Cek Koneksi Internet Anda'
             });
@@ -1930,7 +1930,7 @@ class transactionController extends transactionControllerGenerate
         } else {
             echo "<script language='javascript' type='text/javascript'>
                 Swal.fire({
-                title : 'Gagal Confirm !',
+                title : 'Gagal Confirm !---2',
                 icon : 'error',
                 text : 'Silahkan Cek Koneksi Internet Anda'
             });
