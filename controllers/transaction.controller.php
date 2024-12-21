@@ -1920,7 +1920,7 @@ class transactionController extends transactionControllerGenerate
                     Swal.fire({
                     title : 'Berhasil',
                     icon : 'success',
-                    text : 'Stock Opname Berhasil Terilis'
+                    text : 'Closing Online Berhasil Terconfirm'
                     });
                     </script>";
                 //     echo "<script language='javascript' type='text/javascript'>
