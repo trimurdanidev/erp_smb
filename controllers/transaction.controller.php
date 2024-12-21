@@ -1917,7 +1917,6 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
                 $this->updateData();
                 echo "<script language='javascript' type='text/javascript'>
-                    alert('Stock Opname Berhasil Terilis');
                     Swal.fire({
                     title : 'Berhasil',
                     icon : 'success',
