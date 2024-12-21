@@ -453,7 +453,7 @@ class transactionController extends transactionControllerGenerate
                 $total += $valDetail->getQty();
                 //master_stock
                 $mdl_stock->setKd_product($valDetail->getKd_product());
-                $mdl_stock->setQty_stock( /*$getStok->getQty_stock() + */$valDetail->getQty());
+                $mdl_stock->setQty_stock( /*$getStok->getQty_stock() + */ $valDetail->getQty());
                 $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
                 $mdl_stock->setCreated_by($getStok->getCreated_by());
                 $mdl_stock->setUpdated_by($user);
@@ -689,9 +689,9 @@ class transactionController extends transactionControllerGenerate
 
         $id = isset($_POST['id']) ? $_POST['id'] : "";
         $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : "";
-        $generateNotrans = 'OF' . date('dmy',strtotime($tanggal)) . '-' . sprintf('%06s', $nomorakhir);
+        $generateNotrans = 'OF' . date('dmy', strtotime($tanggal)) . '-' . sprintf('%06s', $nomorakhir);
         $no_trans = isset($generateNotrans) ? $generateNotrans : "";
-        $dateTime = date('Y-m-d H:i:s',strtotime($tanggal));
+        $dateTime = date('Y-m-d H:i:s', strtotime($tanggal));
         // $qtyTotal = isset($_POST['qtyTotal']) ? $_POST['qtyTotal'] : "";
         // $qtyRelease = isset($_POST['qtyRelease']) ? $_POST['qtyRelease'] : "";
         // $qtyTotal = 0;
@@ -1030,7 +1030,7 @@ class transactionController extends transactionControllerGenerate
 
             // $last = $this->countDataAll();
             $last = $ctrl_upload_tr_log->countDataAll();
-            
+
             $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
             $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
             $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -1916,21 +1916,27 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpdated_by($user);
                 $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
                 $this->updateData();
-                // echo "<script>alert('Stock Opname Berhasil Terilis');</script>";
                 echo "<script language='javascript' type='text/javascript'>
-                Swal.fire({
-                title : 'Gagal Confirm !--1',
-                icon : 'error',
-                text : 'Silahkan Cek Koneksi Internet Anda'
-            });
-            </script>";
+                    alert('Stock Opname Berhasil Terilis');
+                    Swal.fire({
+                    title : 'Berhasil',
+                    icon : 'success',
+                    text : 'Stock Opname Berhasil Terilis'
+                    </script>";
+                //     echo "<script language='javascript' type='text/javascript'>
+                //     Swal.fire({
+                //     title : 'Gagal Confirm !--1',
+                //     icon : 'error',
+                //     text : 'Silahkan Cek Koneksi Internet Anda'
+                // });
+                // </script>";
                 $this->showAllJQuery_trans_onln();
             }
             $this->showAllJQuery_trans_onln();
         } else {
             echo "<script language='javascript' type='text/javascript'>
                 Swal.fire({
-                title : 'Gagal Confirm !---2',
+                title : 'Gagal Confirm !',
                 icon : 'error',
                 text : 'Silahkan Cek Koneksi Internet Anda'
             });
