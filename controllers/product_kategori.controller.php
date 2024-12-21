@@ -51,5 +51,20 @@ class product_kategoriController extends product_kategoriControllerGenerate
         $this->product_kategori->setUpdated_at($updated_at);
         $this->saveData();
     }
+
+    function showDataByName($name){
+        $sql = "SELECT * FROM product_kategori WHERE kategori_name = '".$this->toolsController->replacecharFind($name,$this->dbh)."'";
+
+        $row = $this->dbh->query($sql)->fetch();
+        $this->loadData($this->product_kategori, $row);
+        
+        return $this->product_kategori;
+    }
+
+    function checkDataByName($name){
+        $sql = "SELECT count(*) FROM product_kategori where kategori_name = '".$name."'";
+        $row = $this->dbh->query($sql)->fetch();
+        return $row[0];
+    }
 }
 ?>
