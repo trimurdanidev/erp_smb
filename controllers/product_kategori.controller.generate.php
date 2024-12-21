@@ -216,13 +216,13 @@
 
                 
         function loadData($product_kategori,$row){
-	    $product_kategori->setId($row['id']);
-	    $product_kategori->setKategori_name($row['kategori_name']);
-	    $product_kategori->setKategori_image($row['kategori_image']);
-	    $product_kategori->setCreated_by($row['created_by']);
-	    $product_kategori->setUpdated_by($row['updated_by']);
-	    $product_kategori->setCreated_at($row['created_at']);
-	    $product_kategori->setUpdated_at($row['updated_at']);
+	    $product_kategori->setId(isset($row['id'])?$row['id']:"");
+	    $product_kategori->setKategori_name(isset($row['kategori_name'])?$row['kategori_name']:"");
+	    $product_kategori->setKategori_image(isset($row['kategori_image'])?$row['kategori_image']:"");
+	    $product_kategori->setCreated_by(isset($row['created_by'])?$row['created_by']:"");
+	    $product_kategori->setUpdated_by(isset($row['updated_by'])?$row['updated_by']:"");
+	    $product_kategori->setCreated_at(isset($row['created_at'])?$row['created_at']:"");
+	    $product_kategori->setUpdated_at(isset($row['updated_at'])?$row['updated_at']:"");
 
         }
 

@@ -1,4 +1,6 @@
 <?php
+
+use Shuchkin\SimpleXLS;
 require_once './models/master_user.class.php';
 require_once './controllers/master_user.controller.php';
 require_once './models/master_product.class.php';
@@ -12,6 +14,7 @@ require_once './controllers/product_tipe.controller.php';
 require_once './models/master_stock.class.php';
 require_once './controllers/master_stock.controller.generate.php';
 require_once './controllers/master_stock.controller.php';
+
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -21,7 +24,7 @@ class master_productController extends master_productControllerGenerate
     function saveFormPost()
     {
         $mdl_stock = new master_stock();
-        $ctrl_stock = new master_stockController($mdl_stock,$this->dbh);
+        $ctrl_stock = new master_stockController($mdl_stock, $this->dbh);
 
         $user = $this->user;
         $id = isset($_POST['id']) ? $_POST['id'] : "";
@@ -30,7 +33,7 @@ class master_productController extends master_productControllerGenerate
         $image_product = isset($_POST['image_product']) ? $_POST['image_product'] : "";
         $hrg_modal = isset($_POST['hrg_modal']) ? $_POST['hrg_modal'] : "";
         $hrg_jual = isset($_POST['hrg_jual']) ? $_POST['hrg_jual'] : "";
-        $kategori_id = 2;
+        $kategori_id = isset($_POST['kategori_id']) ? $_POST['kategori_id'] : 2;
         $tipe_id = 1;
         $sts_aktif = 1;
         $created_by = $user;
@@ -62,6 +65,8 @@ class master_productController extends master_productControllerGenerate
         $mdl_stock->setCreated_at($created_at);
         $mdl_stock->setUpdated_at($updated_at);
         $ctrl_stock->saveData();
+
+        echo "Behasil Tamba Master Produk";
 
 
     }
@@ -147,6 +152,88 @@ class master_productController extends master_productControllerGenerate
         $table .= "<td colspan='4'><span class='glyphicon glyphicon-asterisk'></span><b>Total</b></td><td><input type='hidden' name='gTotal' id='gTotal'><input type='text' name='totalnya' id='totalnya' class='form form-control' value='0' readonly></td>";
         $table .= "<table>";
         echo $table;
+    }
+
+    function saveFormByExcel()
+    {
+        require_once './Excel/SimpleXLS.php';
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+
+        $mdl_prd_kategori = new product_kategori();
+        $ctrl_prd_kategori = new product_kategoriController($mdl_prd_kategori, $this->dbh);
+
+        $user = $this->user;
+        $getFile_name = $_FILES['produk_iprt']['name'];
+        $getThe_file = $_FILES['produk_iprt']['tmp_name'];
+        $targetFile = "uploads/excel_upload/" . $getFile_name;
+        $uploadok = move_uploaded_file($getThe_file, $targetFile);
+        $id = isset($_POST['id']) ? $_POST['id'] : "";
+        $updated_by = isset($_POST['updated_by']) ? $_POST['updated_by'] : "";
+        $created_at = date('Y-m-d H:i:s');
+        $updated_at = date('Y-m-d H:i:s');
+
+        if ($dataExcel = SimpleXLS::parse("$targetFile")) {
+            $total = 0;
+            $Hitungbaris = 1;
+            foreach ($dataExcel->rows() as $k => $row) {
+                if ($row[3] > 0) {
+                    if ($k === 0) {
+                        $header_values = $row;
+                        continue;
+                    }
+
+                    // echo '<pre>';
+                    // echo print_r($row);
+                    // echo '</pre>';
+                    $jml_data = $Hitungbaris++;
+                    $colnumb = $row[0];
+                    $colKdPart = rand();
+                    $colNamaPart = $row[1];
+                    $colKatPart = $row[2];
+                    $colHargaPart = $row[3];
+
+                    $getFirstKategori = $ctrl_prd_kategori->showDataByName($colKatPart);
+                    $countKatPart     = $ctrl_prd_kategori->checkDataByName($colKatPart);
+
+                    if ($countKatPart == 0 || $countKatPart == null):
+                        echo "Gagal Upload !!\nKode Product $colKdPart - $colNamaPart Kategorinya Salah";
+                        return false;
+                    else:
+
+                        $this->master_product->setId($id);
+                        $this->master_product->setKd_product($colKdPart);
+                        $this->master_product->setNm_product($colNamaPart);
+                        $this->master_product->setImage_product("");
+                        $this->master_product->setHrg_modal($colHargaPart);
+                        $this->master_product->setHrg_jual($colHargaPart);
+                        $this->master_product->setKategori_id($getFirstKategori->getId());
+                        $this->master_product->setTipe_id(1);
+                        $this->master_product->setSts_aktif(1);
+                        $this->master_product->setCreated_by($user);
+                        $this->master_product->setUpdated_by($updated_by);
+                        $this->master_product->setCreated_at($created_at);
+                        $this->master_product->setUpdated_at($updated_at);
+                        $this->saveData();
+
+                        //stock
+                        $mdl_stock->setKd_product($colKdPart);
+                        $mdl_stock->setQty_stock(0);
+                        $mdl_stock->setQty_stock_promo(0);
+                        $mdl_stock->setCreated_by($user);
+                        $mdl_stock->setUpdated_by($updated_by);
+                        $mdl_stock->setCreated_at($created_at);
+                        $mdl_stock->setUpdated_at($updated_at);
+                        $ctrl_stock->saveData();
+
+                        // echo "Berhasil Upload Master Produk";
+                    endif;
+                } else {
+                    echo "Gagal Upload !!\n Harga Produk Tidak Disarankan\n\n\n";
+                }
+            }
+            echo "Berhasil\n\n".($jml_data) . " Baris Data Terupload\n\n";
+        }
     }
 }
 ?>
