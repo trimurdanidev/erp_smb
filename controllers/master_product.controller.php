@@ -156,6 +156,7 @@ class master_productController extends master_productControllerGenerate
 
     function saveFormByExcel()
     {
+        $this->setIsadmin(true);
         require_once './Excel/SimpleXLS.php';
         $mdl_stock = new master_stock();
         $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
@@ -238,6 +239,7 @@ class master_productController extends master_productControllerGenerate
 
     function exportFormat()
     {
+        $this->setIsadmin(true);
         $filePath = './uploads/Template/FOMAT_UPLOAD_PRODUK.xls';
 
 
