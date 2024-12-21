@@ -127,8 +127,9 @@
                 <table border="1" cellpadding="2" style="" width="50%">
                     <tr>
                         <td>
-                            <a href="" onclick=""><span class="glyphicon glyphicon-export"></span> Download Template
-                                Excel</a>
+                            <button type="button" class="btn btn-red" title="Download Template Excel" onclick="exportFormat()"><span class="glyphicon glyphicon-export"></span>
+                                Download Template
+                                Excel</button>
                         </td>
                     </tr>
                     <tr>
@@ -194,6 +195,10 @@
         var setValue = $('#hrg_jual');
 
         setValue.val(edValue);
+    }
+
+    function exportFormat() {
+        window.location = "index.php?model=master_product&action=exportFormat";
     }
 </script>
 
