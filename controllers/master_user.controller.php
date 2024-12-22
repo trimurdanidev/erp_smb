@@ -73,20 +73,20 @@ class master_userController extends master_userControllerGenerate
         $id = isset($_POST['id']) ? $_POST['id'] : "";
         $user = isset($_POST['user']) ? $_POST['user'] : "";
         $description = isset($_POST['description']) ? $_POST['description'] : "";
-        $password = isset($_POST['password']) ? password_hash($_POST['password'], null, $options) : "";
+        $password = isset($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT, $options) : "";
         $username = isset($_POST['username']) ? $_POST['username'] : "";
         $avatar = isset($_POST['avatar']) ? $_POST['avatar'] : "";
         $nik = isset($_POST['nik']) ? $_POST['nik'] : "";
         $departmentid = isset($_POST['departmentid']) ? $_POST['departmentid'] : "";
         $unitid = isset($_POST['unitid']) ? $_POST['unitid'] : "";
-        if (password_verify($password)):
-            echo "<pre>";
-            print_r($password);
-            echo "</pre";
+        // if (password_verify($password)):
+        //     echo "<pre>";
+        //     print_r($password);
+        //     echo "</pre";
             $this->master_user->setId($id);
             $this->master_user->setUser($user);
             $this->master_user->setDescription($description);
-            $this->master_user->setPassword(password_verify($password));
+            $this->master_user->setPassword($password);
             $this->master_user->setUsername($username);
             $this->master_user->setAvatar($avatar);
             $this->master_user->setNik($nik);
@@ -97,9 +97,9 @@ class master_userController extends master_userControllerGenerate
             $master_user_detail = new master_user_detail();
             $master_user_detail_controller = new master_user_detailController($master_user_detail, $this->dbh);
             $master_user_detail_controller->savePrivileges();
-        else:
-            echo "Your Username or password is incorrect!";
-        endif;
+        // else:
+        //     echo "Your Username or password is incorrect!";
+        // endif;
 
     }
 
@@ -134,7 +134,7 @@ class master_userController extends master_userControllerGenerate
             if ($newpassword == $retypepassword) {
                 if (trim($newpassword) != "") {
                     if (strlen(trim($newpassword)) < 8 || strlen(trim($newpassword)) == 8) {
-                        $masteruser->setPassword(password_hash($newpassword, null, $options));
+                        $masteruser->setPassword(password_hash($newpassword, PASSWORD_DEFAULT, $options));
                         $masterusercontroller = new master_userController($masteruser, $this->dbh);
                         $masterusercontroller->saveData();
                         $_SESSION[config::$LOGIN_USER] = serialize($masteruser);
@@ -182,7 +182,7 @@ class master_userController extends master_userControllerGenerate
         if ($getuser != "" || $getuser != null) {
 
             $newResetPass = $this->randomPassword();
-            $hasPass = password_hash($newResetPass, null, $options);
+            $hasPass = password_hash($newResetPass, PASSWORD_DEFAULT, $options);
 
             //updatePass;
             $updatePass = "UPDATE `master_user` SET `password`='" . $hasPass . "' where id='" . $getuser->getId() . "'";
