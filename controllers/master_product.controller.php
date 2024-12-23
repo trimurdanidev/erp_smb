@@ -122,7 +122,8 @@ class master_productController extends master_productControllerGenerate
         //             echo "<option value='~'>ALL OUTLET</option>";
         $n = 1;
         $table = "";
-        $table .= "<table border='1' style='width:100%'>";
+        $table .= "<div class='table-responsive'>";
+        $table .= "<table class='table' border='1' style='width:100%'>";
         $table .= "<thead>";
         $table .= " <tr>";
         $table .= "<th>No</th>";
@@ -146,11 +147,12 @@ class master_productController extends master_productControllerGenerate
             $table .= "<td><input type='hidden' name='ttl[]' id='t" . $no . "_ttl' value=''><input type='text' name='total[]' id='t" . $no . "_total' class='form form-control' readonly></td>";
             $table .= "<td><button type='button' class='btn btn-default' name='hpsDtl[]' id='t" . $no . "_hpsDtl' onclick='hapusElemen(srow" . $no . ",this); return false;'><span class='glyphicon glyphicon-remove'></span> Hapus</button></td>";
             $table .= "</tr>";
-
+            
         }
         $table .= "</tbody>";
         $table .= "<td colspan='4'><span class='glyphicon glyphicon-asterisk'></span><b>Total</b></td><td><input type='hidden' name='gTotal' id='gTotal'><input type='text' name='totalnya' id='totalnya' class='form form-control' value='0' readonly></td>";
-        $table .= "<table>";
+        $table .= "</table>";
+        $table .= "</div>";
         echo $table;
     }
 
