@@ -24,58 +24,61 @@
             <br>
             <h4 style="color:blue;">FORM INPUT PRODUK SATUAN</h4>
             <br>
-            <form name="frmmaster_product" id="frmmaster_product" method="post"
-                action="index.php?model=master_product&action=saveFormJQuery">
-                <table>
-                    <tr>
-                        <td class="textBold">ID</td>
-                        <td><input type="text" class="form form-control" style="text-align: right;"
-                                onkeypress="validate(event);" name="id" id="id"
-                                value="<?php echo $master_product_->getId(); ?>" size="40" ReadOnly
-                                placeholder="Autonumber"></td>
-                    </tr>
+            <div class="table-responsive">
+                <form name="frmmaster_product" id="frmmaster_product" method="post"
+                    action="index.php?model=master_product&action=saveFormJQuery">
+                    <table class="table">
+                        <tr>
+                            <td class="textBold">ID</td>
+                            <td><input type="text" class="form form-control" style="text-align: right;"
+                                    onkeypress="validate(event);" name="id" id="id"
+                                    value="<?php echo $master_product_->getId(); ?>" size="40" ReadOnly
+                                    placeholder="Autonumber"></td>
+                        </tr>
 
-                    <tr>
-                        <td class="textBold">Kode Part</td>
-                        <td><input type="text" class="form form-control" name="kd_product" id="kd_product"
-                                value="<?php echo $master_product_->getKd_product(); ?>" size="40" readonly
-                                placeholder="Autogenerate"></td>
-                    </tr>
+                        <tr>
+                            <td class="textBold">Kode Part</td>
+                            <td><input type="text" class="form form-control" name="kd_product" id="kd_product"
+                                    value="<?php echo $master_product_->getKd_product(); ?>" size="40" readonly
+                                    placeholder="Autogenerate"></td>
+                        </tr>
 
-                    <tr>
-                        <td class="textBold">Nama Part</td>
-                        <td><input type="text" class="form form-control" name="nm_product" id="nm_product"
-                                value="<?php echo $master_product_->getNm_product(); ?>" size="40" required></td>
-                    </tr>
+                        <tr>
+                            <td class="textBold">Nama Part</td>
+                            <td><input type="text" class="form form-control" name="nm_product" id="nm_product"
+                                    value="<?php echo $master_product_->getNm_product(); ?>" size="40" required></td>
+                        </tr>
 
-                    <!-- <tr> 
+                        <!-- <tr> 
                     <td class="textBold">Image_product</td> 
                     <td><input type="text"  name="image_product" id="image_product" value="<?php echo $master_product_->getImage_product(); ?>" size="40"   ></td>
                 </tr> -->
-                    <td class="textBold">Kategori Part</td>
-                    <td>
-                        <select name="kategori_id" id="kategori_id" class="form form-control" required>
-                            <option value="">Pilih Kategori</option>
-                            <?php foreach ($show_ktgr_prdk as $valuKat) { ?>
-                                <option value="<?php echo $valuKat->getId() ?>"><?php echo $valuKat->getKategori_name(); ?>
-                                </option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <tr>
-                        <td class="textBold">Harga Produk</td>
-                        <td><input type="text" class="form form-control" name="hrg_modal" id="hrg_modal"
-                                value="<?php echo $master_product_->getHrg_modal(); ?>" size="40"
-                                onkeypress="setHarga(),validate(event);" onkeyup="setHarga()" required></td>
-                    </tr>
+                        <td class="textBold">Kategori Part</td>
+                        <td>
+                            <select name="kategori_id" id="kategori_id" class="form form-control" required>
+                                <option value="">Pilih Kategori</option>
+                                <?php foreach ($show_ktgr_prdk as $valuKat) { ?>
+                                    <option value="<?php echo $valuKat->getId() ?>">
+                                        <?php echo $valuKat->getKategori_name(); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </td>
+                        <tr>
+                            <td class="textBold">Harga Produk</td>
+                            <td><input type="text" class="form form-control" name="hrg_modal" id="hrg_modal"
+                                    value="<?php echo $master_product_->getHrg_modal(); ?>" size="40"
+                                    onkeypress="setHarga(),validate(event);" onkeyup="setHarga()" required></td>
+                        </tr>
 
-                    <tr>
-                        <td class="textBold">Harga Produk</td>
-                        <td><input type="text" class="form form-control" name="hrg_jual" id="hrg_jual"
-                                value="<?php echo $master_product_->getHrg_jual(); ?>" size="40" readonly required></td>
-                    </tr>
+                        <tr>
+                            <td class="textBold">Harga Produk</td>
+                            <td><input type="text" class="form form-control" name="hrg_jual" id="hrg_jual"
+                                    value="<?php echo $master_product_->getHrg_jual(); ?>" size="40" readonly required>
+                            </td>
+                        </tr>
 
-                    <!-- <tr> 
+                        <!-- <tr> 
                 </tr>
         
                 <tr> 
@@ -109,48 +112,52 @@
                 </tr> -->
 
 
-                    <tr>
-                        <td></td>
-                        <td><button type="submit" name="submit" value="" class="btn btn-facebook"><span
-                                    class="glyphicon glyphicon-save"></span> Submit</button></td>
-                    </tr>
-                </table>
-            </form>
+                        <tr>
+                            <td></td>
+                            <td><button type="submit" name="submit" value="" class="btn btn-facebook"><span
+                                        class="glyphicon glyphicon-save"></span> Submit</button></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
         </div>
         <div id="gab" class="tab-pane fade">
             <br>
             <h4 style="color:green;">FORM INPUT PRODUK BY UPLOAD EXCEL</h4>
             <br>
-            <form name="frmUpload_j_oln_gab" id="frmUpload_j_oln_gab"
-                action="index.php?model=master_product&action=saveFormByExcel" method="POST"
-                enctype="multipart/form-data">
-                <table border="1" cellpadding="2" style="" width="50%">
-                    <tr>
-                        <td>
-                            <button type="button" class="btn btn-red" title="Download Template Excel" onclick="exportFormat()"><span class="glyphicon glyphicon-export"></span>
-                                Download Template
-                                Excel</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Upload Excel</td>
-                        <td>
-                            <input type="file" style="text-align: left;" class="form form-control" name="produk_iprt"
-                                id="produk_iprt" size="10"
-                                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                title="Pilih Document Excel" required />
-                        </td>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <button class="btn btn-green" type="submit" onclick="" title="Proses Upload Excel"> <span
-                                    class="glyphicon glyphicon-upload"></span>
-                                Submit</button>
-                        </td>
-                    </tr>
+            <div class="table-responsive">
+                <form name="frmUpload_j_oln_gab" id="frmUpload_j_oln_gab"
+                    action="index.php?model=master_product&action=saveFormByExcel" method="POST"
+                    enctype="multipart/form-data">
+                    <table border="1" cellpadding="2" style="" width="50%">
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-red" title="Download Template Excel"
+                                    onclick="exportFormat()"><span class="glyphicon glyphicon-export"></span>
+                                    Download Template
+                                    Excel</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Upload Excel</td>
+                            <td>
+                                <input type="file" style="text-align: left;" class="form form-control"
+                                    name="produk_iprt" id="produk_iprt" size="10"
+                                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                    title="Pilih Document Excel" required />
+                            </td>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button class="btn btn-green" type="submit" onclick="" title="Proses Upload Excel">
+                                    <span class="glyphicon glyphicon-upload"></span>
+                                    Submit</button>
+                            </td>
+                        </tr>
 
-                </table>
-            </form>
+                    </table>
+                </form>
+            </div>
         </div>
     </div>
 </body>
