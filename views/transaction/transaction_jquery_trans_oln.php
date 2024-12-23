@@ -24,11 +24,12 @@
     $mdl_uplod_tr = new upload_trans_log();
     $ctrl_uplod_tr = new upload_trans_logController($mdl_uplod_tr, $this->dbh);
     ?>
+
     <h2>Transaction Jual Online</h2>
     <div id="header_list">
         <br>
-        <div id="table_trans_off">
-            <table class="search" border="0" width="80%">
+        <div id="table_trans_off" class="table-responsive">
+            <table class="table" border="0" width="80%">
                 <!-- <tr>
                     <td>
                         <span class="glyphicon glyphicon-search"></span>
@@ -55,10 +56,14 @@
                     <td>
                         <select name="mktplc" id="mktplc" class="form form-control" onchange="serchData()">
                             <option value="">All Marketplace</option>
-                            <option value="Shopee" <?php echo $mktpc == "Shopee" ? 'selected' : '';?>> Shopee</option>
-                            <option value="Lazada" <?php echo $mktpc == "Lazada" ? 'selected' : '';?>> Lazada</option>
-                            <option value="Tokopedia" <?php echo $mktpc == "Tokopedia" ? 'selected' : '';?>> Tokopedia</option>
-                            <option value="TikTok Shop" <?php echo $mktpc == "TikTok Shop" ? 'selected' : '';?>> TikTok Shop</option>
+                            <option value="Shopee" <?php echo $mktpc == "Shopee" ? 'selected' : ''; ?>> Shopee
+                            </option>
+                            <option value="Lazada" <?php echo $mktpc == "Lazada" ? 'selected' : ''; ?>> Lazada
+                            </option>
+                            <option value="Tokopedia" <?php echo $mktpc == "Tokopedia" ? 'selected' : ''; ?>>
+                                Tokopedia</option>
+                            <option value="TikTok Shop" <?php echo $mktpc == "TikTok Shop" ? 'selected' : ''; ?>>
+                                TikTok Shop</option>
                         </select>
                     </td>
                     <td>
@@ -81,7 +86,11 @@
                                 class="glyphicon glyphicon-plus"></span> Tambah Data</button>
                     </td>
             </table>
-            <br>
+        </div>
+
+        <br>
+        <div class="table-responsive">
+
             <table class="table table-striped" style="width: 95%;">
                 <thead>
                     <tr>
@@ -160,7 +169,8 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title fs-5" id="exampleModalLabel">Detail Penjualan Online
+                                                <h3 class="modal-title fs-5" id="exampleModalLabel">Detail Penjualan
+                                                    Online
                                                 </h3>
                                             </div>
                                             <div class="modal-body">
@@ -169,81 +179,90 @@
                                                 </h4>
                                                 <?php if ($trans_onn->getId() == null || $trans_onn->getId() == "") {
                                                     ?>
-                                                    <table class="table table-striped">
-                                                        <td align="center"><b>Detail Penjualan Tidak Tersedia</b></td>
-                                                    </table>
+                                                    <div class="table-responsive">
+
+                                                        <table class="table table-striped">
+                                                            <td align="center"><b>Detail Penjualan Tidak Tersedia</b>
+                                                            </td>
+                                                        </table>
+                                                    </div>
                                                 <?php } else { ?>
                                                     <div class="row table-row">
-                                                        <table class="table table-striped" width="50%">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="text-left">No</th>
-                                                                    <th class="text-left">Kode Part</th>
-                                                                    <th class="text-left">Part</th>
-                                                                    <th class="text-left">Qty</th>
-                                                                    <th class="text-left">Harga</th>
-                                                                    <th class="text-left">Diskon (%)</th>
-                                                                    <th class="text-left">Jumlah</th>
-                                                                    <th class="text-center">#</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-                                                                $showDtlTrans = $ctrl_trans_detail->showDataDtlArray($trans_onn->getId());
-                                                                $index = 1;
-                                                                $totalPnjl = 0;
-                                                                foreach ($showDtlTrans as $val_part) {
-                                                                    $namePart = $ctrl_mst_part->showDataByKode($val_part->getKd_product());
-                                                                    $totalPnjl += $val_part->getHarga() * $val_part->getQty();
-                                                                    ?>
+                                                        <div class="table-responsive">
+
+                                                            <table class="table table-striped" width="50%">
+                                                                <thead>
                                                                     <tr>
-                                                                        <td class="text-left">
-                                                                            <?php echo $index++; ?>
-                                                                        </td>
-                                                                        <td class="text-left">
-                                                                            <b>
-                                                                                <?php echo $val_part->getKd_product() ?>
-                                                                            </b>
-                                                                        </td>
-                                                                        <td class="text-left">
-                                                                            <b>
-                                                                                <?php echo $namePart->getNm_product(); ?>
-                                                                            </b>
-                                                                        </td>
-                                                                        <td class="text-left">
-                                                                            <b>
-                                                                                <?php echo $val_part->getQty() ?> Pcs
-                                                                            </b>
-                                                                        </td>
-                                                                        <td class="text-left">
-                                                                            <b>
-                                                                                <?php echo number_format(floatVal($val_part->getHarga())) ?>
-                                                                            </b>
-                                                                        </td>
-                                                                        <td class="text-left">
-                                                                            <b>
-                                                                                <?php echo number_format(floatVal(0)) ?>
-                                                                            </b>
-                                                                        </td>
-                                                                        <td class="text-left">
-                                                                            <b>
-                                                                                <?php echo number_format(floatVal($val_part->getHarga() * $val_part->getQty())) ?>
-                                                                            </b>
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            <span style="color:green" class="fa fa-check"></span>
-                                                                        </td>
+                                                                        <th class="text-left">No</th>
+                                                                        <th class="text-left">Kode Part</th>
+                                                                        <th class="text-left">Part</th>
+                                                                        <th class="text-left">Qty</th>
+                                                                        <th class="text-left">Harga</th>
+                                                                        <th class="text-left">Diskon (%)</th>
+                                                                        <th class="text-left">Jumlah</th>
+                                                                        <th class="text-center">#</th>
                                                                     </tr>
+                                                                </thead>
+                                                                <tbody>
                                                                     <?php
-                                                                } ?>
-                                                                <tr>
-                                                                    <td colspan="6" class="text-left"><b>Total</b></td>
-                                                                    <td class="text-center"><b>
-                                                                            <?php echo number_format(floatVal($totalPnjl)); ?>
-                                                                        </b></td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
+                                                                    $showDtlTrans = $ctrl_trans_detail->showDataDtlArray($trans_onn->getId());
+                                                                    $index = 1;
+                                                                    $totalPnjl = 0;
+                                                                    foreach ($showDtlTrans as $val_part) {
+                                                                        $namePart = $ctrl_mst_part->showDataByKode($val_part->getKd_product());
+                                                                        $totalPnjl += $val_part->getHarga() * $val_part->getQty();
+                                                                        ?>
+                                                                        <tr>
+                                                                            <td class="text-left">
+                                                                                <?php echo $index++; ?>
+                                                                            </td>
+                                                                            <td class="text-left">
+                                                                                <b>
+                                                                                    <?php echo $val_part->getKd_product() ?>
+                                                                                </b>
+                                                                            </td>
+                                                                            <td class="text-left">
+                                                                                <b>
+                                                                                    <?php echo $namePart->getNm_product(); ?>
+                                                                                </b>
+                                                                            </td>
+                                                                            <td class="text-left">
+                                                                                <b>
+                                                                                    <?php echo $val_part->getQty() ?> Pcs
+                                                                                </b>
+                                                                            </td>
+                                                                            <td class="text-left">
+                                                                                <b>
+                                                                                    <?php echo number_format(floatVal($val_part->getHarga())) ?>
+                                                                                </b>
+                                                                            </td>
+                                                                            <td class="text-left">
+                                                                                <b>
+                                                                                    <?php echo number_format(floatVal(0)) ?>
+                                                                                </b>
+                                                                            </td>
+                                                                            <td class="text-left">
+                                                                                <b>
+                                                                                    <?php echo number_format(floatVal($val_part->getHarga() * $val_part->getQty())) ?>
+                                                                                </b>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <span style="color:green"
+                                                                                    class="fa fa-check"></span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <?php
+                                                                    } ?>
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-left"><b>Total</b>
+                                                                        </td>
+                                                                        <td class="text-center"><b>
+                                                                                <?php echo number_format(floatVal($totalPnjl)); ?>
+                                                                            </b></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                 <?php } ?>
                                             </div>
@@ -293,6 +312,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
 </body>
 
