@@ -36,38 +36,41 @@
                 </div>
                 <br>
                 <br>
-                <form name="frmUpload_j_oln_gab" id="frmUpload_j_oln_gab"
-                    action="index.php?model=transaction&action=saveUploadOnline" method="POST"
-                    enctype="multipart/form-data">
-                    <table border="1" cellpadding="2" style="" width="50%">
+                <div class="table-responsive">
+                    <form name="frmUpload_j_oln_gab" id="frmUpload_j_oln_gab"
+                        action="index.php?model=transaction&action=saveUploadOnline" method="POST"
+                        enctype="multipart/form-data">
+                        <table class="table" border="1" cellpadding="2" style="" width="50%">
 
-                        <h4>
-                            Download Template & Stok Update
-                        </h4>
-                        </tr>
-                        <tr>
+                            <h4>
+                                Download Template & Stok Update
+                            </h4>
+                            </tr>
+                            <tr>
 
 
-                            <td>Marketplace :</td>
-                            <td>
-                                <select name="tp_mkt" id="tp_mkt" class="form form-control">
-                                    <option value="">Pilih Marketplace</option>
-                                    <option value="SHP">Shopee</option>
-                                    <option value="LZD">Lazada</option>
-                                    <option value="TKP">Tokopedia</option>
-                                    <option value="TTS">TikTok Shop</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button class="btn btn-navy" type="button" onclick="export_closing()"
-                                    title="Download Format Template Closing & Stok Update"> <span
-                                        class="glyphicon glyphicon-save"></span>
-                                    Download</button>
-                            </td>
-                        </tr>
-                    </table>
-                    <br>
-                    <br>
+                                <td>Marketplace :</td>
+                                <td>
+                                    <select name="tp_mkt" id="tp_mkt" class="form form-control">
+                                        <option value="">Pilih Marketplace</option>
+                                        <option value="SHP">Shopee</option>
+                                        <option value="LZD">Lazada</option>
+                                        <option value="TKP">Tokopedia</option>
+                                        <option value="TTS">TikTok Shop</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn btn-navy" type="button" onclick="export_closing()"
+                                        title="Download Format Template Closing & Stok Update"> <span
+                                            class="glyphicon glyphicon-save"></span>
+                                        Download</button>
+                                </td>
+                            </tr>
+                        </table>
+                </div>
+                <br>
+                <br>
+                <div class="table-responsive">
                     <table border="1" cellpadding="2" style="border-collapse: collapse;" width="50%">
                         <h4>
                             Upload Excel Transaction Closing Online
@@ -91,7 +94,8 @@
                         </tr>
 
                     </table>
-                </form>
+                    </form>
+                </div>
             </div>
             <div id="sat" class="tab-pane fade">
                 <!-- <h3>Satuan</h3> -->
