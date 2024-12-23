@@ -24,7 +24,7 @@
     <div class="nav" style="width: 95%;">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#gab">Gabungan (Multi Produk)</a></li>
-            <li><a data-toggle="tab" href="#sat" onclick="alert('Under Development');">Satuan (Single Produk)</a></li>
+            <li><a data-toggle="tab" href="#sat" onclick="alertDev()">Satuan (Single Produk)</a></li>
         </ul>
 
         <div class="tab-content">
@@ -498,6 +498,14 @@
             }
         });
     })();
+
+    function alertDev() {
+        Swal.fire({
+            title: 'Uppss !',
+            icon: 'info',
+            text: 'This Page Under Development !, Comming Soon'
+        });
+    }
 </script>
 <style>
     .ac_results {
