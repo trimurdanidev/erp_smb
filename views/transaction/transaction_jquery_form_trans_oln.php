@@ -36,10 +36,10 @@
                 </div>
                 <br>
                 <br>
-                <div class="table-responsive">
-                    <form name="frmUpload_j_oln_gab" id="frmUpload_j_oln_gab"
-                        action="index.php?model=transaction&action=saveUploadOnline" method="POST"
-                        enctype="multipart/form-data">
+                <form name="frmUpload_j_oln_gab" id="frmUpload_j_oln_gab"
+                    action="index.php?model=transaction&action=saveUploadOnline" method="POST"
+                    enctype="multipart/form-data">
+                    <div class="table-responseive">
                         <table class="table" border="1" cellpadding="2" style="" width="50%">
 
                             <h4>
@@ -67,35 +67,35 @@
                                 </td>
                             </tr>
                         </table>
-                </div>
-                <br>
-                <br>
-                <div class="table-responsive">
-                    <table border="1" cellpadding="2" style="border-collapse: collapse;" width="50%">
-                        <h4>
-                            Upload Excel Transaction Closing Online
-                        </h4>
-                        <tr>
-                            <td class="textBold">Excel Transaction Online</td>
-                            <td>
-                                <input type="file" style="text-align: left;" class="form form-control"
-                                    name="file_upload" id="file_upload" size="10"
-                                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                    title="Pilih Excel Transaksi Online Yang Sudah Final" required />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="text-align: left"><button type="submit" name="submit" id="submit" value=""
-                                    class="btn btn-primary" title="Proses Upload Transaksi Online"><span
-                                        class="glyphicon glyphicon-upload"></span>
-                                    Proses</button>
-                            </td>
-                        </tr>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="tablw" border="1" cellpadding="2" style="border-collapse: collapse;" width="50%">
+                            <h4>
+                                Upload Excel Transaction Closing Online
+                            </h4>
+                            <tr>
+                                <td class="textBold">Excel Transaction Online</td>
+                                <td>
+                                    <input type="file" style="text-align: left;" class="form form-control"
+                                        name="file_upload" id="file_upload" size="10"
+                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                        title="Pilih Excel Transaksi Online Yang Sudah Final" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="text-align: left"><button type="submit" name="submit" id="submit" value=""
+                                        class="btn btn-primary" title="Proses Upload Transaksi Online"><span
+                                            class="glyphicon glyphicon-upload"></span>
+                                        Proses</button>
+                                </td>
+                            </tr>
 
-                    </table>
-                    </form>
-                </div>
+                        </table>
+                    </div>
+                </form>
             </div>
             <div id="sat" class="tab-pane fade">
                 <!-- <h3>Satuan</h3> -->
