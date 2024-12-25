@@ -517,6 +517,8 @@ class transactionController extends transactionControllerGenerate
     }
     function showAllJQuery_trans_off()
     {
+        $this->setIsadmin(true);
+        $userLogin = $this->user;
         $mdl_transcation_dtl = new transaction_detail();
         $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
 
@@ -533,7 +535,7 @@ class transactionController extends transactionControllerGenerate
         $ctrl_trans_buyer = new transaction_buyerController($mdl_trans_buyer, $this->dbh);
 
 
-        $sql = "SELECT * FROM `transaction` WHERE type_trans=2 order by id desc";
+        $sql = "SELECT * FROM `transaction` WHERE type_trans=2 and created_by = '$userLogin' order by id desc";
 
         $last = $this->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
@@ -581,6 +583,7 @@ class transactionController extends transactionControllerGenerate
 
     function showAllJQuery_trans_off_by_search()
     {
+        $this->setIsadmin(true);
         $mdl_transcation_dtl = new transaction_detail();
         $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
 
@@ -599,18 +602,19 @@ class transactionController extends transactionControllerGenerate
         $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $pyment = isset($_REQUEST["payment"]) ? $_REQUEST["payment"] : "";
+        $userLogin = $this->user;
 
         if ($pyment == null || $pyment == "") {
             $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
             INNER JOIN transaction_payment d ON d.`trans_id` = a.id
             INNER JOIN transaction_buyer f ON f.trans_id = a.id 
-            WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' 
+            WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' and a.created_by = '$userLogin'
             ORDER BY a.`created_at` DESC";
         } else {
             $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
             INNER JOIN transaction_payment d ON d.`trans_id` = a.id
             INNER JOIN transaction_buyer f ON f.trans_id = a.id
-            WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.payment='$pyment' 
+            WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.payment='$pyment' and a.created_by = '$userLogin'
             ORDER BY a.`created_at` DESC";
         }
 
@@ -1502,7 +1506,8 @@ class transactionController extends transactionControllerGenerate
     function showAllJQuery_trans_onln()
     {
         $this->setIsadmin(true);
-        $sql = "SELECT * FROM `transaction` WHERE type_trans=1 order by id desc";
+        $userLogin = $this->user;
+        $sql = "SELECT * FROM `transaction` WHERE type_trans=1 and created_by='$userLogin' order by id desc";
 
         $last = $this->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
@@ -1768,13 +1773,14 @@ class transactionController extends transactionControllerGenerate
                             // echo "Kon salah 2";
                             return false;
                         else:
+                            $this->setIsadmin(true);
                             //get_stock_produk
                             $getStock = $ctrl_stock->showData($cul_kd_prod);
                             $getHarga = $ctrl_product->showDataByKode($cul_kd_prod);
                             $total += $cul_qty;
 
                             //transaction_detail
-                            $mdl_transaction_dtl->setId($id);
+                            // $mdl_transaction_dtl->setId($id);
                             $mdl_transaction_dtl->setTrans_id($this->getLastId());
                             $mdl_transaction_dtl->setKd_product($cul_kd_prod);
                             $mdl_transaction_dtl->setTrans_descript($cul_marketplace);
@@ -1783,7 +1789,7 @@ class transactionController extends transactionControllerGenerate
                             $ctrl_transaction_dtl->saveData();
 
                             //transaction_log
-                            $mdl_transaction_log->setId($id);
+                            // $mdl_transaction_log->setId($id);
                             $mdl_transaction_log->setTrans_id($this->getLastId());
                             $mdl_transaction_log->setKd_product($cul_kd_prod);
                             $mdl_transaction_log->setTrans_type(4);
@@ -1809,7 +1815,7 @@ class transactionController extends transactionControllerGenerate
                     }
                 }
 
-                echo ($Hitungbaris - 1) . " Baris Data Dengan Quantity\n\n";
+                // echo ($Hitungbaris - 1) . " Baris Data Dengan Quantity\n\n";
                 $showUpdadte_upl = $ctrl_upload_tr_log->showData($ctrl_upload_tr_log->getLastId());
                 $showUpdate_trs = $this->showData($this->getLastId());
 
@@ -1836,7 +1842,7 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
                 $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
                 $this->saveData();
-                echo "Success TerUpload";
+                // echo "Success TerUpload";
             } else {
                 echo SimpleXLS::parseError();
             }
@@ -1848,100 +1854,130 @@ class transactionController extends transactionControllerGenerate
         # code...
     }
 
+    function cekOnlineUserBelumConf()
+    {
+        $userLogin = $this->user;
+
+        if ($userLogin != null || $userLogin != ""):
+            $this->setIsadmin(true);
+            $sql = "SELECT count(*) FROM `transaction` a 
+            INNER JOIN upload_trans_log b ON b.`id` = a.`upload_trans_log_id` 
+            WHERE type_trans='1' and trans_status ='0' and a.created_by!='$userLogin'";
+
+            $row = $this->dbh->query($sql)->fetch();
+            return $row[0];
+        else:
+            echo '<script>window.location="index.php";</script>';
+        endif;
+    }
+
     public function confirmOnline()
     {
         $this->setIsadmin(true);
-        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
-        $user = $this->user;
-        $total = 0;
+        $cekDokBelumConf = $this->cekOnlineUserBelumConf();
 
-        $getTransaction = $this->showData($id);
+        // if ($cekDokBelumConf > 0):
+        //     echo "<script language='javascript' type='text/javascript'>
+        //     Swal.fire({
+        //         title : 'Gagal ! Ada Transaksi Closing Online Dari Admin Lain Belum Confirm / Masih On Process',
+        //         icon : 'error',
+        //         text : 'Mohon Selesaikan Closing Online Tersebut Terlebih Dahhulu '
+        //     });
+        //     </script>";
+        // else:
 
-        $mdl_stock = new master_stock();
-        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+            $user = $this->user;
+            $total = 0;
 
-        $mdl_transaction_dtl = new transaction_detail();
-        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+            $getTransaction = $this->showData($id);
 
-        $mdl_part = new master_product();
-        $ctrl_part = new master_productController($mdl_part, $this->dbh);
+            $mdl_stock = new master_stock();
+            $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
 
-        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+            $mdl_transaction_dtl = new transaction_detail();
+            $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
 
+            $mdl_part = new master_product();
+            $ctrl_part = new master_productController($mdl_part, $this->dbh);
 
-        if ($id != "") {
-            foreach ($showDtlTrans as $valDetail) {
-                $getStok = $ctrl_stock->showData($valDetail->getKd_product());
-                $getPart = $ctrl_part->showDataByKode($valDetail->getKd_product());
-
-                if ($getStok->getQty_stock() > $valDetail->getQty() || $getStok->getQty_stock() == $valDetail->getQty()) {
+            $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
 
 
-                    $total += $valDetail->getQty();
-                    //master_stock
-                    $mdl_stock->setKd_product($valDetail->getKd_product());
-                    $mdl_stock->setQty_stock($getStok->getQty_stock() - $valDetail->getQty());
-                    $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
-                    $mdl_stock->setCreated_by($getStok->getCreated_by());
-                    $mdl_stock->setUpdated_by($user);
-                    $mdl_stock->setCreated_at($getStok->getCreated_at());
-                    $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
-                    $ctrl_stock->saveData();
-                    $setStatus = 'Y';
-                } else {
-                    // echo "Gagal Confirm!\nStok " . $getPart->getNm_product() . " Tidak Mencukupi.\nSisa Stoknya " . $getStok->getQty_stock() . " Pcs\n";
-                    echo "<script language='javascript' type='text/javascript'>
-                        Swal.fire({
+            if ($id != "") {
+                foreach ($showDtlTrans as $valDetail) {
+                    $getStok = $ctrl_stock->showData($valDetail->getKd_product());
+                    $getPart = $ctrl_part->showDataByKode($valDetail->getKd_product());
+
+                    if ($getStok->getQty_stock() > $valDetail->getQty() || $getStok->getQty_stock() == $valDetail->getQty()) {
+
+
+                        $total += $valDetail->getQty();
+                        //master_stock
+                        $mdl_stock->setKd_product($valDetail->getKd_product());
+                        $mdl_stock->setQty_stock($getStok->getQty_stock() - $valDetail->getQty());
+                        $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
+                        $mdl_stock->setCreated_by($getStok->getCreated_by());
+                        $mdl_stock->setUpdated_by($user);
+                        $mdl_stock->setCreated_at($getStok->getCreated_at());
+                        $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
+                        $ctrl_stock->saveData();
+                        $setStatus = 'Y';
+                    } else {
+                        // echo "Gagal Confirm!\nStok " . $getPart->getNm_product() . " Tidak Mencukupi.\nSisa Stoknya " . $getStok->getQty_stock() . " Pcs\n";
+                        echo "<script language='javascript' type='text/javascript'>
+                    Swal.fire({
                         title : 'Gagal Confirm !',
                         icon : 'error',
                         text : 'Sisa Stock Tidak Mencukupi'
                     });
                     </script>";
-                    $setStatus = 'N';
+                        $setStatus = 'N';
+                    }
                 }
-            }
-            //transaction
-            if ($setStatus == 'Y') {
-                $this->transaction->setId($id);
-                $this->transaction->setNo_trans($getTransaction->getNo_trans());
-                $this->transaction->setTanggal($getTransaction->getTanggal());
-                $this->transaction->setType_trans($getTransaction->getType_trans());
-                $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
-                $this->transaction->setQtyRelease($total);
-                $this->transaction->setTrans_total(0);
-                $this->transaction->setTrans_status(1);
-                $this->transaction->setCreated_by($getTransaction->getCreated_by());
-                $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
-                $this->transaction->setCreated_at($getTransaction->getCreated_at());
-                $this->transaction->setUpdated_by($user);
-                $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
-                $this->updateData();
-                echo "<script language='javascript' type='text/javascript'>
-                    Swal.fire({
+                //transaction
+                if ($setStatus == 'Y') {
+                    $this->transaction->setId($id);
+                    $this->transaction->setNo_trans($getTransaction->getNo_trans());
+                    $this->transaction->setTanggal($getTransaction->getTanggal());
+                    $this->transaction->setType_trans($getTransaction->getType_trans());
+                    $this->transaction->setQtyTotal($getTransaction->getQtyTotal());
+                    $this->transaction->setQtyRelease($total);
+                    $this->transaction->setTrans_total(0);
+                    $this->transaction->setTrans_status(1);
+                    $this->transaction->setCreated_by($getTransaction->getCreated_by());
+                    $this->transaction->setUpload_trans_log_id($getTransaction->getUpload_trans_log_id());
+                    $this->transaction->setCreated_at($getTransaction->getCreated_at());
+                    $this->transaction->setUpdated_by($user);
+                    $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
+                    $this->updateData();
+                    echo "<script language='javascript' type='text/javascript'>
+                Swal.fire({
                     title : 'Berhasil',
                     icon : 'success',
                     text : 'Closing Online Berhasil Terconfirm'
                     });
                     </script>";
-                //     echo "<script language='javascript' type='text/javascript'>
-                //     Swal.fire({
-                //     title : 'Gagal Confirm !--1',
-                //     icon : 'error',
-                //     text : 'Silahkan Cek Koneksi Internet Anda'
-                // });
-                // </script>";
+                    //     echo "<script language='javascript' type='text/javascript'>
+                    //     Swal.fire({
+                    //     title : 'Gagal Confirm !--1',
+                    //     icon : 'error',
+                    //     text : 'Silahkan Cek Koneksi Internet Anda'
+                    // });
+                    // </script>";
+                    $this->showAllJQuery_trans_onln();
+                }
                 $this->showAllJQuery_trans_onln();
+            } else {
+                echo "<script language='javascript' type='text/javascript'>
+                    Swal.fire({
+                        title : 'Gagal Confirm !',
+                        icon : 'error',
+                        text : 'Silahkan Cek Koneksi Internet Anda'
+                        });
+                        </script>";
             }
-            $this->showAllJQuery_trans_onln();
-        } else {
-            echo "<script language='javascript' type='text/javascript'>
-                Swal.fire({
-                title : 'Gagal Confirm !',
-                icon : 'error',
-                text : 'Silahkan Cek Koneksi Internet Anda'
-            });
-            </script>";
-        }
+        // endif;
     }
 
     function showAllJQuery_trans_onn_by_search()
@@ -1958,17 +1994,18 @@ class transactionController extends transactionControllerGenerate
         $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $mktplc = isset($_REQUEST["mktplc"]) ? $_REQUEST["mktplc"] : "";
+        $userLogin = $this->user;
 
         if ($mktplc == null || $mktplc == "") {
             $sql = "SELECT DISTINCT b .`trans_descript`,a.* FROM `transaction` a 
             INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
-            WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' 
+            WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' and a.created_by = '$userLogin'
             GROUP BY a.`id`
             ORDER BY a.`created_at` DESC";
         } else {
             $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
             INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
-            WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc' 
+            WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc' and a.created_by = '$userLogin'
             GROUP BY a.`id`
             ORDER BY a.`created_at` DESC";
         }
