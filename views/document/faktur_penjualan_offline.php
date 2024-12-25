@@ -458,7 +458,7 @@
                             THANK YOU FOR YOUR ORDER
                         </p>
                         <p class="text-center">
-                            <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe"></i> erp-smb.com</span>
+                            <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe"></i> erpsmb.cloud</span>
                             <!-- <span class="m-r-10"><i class="fa fa-fw fa-lg fa-phone-volume"></i> :016-18192302</span> -->
                             <span class="m-r-10"><i class="fa fa-fw fa-lg fa-envelope"></i> smbpart@gmail.com</span>
                         </p>
