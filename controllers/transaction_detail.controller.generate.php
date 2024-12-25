@@ -410,7 +410,7 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    //echo "Data is Inserted";
+                    echo "Data is Inserted-DTL";
                 }else{
                     //echo "You cannot insert data this module";
                 }
