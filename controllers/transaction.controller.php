@@ -1774,7 +1774,7 @@ class transactionController extends transactionControllerGenerate
                             $total += $cul_qty;
 
                             //transaction_detail
-                            // $mdl_transaction_dtl->setId($id);
+                            $mdl_transaction_dtl->setId($id);
                             $mdl_transaction_dtl->setTrans_id($this->getLastId());
                             $mdl_transaction_dtl->setKd_product($cul_kd_prod);
                             $mdl_transaction_dtl->setTrans_descript($cul_marketplace);
@@ -1783,7 +1783,7 @@ class transactionController extends transactionControllerGenerate
                             $ctrl_transaction_dtl->saveData();
 
                             //transaction_log
-                            // $mdl_transaction_log->setId($id);
+                            $mdl_transaction_log->setId($id);
                             $mdl_transaction_log->setTrans_id($this->getLastId());
                             $mdl_transaction_log->setKd_product($cul_kd_prod);
                             $mdl_transaction_log->setTrans_type(4);
