@@ -27,40 +27,44 @@
     <table >        
         <tr> 
             <td class="textBold">Id</td> 
-            <td><input type="text"  name="id" id="id" value="<?php echo $master_user_->getId();?>" size="10" placeholder="Auto Generate" ReadOnly  ></td>
+            <td><input type="text" class="form form-control" name="id" id="id" value="<?php echo $master_user_->getId();?>" size="10" placeholder="Auto Generate" ReadOnly  ></td>
         </tr>
         <tr> 
             <td class="textBold">User Fullname</td> 
-            <td><input type="text"  name="username" id="username" value="<?php echo $master_user_->getUsername();?>" size="40"   ></td>
+            <td><input type="text" class="form form-control" name="username" id="username" value="<?php echo $master_user_->getUsername();?>" size="40" required ></td>
         </tr>
         <tr> 
             <td class="textBold">User Description</td> 
-            <td><input type="text"  name="description" id="description" value="<?php echo $master_user_->getDescription();?>" size="40"   ></td>
+            <td><input type="text" class="form form-control" name="description" id="description" value="<?php echo $master_user_->getDescription();?>" size="40" required  ></td>
         </tr>
         <tr> 
             <td class="textBold">Username</td> 
-            <td><input type="text"  name="user" id="user" value="<?php echo $master_user_->getUser();?>" size="30"   ></td>
+            <td><input type="text" class="form form-control" name="user" id="user" value="<?php echo $master_user_->getUser();?>" size="30" required  ></td>
         </tr>
         <tr> 
             <td class="textBold">Password</td> 
-            <td><input type="text"  name="password" id="password" value="<?php echo $master_user_->getPassword();?>" size="40"   ></td>
+            <td><input type="text" class="form form-control" name="password" id="password" value="<?php echo $master_user_->getPassword();?>" size="40" required  ></td>
+        </tr>
+        <tr> 
+            <td class="textBold">No Whatsapp</td> 
+            <td><input type="text" class="form form-control" name="phone" id="phone" value="<?php echo $master_user_->getPhone();?>" size="40" required  ></td>
         </tr>
         <tr> 
             <td class="textBold">Avatar</td> 
             <td>
-                <input id="avatar" type="file" name="avatar" value="Upload Image"> 
+                <input id="avatar" class="form form-control" type="file" name="avatar" value="Upload Image"> 
             </td>
         </tr>
         <tr> 
             <td class="textBold">Nik</td> 
             <td>
-                <input type="text"  name="nik" id="nik" value="<?php echo $master_user_->getNik();?>" size="30"   >                             
+                <input type="text" class="form form-control" name="nik" id="nik" value="<?php echo $master_user_->getNik();?>" size="30"   >                             
             </td>
         </tr>
         <tr> 
             <td class="textBold">Department</td> 
             <td>
-                <select name='departmentid' id='departmentid'>
+                <select name='departmentid' id='departmentid' class="form form-control">
                     <option value="0">
                         All Department
                     </option>
@@ -81,7 +85,7 @@
         <tr> 
             <td class="textBold">Unit</td> 
             <td>
-                <select name="unitid" id="unitid">
+                <select name="unitid" id="unitid" class="form form-control">
                 <option value="0">All Unit</option>
                 <?php 
                     foreach ($master_unit_list as $master_unit) {

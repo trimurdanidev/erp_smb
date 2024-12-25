@@ -74,20 +74,22 @@ class master_userController extends master_userControllerGenerate
         $user = isset($_POST['user']) ? $_POST['user'] : "";
         $description = isset($_POST['description']) ? $_POST['description'] : "";
         $password = isset($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT, $options) : "";
+        $phone = isset($_POST['phone']) ? $_POST['phone'] : "";
         $username = isset($_POST['username']) ? $_POST['username'] : "";
         $avatar = isset($_POST['avatar']) ? $_POST['avatar'] : "";
         $nik = isset($_POST['nik']) ? $_POST['nik'] : "";
         $departmentid = isset($_POST['departmentid']) ? $_POST['departmentid'] : "";
         $unitid = isset($_POST['unitid']) ? $_POST['unitid'] : "";
-        // if (password_verify($password)):
+        // if (password_verify($password))
         //     echo "<pre>";
         //     print_r($password);
         //     echo "</pre";
             $this->master_user->setId($id);
             $this->master_user->setUser($user);
             $this->master_user->setDescription($description);
-            $this->master_user->setPassword($password);
             $this->master_user->setUsername($username);
+            $this->master_user->setPassword($password);
+            $this->master_user->setPhone($phone);
             $this->master_user->setAvatar($avatar);
             $this->master_user->setNik($nik);
             $this->master_user->setDepartmentid($departmentid);
