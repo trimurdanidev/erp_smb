@@ -452,7 +452,7 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    echo "Data is Inserted-TRANS";
+                    // echo "Data is Inserted-TRANS";
                 }else{
                     //echo "You cannot insert data this module";
                 }
