@@ -1815,7 +1815,7 @@ class transactionController extends transactionControllerGenerate
                     }
                 }
 
-                // echo ($Hitungbaris - 1) . " Baris Data Dengan Quantity\n\n";
+                echo ($Hitungbaris - 1) . " Baris Data Dengan Quantity\n\n";
                 $showUpdadte_upl = $ctrl_upload_tr_log->showData($ctrl_upload_tr_log->getLastId());
                 $showUpdate_trs = $this->showData($this->getLastId());
 
@@ -1842,7 +1842,7 @@ class transactionController extends transactionControllerGenerate
                 $this->transaction->setUpdated_by($showUpdate_trs->getUpdated_by());
                 $this->transaction->setUpdated_at($showUpdate_trs->getUpdated_at());
                 $this->saveData();
-                // echo "Success TerUpload";
+                echo "Success TerUpload";
             } else {
                 echo SimpleXLS::parseError();
             }
