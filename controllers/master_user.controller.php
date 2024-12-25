@@ -200,7 +200,7 @@ class master_userController extends master_userControllerGenerate
             $ctrl_rst_password_l->saveData();
 
             $curl = curl_init();
-            $token = "Up#YVpLNfcEkqw3PCpBH";
+            $token = "cL6UCwkj9grpaYwWpsHn";
 
             $phone = $getuser->getPhone();
             $pesen = "*ERP SMB*
