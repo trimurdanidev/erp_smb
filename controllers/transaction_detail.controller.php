@@ -98,7 +98,20 @@ class transaction_detailController extends transaction_detailControllerGenerate
             $mdl_transLog->setUpdated_by($userBy);
             $mdl_transLog->setUpdated_at($timeup);
             $ctrl_transLog->saveData();
-            echo "Berhasil Edit";
+            if ($getTransactionFromDtl->getType_trans() == '4') {
+                echo "Berhasil Edit";
+            } else if ($getTransactionFromDtl->getType_trans() == '1') {
+                echo "<script language='javascript' type='text/javascript'>
+                Swal.fire({
+                    title : 'Berhasil',
+                    icon : 'Success',
+                    text : 'Berhasil Edit'
+                });
+                </script>";
+                echo "<script>
+                    window.history.back();
+                </script>";
+            }
             // echo "<script language='javascript' type='text/javascript'>
             // Swal.fire({
             //     title : 'Berhasil',
@@ -123,8 +136,13 @@ class transaction_detailController extends transaction_detailControllerGenerate
         $query = "SELECT /*SUM(qty) `totalQty`,SUM(harga) `totalValue`,trans_descript `transDesc`*/ a .*,b .* FROM `transaction_detail` a inner join `transaction` b on a .trans_id  = b .id WHERE a .trans_id=$idTrans AND a .qty!=0;";
         $row = $this->createList($query);
         // $this->loadData($this->transaction_detail, $row);
-                
+
         return $row;
+    }
+
+    function simpanEditOnlen()
+    {
+
     }
 }
 ?>

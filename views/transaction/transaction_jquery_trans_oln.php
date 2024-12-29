@@ -176,6 +176,7 @@
                                             <div class="modal-body">
                                                 <h4><span class="glyphicon glyphicon-th-list"></span>
                                                     <?php echo $trans_onn->getNo_trans(); ?>
+
                                                 </h4>
                                                 <?php if ($trans_onn->getId() == null || $trans_onn->getId() == "") {
                                                     ?>
@@ -200,6 +201,7 @@
                                                                         <th class="text-left">Harga</th>
                                                                         <th class="text-left">Diskon (%)</th>
                                                                         <th class="text-left">Jumlah</th>
+                                                                        <th class="text-center">Status</th>
                                                                         <th class="text-center">#</th>
                                                                     </tr>
                                                                 </thead>
@@ -211,6 +213,22 @@
                                                                     foreach ($showDtlTrans as $val_part) {
                                                                         $namePart = $ctrl_mst_part->showDataByKode($val_part->getKd_product());
                                                                         $totalPnjl += $val_part->getHarga() * $val_part->getQty();
+                                                                        $sts = "";
+                                                                        $stringsts = "";
+                                                                        $clrsts = "";
+                                                                        if ($trans_onn->getTrans_status() == '0') {
+                                                                            $sts = "fa fa-clock-o";
+                                                                            $stringsts = "Pending";
+                                                                            $clrsts = "color:red;";
+                                                                        } else if ($trans_onn->getTrans_status() == '1') {
+                                                                            $sts = "fa fa-check";
+                                                                            $stringsts = "Success";
+                                                                            $clrsts = "color:green;";
+                                                                        } else if ($trans_onn->getTrans_status() == '2') {
+                                                                            $sts = "fa fa-close";
+                                                                            $stringsts = "Cancelled";
+                                                                            $clrsts = "color:red;";
+                                                                        }
                                                                         ?>
                                                                         <tr>
                                                                             <td class="text-left">
@@ -246,15 +264,78 @@
                                                                                     <?php echo number_format(floatVal($val_part->getHarga() * $val_part->getQty())) ?>
                                                                                 </b>
                                                                             </td>
-                                                                            <td class="text-center">
-                                                                                <span style="color:green"
-                                                                                    class="fa fa-check"></span>
+                                                                            <td class="text-left">
+                                                                                <span style="<?php echo $clrsts; ?>"
+                                                                                    class="<?php echo $sts; ?>"
+                                                                                    title="<?php echo $stringsts; ?>"></span>
+                                                                            </td>
+                                                                            <td>
+                                                                                <?php if ($trans_onn->getTrans_status() == '0') { ?>
+                                                                                    <button class="btn btn-default"
+                                                                                        title="Edit Quantity Detail Out Online"
+                                                                                        data-toggle="modal"
+                                                                                        data-target="#QtyEdtOln<?php echo $val_part->getId(); ?>"><span
+                                                                                            class="glyphicon glyphicon-edit"></span>
+                                                                                        Edit</button>
+                                                                                <?php } ?>
+                                                                                <div class="modal fade"
+                                                                                    id="QtyEdtOln<?php echo $val_part->getId(); ?>"
+                                                                                    tabindex="-1"
+                                                                                    aria-labelledby="exampleModalLabel"
+                                                                                    aria-hidden="true">
+                                                                                    <div class="modal-dialog">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <h4>Edit Quantity</h4>
+                                                                                                <button type="button" class="close"
+                                                                                                    data-dismiss="modal"
+                                                                                                    aria-label="Close">
+                                                                                                    <span
+                                                                                                        aria-hidden="true">&times;</span>
+                                                                                                </button>
+                                                                                                <br>
+                                                                                                <p>
+                                                                                                    <?php echo $val_part->getKd_product() . "-" . $namePart->getNm_product(); ?>
+                                                                                                </p>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <form name="frmEdit" id="frmEdit"
+                                                                                                    method="POST"
+                                                                                                    action="index.php?model=transaction_detail&action=simpanEditRestock">
+                                                                                                    <input type="hidden" name="idItem"
+                                                                                                        id="idItem"
+                                                                                                        value="<?php echo $val_part->getId(); ?>" />
+                                                                                                    <label
+                                                                                                        for="exampleFormControlTextarea1">Quantity
+                                                                                                        Online</label>
+                                                                                                    <input type="text"
+                                                                                                        class="form-control"
+                                                                                                        name="qtyEdtRes"
+                                                                                                        id="qtyEdtRes"
+                                                                                                        onkeypress="validate(event);"
+                                                                                                        value="<?php echo $val_part->getQty(); ?>" />
+                                                                                                    <div class="modal-footer">
+                                                                                                        <button type="submit"
+                                                                                                            class="btn btn-primary"><span
+                                                                                                                class="glyphicon glyphicon-ok"></span>
+                                                                                                            Simpan</button>
+                                                                                                        <button type="button"
+                                                                                                            class="btn btn-secondary"
+                                                                                                            data-dismiss="modal"><span
+                                                                                                                class="glyphicon glyphicon-remove"></span>
+                                                                                                            Batal</button>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </td>
                                                                         </tr>
                                                                         <?php
                                                                     } ?>
                                                                     <tr>
-                                                                        <td colspan="6" class="text-left"><b>Total</b>
+                                                                        <td colspan="8" class="text-left"><b>Total</b>
                                                                         </td>
                                                                         <td class="text-center"><b>
                                                                                 <?php echo number_format(floatVal($totalPnjl)); ?>

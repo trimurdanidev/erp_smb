@@ -374,7 +374,7 @@
                                                 <?php echo $val_faktur->getKd_product(); ?>
                                             </td>
                                             <td class="text-inverse">
-                                                <?php echo $showPart->getNm_product(); ?>
+                                                <?php echo $val_faktur->getNm_product(); ?>
                                             </td>
                                             <td class="text-center">
                                                 <?php echo $val_faktur->getQty(); ?> Pcs
