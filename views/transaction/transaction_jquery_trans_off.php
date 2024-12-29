@@ -253,10 +253,11 @@
                                                                         <?php
                                                                     } ?>
                                                                     <tr>
-                                                                        <td colspan="6" class="text-left"><b>Total</b></td>
+                                                                        <td colspan="7" class="text-left"><b>Total</b></td>
                                                                         <td class="text-center"><b>
                                                                                 <?php echo number_format(floatVal($totalPnjl)); ?>
                                                                             </b></td>
+                                                                            <td></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
