@@ -330,6 +330,7 @@ class transactionController extends transactionControllerGenerate
                     // $mdl_transaction_dtl->setId($id);
                     $mdl_transaction_dtl->setTrans_id($this->getLastId());
                     $mdl_transaction_dtl->setKd_product($kd_prod);
+                    $mdl_transaction_dtl->setNm_product("");
                     $mdl_transaction_dtl->setTrans_descript("");
                     $mdl_transaction_dtl->setQty($qty);
                     $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
@@ -703,6 +704,7 @@ class transactionController extends transactionControllerGenerate
         $total = 0;
         $part = isset($_POST['part']) ? $_POST['part'] : "";
         $qtyBeli = isset($_POST['qtyBeli']) ? $_POST['qtyBeli'] : "";
+        $namepr = isset($_POST['namepr']) ? $_POST['namepr'] : "";
         $price = isset($_POST['price']) ? $_POST['price'] : "";
         $method_pay = isset($_POST['metod_pay']) ? $_POST['metod_pay'] : "";
         $paymenn = isset($_POST['paymenn']) ? $_POST['paymenn'] : "";
@@ -736,10 +738,12 @@ class transactionController extends transactionControllerGenerate
                 $part = $y;
                 $qty = $qtyBeli[$arr_part];
                 $priceSet = $price[$arr_part];
+                $nameSet = $namepr[$arr_part];
 
                 // $mdl_trans_dtl->setId($id);
                 $mdl_trans_dtl->setTrans_id($this->getLastId());
                 $mdl_trans_dtl->setKd_product($part);
+                $mdl_trans_dtl->setNm_product($nameSet);
                 $mdl_trans_dtl->setQty($qty);
                 $mdl_trans_dtl->setHarga($priceSet);
                 $ctrl_trans_dtl->saveData();
@@ -1201,6 +1205,7 @@ class transactionController extends transactionControllerGenerate
                             // $mdl_transaction_dtl->setId($id);
                             $mdl_transaction_dtl->setTrans_id($this->getLastId());
                             $mdl_transaction_dtl->setKd_product($cul_kd_prod);
+                            $mdl_transaction_dtl->setNm_product("");
                             $mdl_transaction_dtl->setTrans_descript("");
                             $mdl_transaction_dtl->setQty($cul_qty);
                             $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
@@ -1783,6 +1788,7 @@ class transactionController extends transactionControllerGenerate
                             // $mdl_transaction_dtl->setId($id);
                             $mdl_transaction_dtl->setTrans_id($this->getLastId());
                             $mdl_transaction_dtl->setKd_product($cul_kd_prod);
+                            $mdl_transaction_dtl->setNm_product("");
                             $mdl_transaction_dtl->setTrans_descript($cul_marketplace);
                             $mdl_transaction_dtl->setQty($cul_qty);
                             $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
@@ -1886,55 +1892,92 @@ class transactionController extends transactionControllerGenerate
         //     </script>";
         // else:
 
-            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
-            $user = $this->user;
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+        $user = $this->user;
+        $total = 0;
+
+        $getTransaction = $this->showData($id);
+
+        $mdl_stock = new master_stock();
+        $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+
+        $mdl_transaction_dtl = new transaction_detail();
+        $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
+
+        $mdl_part = new master_product();
+        $ctrl_part = new master_productController($mdl_part, $this->dbh);
+
+        $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+
+
+        if ($id != "") {
+            $totStatus = 0;
+            $jmlDataNo = 0;
             $total = 0;
+            foreach ($showDtlTrans as $valDetail) {
+                $getStok = $ctrl_stock->showData($valDetail->getKd_product());
+                $getPart = $ctrl_part->showDataByKode($valDetail->getKd_product());
 
-            $getTransaction = $this->showData($id);
+                // echo "<pre>";
+                // echo print_r($valDetail->getKd_product() . "-" . $getStok->getQty_stock() . "-" . $valDetail->getQty(), true);
+                // echo "</pre>";
 
-            $mdl_stock = new master_stock();
-            $ctrl_stock = new master_stockControllerGenerate($mdl_stock, $this->dbh);
+                $setStatusCount = "";
 
-            $mdl_transaction_dtl = new transaction_detail();
-            $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
-
-            $mdl_part = new master_product();
-            $ctrl_part = new master_productController($mdl_part, $this->dbh);
-
-            $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
-
-
-            if ($id != "") {
-                foreach ($showDtlTrans as $valDetail) {
-                    $getStok = $ctrl_stock->showData($valDetail->getKd_product());
-                    $getPart = $ctrl_part->showDataByKode($valDetail->getKd_product());
-
-                    if ($getStok->getQty_stock() > $valDetail->getQty() || $getStok->getQty_stock() == $valDetail->getQty()) {
+                if ($getStok->getQty_stock() > $valDetail->getQty() || $getStok->getQty_stock() == $valDetail->getQty()):
+                    $setStatusCount = "YES";
+                    $jmlDataYes = $totStatus++;
+                    // $totStatusCountYES = count($setStatusCountYES);
+                elseif ($getStok->getQty_stock() < $valDetail->getQty()):
+                    $setStatusCount = "NO";
+                    $jmlDataNo = $totStatus++;
+                    // $totStatusCountNO = count($setStatusCounNO);
+                else:
+                endif;
 
 
-                        $total += $valDetail->getQty();
-                        //master_stock
-                        $mdl_stock->setKd_product($valDetail->getKd_product());
-                        $mdl_stock->setQty_stock($getStok->getQty_stock() - $valDetail->getQty());
-                        $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
-                        $mdl_stock->setCreated_by($getStok->getCreated_by());
-                        $mdl_stock->setUpdated_by($user);
-                        $mdl_stock->setCreated_at($getStok->getCreated_at());
-                        $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
-                        $ctrl_stock->saveData();
-                        $setStatus = 'Y';
-                    } else {
-                        // echo "Gagal Confirm!\nStok " . $getPart->getNm_product() . " Tidak Mencukupi.\nSisa Stoknya " . $getStok->getQty_stock() . " Pcs\n";
-                        echo "<script language='javascript' type='text/javascript'>
+                // echo "<pre>";
+                // echo print_r($setStatusCount, true);
+                // echo "</pre>";
+
+            }
+
+            echo "Yes count: " . $jmlDataYes . "\n";
+            echo "No count: " . $jmlDataNo . "\n";
+
+            if ($jmlDataNo > 0) {
+                foreach ($showDtlTrans as $valDetail2) {
+                    $getStok2 = $ctrl_stock->showData($valDetail2->getKd_product());
+                    $getPart2 = $ctrl_part->showDataByKode($valDetail2->getKd_product());
+                    $setStatus = 'N';
+                    $ketKosong = "Stok " . $valDetail2->getKd_product() . "-" . $getPart2->getNm_product() . " Tidak Mencukupi. Sisa Stoknya " . $getStok2->getQty_stock() . " Pcs";
+                    echo "122";
+                    echo "<script language='javascript' type='text/javascript'>
                     Swal.fire({
-                        title : 'Gagal Confirm !',
-                        icon : 'error',
-                        text : 'Sisa Stock Tidak Mencukupi'
+                    title : 'Gagal Confirm!',
+                    icon : 'error',
+                    text : '" . $ketKosong . "'
                     });
+                    
                     </script>";
-                        $setStatus = 'N';
-                    }
+                    $this->showAllJQuery_trans_onln();
+
+
                 }
+            } else {
+                echo "123 ";
+                $total += $valDetail->getQty();
+                //master_stock
+                $mdl_stock->setKd_product($valDetail->getKd_product());
+                $mdl_stock->setQty_stock($getStok->getQty_stock() - $valDetail->getQty());
+                $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
+                $mdl_stock->setCreated_by($getStok->getCreated_by());
+                $mdl_stock->setUpdated_by($user);
+                $mdl_stock->setCreated_at($getStok->getCreated_at());
+                $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
+                $ctrl_stock->saveData();
+                $setStatus = 'Y';
+
                 //transaction
                 if ($setStatus == 'Y') {
                     $this->transaction->setId($id);
@@ -1968,15 +2011,16 @@ class transactionController extends transactionControllerGenerate
                     $this->showAllJQuery_trans_onln();
                 }
                 $this->showAllJQuery_trans_onln();
-            } else {
-                echo "<script language='javascript' type='text/javascript'>
+            }
+        } else {
+            echo "<script language='javascript' type='text/javascript'>
                     Swal.fire({
                         title : 'Gagal Confirm !',
                         icon : 'error',
                         text : 'Silahkan Cek Koneksi Internet Anda'
                         });
                         </script>";
-            }
+        }
         // endif;
     }
 

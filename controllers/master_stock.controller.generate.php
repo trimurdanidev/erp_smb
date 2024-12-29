@@ -131,6 +131,7 @@
         function showData($id){
             $sql = "SELECT * FROM master_stock WHERE kd_product= '".$this->toolsController->replacecharFind($id,$this->dbh)."'";
 
+            // echo $sql;
             $row = $this->dbh->query($sql)->fetch();
             $this->loadData($this->master_stock, $row);
             

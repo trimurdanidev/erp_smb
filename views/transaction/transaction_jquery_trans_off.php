@@ -189,6 +189,7 @@
                                                                         <th class="text-left">No</th>
                                                                         <th class="text-left">Kode Part</th>
                                                                         <th class="text-left">Part</th>
+                                                                        <th class="text-left"><span style="color:red;">Nama Part (Set Faktur)</span></th>
                                                                         <th class="text-left">Qty</th>
                                                                         <th class="text-left">Harga</th>
                                                                         <th class="text-left">Diskon (%)</th>
@@ -217,6 +218,11 @@
                                                                             <td class="text-left">
                                                                                 <b>
                                                                                     <?php echo $namePart->getNm_product(); ?>
+                                                                                </b>
+                                                                            </td>
+                                                                            <td class="text-left">
+                                                                                <b>
+                                                                                    <?php echo $val_part->getNm_product(); ?>
                                                                                 </b>
                                                                             </td>
                                                                             <td class="text-left">

@@ -90,6 +90,7 @@
 	    $sql .= "`id`,";
 	    $sql .= "`trans_id`,";
 	    $sql .= "`kd_product`,";
+	    $sql .= "`nm_product`,";
 	    $sql .= "`trans_descript`,";
 	    $sql .= "`qty`,";
 	    $sql .= "`harga` ";
@@ -98,6 +99,7 @@
 	    $sql .= " null,";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_detail->getTrans_id(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_detail->getKd_product(), $this->dbh)."',";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_detail->getNm_product(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_detail->getTrans_descript(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_detail->getQty(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->transaction_detail->getHarga(), $this->dbh)."' ";
@@ -113,6 +115,7 @@
 	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->transaction_detail->getId(),$this->dbh)."',";
 	    $sql .= "`trans_id` = '".$this->toolsController->replacecharSave($this->transaction_detail->getTrans_id(),$this->dbh)."',";
 	    $sql .= "`kd_product` = '".$this->toolsController->replacecharSave($this->transaction_detail->getKd_product(),$this->dbh)."',";
+	    $sql .= "`nm_product` = '".$this->toolsController->replacecharSave($this->transaction_detail->getNm_product(),$this->dbh)."',";
 	    $sql .= "`trans_descript` = '".$this->toolsController->replacecharSave($this->transaction_detail->getTrans_descript(),$this->dbh)."',";
 	    $sql .= "`qty` = '".$this->toolsController->replacecharSave($this->transaction_detail->getQty(),$this->dbh)."',";
 	    $sql .= "`harga` = '".$this->toolsController->replacecharSave($this->transaction_detail->getHarga(),$this->dbh)."' ";
@@ -161,7 +164,7 @@
                $where .= " where id like '%".$search."%'";
                $where .= "       or  trans_id like '%".$search."%'";
                $where .= "       or  kd_product like '%".$search."%'";
-               $where .= "       or  trans_descript like '%".$search."%'";
+               $where .= "       or  nm_product like '%".$search."%'";
 
             }            
             return $where;
@@ -216,6 +219,7 @@
 	    $transaction_detail->setId(isset($row['id'])?$row['id'] : "");
 	    $transaction_detail->setTrans_id(isset($row['trans_id'])?$row['trans_id'] : "");
 	    $transaction_detail->setKd_product(isset($row['kd_product'])?$row['kd_product'] : "");
+	    $transaction_detail->setNm_product(isset($row['nm_product'])?$row['nm_product'] : "");
 	    $transaction_detail->setTrans_descript(isset($row['trans_descript'])?$row['trans_descript'] : "");
 	    $transaction_detail->setQty(isset($row['qty'])?$row['qty'] : "");
 	    $transaction_detail->setHarga(isset($row['harga'])?$row['harga'] : "");
@@ -392,12 +396,14 @@
 	    $id = isset($_POST['id'])?$_POST['id'] : "";
 	    $trans_id = isset($_POST['trans_id'])?$_POST['trans_id'] : "";
 	    $kd_product = isset($_POST['kd_product'])?$_POST['kd_product'] : "";
+	    $nm_product = isset($_POST['nm_product'])?$_POST['nm_product'] : "";
 	    $trans_descript = isset($_POST['trans_descript'])?$_POST['trans_descript'] : "";
 	    $qty = isset($_POST['qty'])?$_POST['qty'] : "";
 	    $harga = isset($_POST['harga'])?$_POST['harga'] : "";
 	    $this->transaction_detail->setId($id);
 	    $this->transaction_detail->setTrans_id($trans_id);
 	    $this->transaction_detail->setKd_product($kd_product);
+	    $this->transaction_detail->setNm_product($nm_product);
 	    $this->transaction_detail->setTrans_descript($trans_descript);
 	    $this->transaction_detail->setQty($qty);
 	    $this->transaction_detail->setHarga($harga);            
@@ -410,7 +416,7 @@
                     $this->insertData();
                     $last_id = $this->dbh->lastInsertId();
                     $this->setLastId($last_id);
-                    // echo "Data is Inserted-DTL";
+                    //echo "Data is Inserted";
                 }else{
                     //echo "You cannot insert data this module";
                 }

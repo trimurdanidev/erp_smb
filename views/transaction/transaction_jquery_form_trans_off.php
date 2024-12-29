@@ -51,7 +51,7 @@
                             placeholder="Cari Kode Part, Nama Part" required /></td>
                     <td>
                         <button type="button" class="btn btn-red" id="btnTambah" onclick="tesalet()"><span
-                                class="glyphicon glyphicon-ok"></span> Tambah</button>
+                                class="glyphicon glyphicon-ok"></span> Tampilkan</button>
                     </td>
                 </tr>
                 <tr>
