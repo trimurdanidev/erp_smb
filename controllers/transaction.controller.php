@@ -1942,40 +1942,48 @@ class transactionController extends transactionControllerGenerate
 
             }
 
-            echo "Yes count: " . $jmlDataYes . "\n";
-            echo "No count: " . $jmlDataNo . "\n";
+            // echo "Yes count: " . $jmlDataYes . "\n";
+            // echo "No count: " . $jmlDataNo . "\n";
 
             if ($jmlDataNo > 0) {
-                foreach ($showDtlTrans as $valDetail2) {
-                    $getStok2 = $ctrl_stock->showData($valDetail2->getKd_product());
-                    $getPart2 = $ctrl_part->showDataByKode($valDetail2->getKd_product());
-                    $setStatus = 'N';
-                    $ketKosong = "Stok " . $valDetail2->getKd_product() . "-" . $getPart2->getNm_product() . " Tidak Mencukupi. Sisa Stoknya " . $getStok2->getQty_stock() . " Pcs";
-                    echo "122";
-                    echo "<script language='javascript' type='text/javascript'>
-                    Swal.fire({
-                    title : 'Gagal Confirm!',
-                    icon : 'error',
-                    text : '" . $ketKosong . "'
-                    });
-                    
-                    </script>";
-                    $this->showAllJQuery_trans_onln();
+                for( $i = 0; $i < $jmlDataNo; $i++ ) {
+                // foreach ($showDtlTrans as $valDetail2) {
+                    // $getStok2 = $ctrl_stock->showData($i$valDetail2->getKd_product());
+                    // $getPart2 = $ctrl_part->showDataByKode($valDetail2->getKd_product());
+                    // $setStatus = 'N';
+                    // $ketKosong = "Stok " . $valDetail2->getKd_product() . "-" . $getPart2->getNm_product() . " Tidak Mencukupi. Sisa Stoknya " . $getStok2->getQty_stock() . " Pcs";
+                    // echo $setStatusCount."<br>";
+                    $nom = $jmlDataNo-1;
+                    // if ($setStatusCount == 'NO') {
 
+                        echo "<script language='javascript' type='text/javascript'>
+                        Swal.fire({
+                            title : 'Gagal Confirm!',
+                            icon : 'error',
+                            text : 'Ada ".$jmlDataNo." Produk Stok Lebih Kecil dari Qty Closing'
+                            });
+                            
+                            </script>";
+                    // }
 
                 }
+                $this->showAllJQuery_trans_onln();
+
             } else {
-                echo "123 ";
-                $total += $valDetail->getQty();
-                //master_stock
-                $mdl_stock->setKd_product($valDetail->getKd_product());
-                $mdl_stock->setQty_stock($getStok->getQty_stock() - $valDetail->getQty());
-                $mdl_stock->setQty_stock_promo($getStok->getQty_stock_promo());
-                $mdl_stock->setCreated_by($getStok->getCreated_by());
-                $mdl_stock->setUpdated_by($user);
-                $mdl_stock->setCreated_at($getStok->getCreated_at());
-                $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
-                $ctrl_stock->saveData();
+                // echo "123 ";
+                foreach ($showDtlTrans as $valDetail3) {
+                    $getStok3 = $ctrl_stock->showData($valDetail3->getKd_product());
+                    $total += $valDetail3->getQty();
+                    //master_stock
+                    $mdl_stock->setKd_product($valDetail3->getKd_product());
+                    $mdl_stock->setQty_stock($getStok3->getQty_stock() - $valDetail3->getQty());
+                    $mdl_stock->setQty_stock_promo($getStok3->getQty_stock_promo());
+                    $mdl_stock->setCreated_by($getStok3->getCreated_by());
+                    $mdl_stock->setUpdated_by($user);
+                    $mdl_stock->setCreated_at($getStok3->getCreated_at());
+                    $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
+                    $ctrl_stock->saveData();
+                }
                 $setStatus = 'Y';
 
                 //transaction
