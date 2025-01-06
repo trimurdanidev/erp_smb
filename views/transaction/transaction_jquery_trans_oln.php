@@ -21,6 +21,9 @@
     $mdl_mst_part = new master_product();
     $ctrl_mst_part = new master_productController($mdl_mst_part, $this->dbh);
 
+    $mdl_mst_stok = new master_stock();
+    $ctrl_mst_stok = new master_stockController($mdl_mst_stok, $this->dbh);
+
     $mdl_uplod_tr = new upload_trans_log();
     $ctrl_uplod_tr = new upload_trans_logController($mdl_uplod_tr, $this->dbh);
     ?>
@@ -189,169 +192,186 @@
                                                     </div>
                                                 <?php } else { ?>
                                                     <div class="row table-row">
-                                                        <div class="table-responsive">
+                                                        <!-- <div class="table-responsive"> -->
 
-                                                            <table class="table table-striped" width="50%">
-                                                                <thead>
+                                                        <table class="table-responsive">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-left">No</th>
+                                                                    <th class="text-left">Kode Part</th>
+                                                                    <th class="text-left">Part</th>
+                                                                    <?php if($trans_onn->getTrans_status() == '0'){?>
+                                                                    <th class="text-left">Stok</th>
+                                                                    <?php } ?>
+                                                                    <th class="text-left">Qty</th>
+                                                                    <th class="text-left">Harga</th>
+                                                                    <th class="text-left">Diskon (%)</th>
+                                                                    <th class="text-left">Jumlah</th>
+                                                                    <th class="text-center">Status</th>
+                                                                    <th class="text-center">#</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php
+                                                                $showDtlTrans = $ctrl_trans_detail->showDataDtlArray($trans_onn->getId());
+                                                                $index = 1;
+                                                                $totalPnjl = 0;
+                                                                foreach ($showDtlTrans as $val_part) {
+                                                                    $namePart = $ctrl_mst_part->showDataByKode($val_part->getKd_product());
+                                                                    $totalPnjl += $val_part->getHarga() * $val_part->getQty();
+                                                                    $ggetStok = $ctrl_mst_stok->showData($val_part->getKd_product());
+                                                                    $sts = "";
+                                                                    $stringsts = "";
+                                                                    $clrsts = "";
+                                                                    if ($trans_onn->getTrans_status() == '0') {
+                                                                        $sts = "fa fa-clock-o";
+                                                                        $stringsts = "Pending";
+                                                                        $clrsts = "color:red;";
+                                                                    } else if ($trans_onn->getTrans_status() == '1') {
+                                                                        $sts = "fa fa-check";
+                                                                        $stringsts = "Success";
+                                                                        $clrsts = "color:green;";
+                                                                    } else if ($trans_onn->getTrans_status() == '2') {
+                                                                        $sts = "fa fa-close";
+                                                                        $stringsts = "Cancelled";
+                                                                        $clrsts = "color:red;";
+                                                                    }
+
+                                                                    if ($trans_onn->getTrans_status() == '0' && $ggetStok->getQty_stock() < $val_part->getQty()) {
+                                                                        $colorrows = "color:red;";
+                                                                        $setColspan = 7;
+                                                                    }else{
+                                                                        $colorrows = "";
+                                                                        $setColspan = 6;
+                                                                    }
+                                                                    ?>
                                                                     <tr>
-                                                                        <th class="text-left">No</th>
-                                                                        <th class="text-left">Kode Part</th>
-                                                                        <th class="text-left">Part</th>
-                                                                        <th class="text-left">Qty</th>
-                                                                        <th class="text-left">Harga</th>
-                                                                        <th class="text-left">Diskon (%)</th>
-                                                                        <th class="text-left">Jumlah</th>
-                                                                        <th class="text-center">Status</th>
-                                                                        <th class="text-center">#</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <?php
-                                                                    $showDtlTrans = $ctrl_trans_detail->showDataDtlArray($trans_onn->getId());
-                                                                    $index = 1;
-                                                                    $totalPnjl = 0;
-                                                                    foreach ($showDtlTrans as $val_part) {
-                                                                        $namePart = $ctrl_mst_part->showDataByKode($val_part->getKd_product());
-                                                                        $totalPnjl += $val_part->getHarga() * $val_part->getQty();
-                                                                        $sts = "";
-                                                                        $stringsts = "";
-                                                                        $clrsts = "";
-                                                                        if ($trans_onn->getTrans_status() == '0') {
-                                                                            $sts = "fa fa-clock-o";
-                                                                            $stringsts = "Pending";
-                                                                            $clrsts = "color:red;";
-                                                                        } else if ($trans_onn->getTrans_status() == '1') {
-                                                                            $sts = "fa fa-check";
-                                                                            $stringsts = "Success";
-                                                                            $clrsts = "color:green;";
-                                                                        } else if ($trans_onn->getTrans_status() == '2') {
-                                                                            $sts = "fa fa-close";
-                                                                            $stringsts = "Cancelled";
-                                                                            $clrsts = "color:red;";
-                                                                        }
-                                                                        ?>
-                                                                        <tr>
-                                                                            <td class="text-left">
-                                                                                <?php echo $index++; ?>
-                                                                            </td>
-                                                                            <td class="text-left">
-                                                                                <b>
-                                                                                    <?php echo $val_part->getKd_product() ?>
-                                                                                </b>
-                                                                            </td>
-                                                                            <td class="text-left">
-                                                                                <b>
-                                                                                    <?php echo $namePart->getNm_product(); ?>
-                                                                                </b>
-                                                                            </td>
-                                                                            <td class="text-left">
-                                                                                <b>
-                                                                                    <?php echo $val_part->getQty() ?> Pcs
-                                                                                </b>
-                                                                            </td>
-                                                                            <td class="text-left">
-                                                                                <b>
-                                                                                    <?php echo number_format(floatVal($val_part->getHarga())) ?>
-                                                                                </b>
-                                                                            </td>
-                                                                            <td class="text-left">
-                                                                                <b>
-                                                                                    <?php echo number_format(floatVal(0)) ?>
-                                                                                </b>
-                                                                            </td>
-                                                                            <td class="text-left">
-                                                                                <b>
-                                                                                    <?php echo number_format(floatVal($val_part->getHarga() * $val_part->getQty())) ?>
-                                                                                </b>
-                                                                            </td>
-                                                                            <td class="text-left">
-                                                                                <span style="<?php echo $clrsts; ?>"
-                                                                                    class="<?php echo $sts; ?>"
-                                                                                    title="<?php echo $stringsts; ?>"></span>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if ($trans_onn->getTrans_status() == '0') { ?>
-                                                                                    <button class="btn btn-default"
-                                                                                        title="Edit Quantity Detail Out Online"
-                                                                                        data-toggle="modal"
-                                                                                        data-target="#QtyEdtOln<?php echo $val_part->getId(); ?>"><span
-                                                                                            class="glyphicon glyphicon-edit"></span>
-                                                                                        Edit</button>
-                                                                                <?php } ?>
-                                                                                <div class="modal fade"
-                                                                                    id="QtyEdtOln<?php echo $val_part->getId(); ?>"
-                                                                                    tabindex="-1"
-                                                                                    aria-labelledby="exampleModalLabel"
-                                                                                    aria-hidden="true">
-                                                                                    <div class="modal-dialog">
-                                                                                        <div class="modal-content">
-                                                                                            <div class="modal-header">
-                                                                                                <h4>Edit Quantity</h4>
-                                                                                                <button type="button" class="close"
-                                                                                                    data-dismiss="modal"
-                                                                                                    aria-label="Close">
-                                                                                                    <span
-                                                                                                        aria-hidden="true">&times;</span>
-                                                                                                </button>
-                                                                                                <br>
-                                                                                                <p>
-                                                                                                    <?php echo $val_part->getKd_product() . "-" . $namePart->getNm_product(); ?>
-                                                                                                </p>
-                                                                                            </div>
-                                                                                            <div class="modal-body">
-                                                                                                <form name="frmEdit" id="frmEdit"
-                                                                                                    method="POST"
-                                                                                                    action="index.php?model=transaction_detail&action=simpanEditRestock">
-                                                                                                    <input type="hidden" name="idItem"
-                                                                                                        id="idItem"
-                                                                                                        value="<?php echo $val_part->getId(); ?>" />
-                                                                                                    <label
-                                                                                                        for="exampleFormControlTextarea1">Quantity
-                                                                                                        Online</label>
-                                                                                                    <input type="text"
-                                                                                                        class="form-control"
-                                                                                                        name="qtyEdtRes"
-                                                                                                        id="qtyEdtRes"
-                                                                                                        onkeypress="validate(event);"
-                                                                                                        value="<?php echo $val_part->getQty(); ?>" />
-                                                                                                    <div class="modal-footer">
-                                                                                                        <button type="submit"
-                                                                                                            class="btn btn-primary"><span
-                                                                                                                class="glyphicon glyphicon-ok"></span>
-                                                                                                            Simpan</button>
-                                                                                                        <button type="button"
-                                                                                                            class="btn btn-secondary"
-                                                                                                            data-dismiss="modal"><span
-                                                                                                                class="glyphicon glyphicon-remove"></span>
-                                                                                                            Batal</button>
-                                                                                                    </div>
-                                                                                                </form>
-                                                                                            </div>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <?php echo $index++; ?>
+                                                                        </td>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <b>
+                                                                                <?php echo $val_part->getKd_product() ?>
+                                                                            </b>
+                                                                        </td>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <b>
+                                                                                <?php echo $namePart->getNm_product(); ?>
+                                                                            </b>
+                                                                        </td>
+                                                                        <?php if($trans_onn->getTrans_status() == '0'){?>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <b>
+                                                                                <?php echo $ggetStok->getQty_stock(); ?> Pcs
+                                                                            </b>
+                                                                        </td>
+                                                                        <?php } ?>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <b>
+                                                                                <?php echo $val_part->getQty() ?> Pcs
+                                                                            </b>
+                                                                        </td>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <b>
+                                                                                <?php echo number_format(floatVal($val_part->getHarga())) ?>
+                                                                            </b>
+                                                                        </td>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <b>
+                                                                                <?php echo number_format(floatVal(0)) ?>
+                                                                            </b>
+                                                                        </td>
+                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                            <b>
+                                                                                <?php echo number_format(floatVal($val_part->getHarga() * $val_part->getQty())) ?>
+                                                                            </b>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <span style="<?php echo $clrsts; ?>"
+                                                                                class="<?php echo $sts; ?>"
+                                                                                title="<?php echo $stringsts; ?>"></span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if ($trans_onn->getTrans_status() == '0') { ?>
+                                                                                <button class="btn btn-default"
+                                                                                    title="Edit Quantity Detail Out Online"
+                                                                                    data-toggle="modal"
+                                                                                    data-target="#QtyEdtOln<?php echo $val_part->getId(); ?>"><span
+                                                                                        class="glyphicon glyphicon-edit"></span>
+                                                                                    Edit</button>
+                                                                            <?php } ?>
+                                                                            <div class="modal fade"
+                                                                                id="QtyEdtOln<?php echo $val_part->getId(); ?>"
+                                                                                tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                                                aria-hidden="true">
+                                                                                <div class="modal-dialog">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <h4>Edit Quantity</h4>
+                                                                                            <button type="button" class="close"
+                                                                                                data-dismiss="modal"
+                                                                                                aria-label="Close">
+                                                                                                <span
+                                                                                                    aria-hidden="true">&times;</span>
+                                                                                            </button>
+                                                                                            <br>
+                                                                                            <p>
+                                                                                                <?php echo $val_part->getKd_product() . "-" . $namePart->getNm_product(); ?>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
+                                                                                            <form name="frmEdit" id="frmEdit"
+                                                                                                method="POST"
+                                                                                                action="index.php?model=transaction_detail&action=simpanEditRestock">
+                                                                                                <input type="hidden" name="idItem"
+                                                                                                    id="idItem"
+                                                                                                    value="<?php echo $val_part->getId(); ?>" />
+                                                                                                <label
+                                                                                                    for="exampleFormControlTextarea1">Quantity
+                                                                                                    Online</label>
+                                                                                                <input type="text"
+                                                                                                    class="form-control"
+                                                                                                    name="qtyEdtRes" id="qtyEdtRes"
+                                                                                                    onkeypress="validate(event);"
+                                                                                                    value="<?php echo $val_part->getQty(); ?>" />
+                                                                                                <div class="modal-footer">
+                                                                                                    <button type="submit"
+                                                                                                        class="btn btn-primary"><span
+                                                                                                            class="glyphicon glyphicon-ok"></span>
+                                                                                                        Simpan</button>
+                                                                                                    <button type="button"
+                                                                                                        class="btn btn-secondary"
+                                                                                                        data-dismiss="modal"><span
+                                                                                                            class="glyphicon glyphicon-remove"></span>
+                                                                                                        Batal</button>
+                                                                                                </div>
+                                                                                            </form>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php
-                                                                    } ?>
-                                                                    <tr>
-                                                                        <td colspan="8" class="text-left"><b>Total</b>
+                                                                            </div>
                                                                         </td>
-                                                                        <td class="text-center"><b>
-                                                                                <?php echo number_format(floatVal($totalPnjl)); ?>
-                                                                            </b></td>
                                                                     </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                                                    <?php
+                                                                } ?>
+                                                                <tr>
+                                                                    <td colspan="<?php echo $setColspan;?>" class="text-left"><b>Total</b>
+                                                                    </td>
+                                                                    <td class="text-center"><b>
+                                                                            <?php echo number_format(floatVal($totalPnjl)); ?>
+                                                                        </b></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <!-- </div> -->
                                                     </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal"><span
-                                                        class="glyphicon glyphicon-eye-close"></span> Close</button>
-                                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><span
+                                                    class="glyphicon glyphicon-eye-close"></span> Close</button>
+                                            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                                         </div>
                                     </div>
                                 </div>
