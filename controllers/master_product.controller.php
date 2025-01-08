@@ -15,6 +15,7 @@ require_once './models/master_stock.class.php';
 require_once './controllers/master_stock.controller.generate.php';
 require_once './controllers/master_stock.controller.php';
 
+
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -29,20 +30,21 @@ class master_productController extends master_productControllerGenerate
         $user = $this->user;
         $id = isset($_POST['id']) ? $_POST['id'] : "";
         $kd_product = rand();
+        $kd_productedit = isset($_POST['kd_product']) ? $_POST['kd_product'] : "";
         $nm_product = isset($_POST['nm_product']) ? $_POST['nm_product'] : "";
         $image_product = isset($_POST['image_product']) ? $_POST['image_product'] : "";
         $hrg_modal = isset($_POST['hrg_modal']) ? $_POST['hrg_modal'] : "";
         $hrg_jual = isset($_POST['hrg_jual']) ? $_POST['hrg_jual'] : "";
         $kategori_id = isset($_POST['kategori_id']) ? $_POST['kategori_id'] : 2;
-        $tipe_id = 1;
-        $sts_aktif = 1;
+        $tipe_id = isset($_POST['tipe_id']) ? $_POST['tipe_id'] : 1;
+        $sts_aktif = isset($_POST['sts_aktif']) ? $_POST['sts_aktif'] : 1;
         $created_by = $user;
-        $updated_by = isset($_POST['updated_by']) ? $_POST['updated_by'] : "";
+        $updated_by = isset($_POST['updated_by']) ? $_POST['updated_by'] : $user;
         $created_at = date('Y-m-d H:i:s');
         $updated_at = date('Y-m-d H:i:s');
 
         $this->master_product->setId($id);
-        $this->master_product->setKd_product($kd_product);
+        $this->master_product->setKd_product($id == null || $id == "" ? $kd_product : $kd_productedit);
         $this->master_product->setNm_product($nm_product);
         $this->master_product->setImage_product($image_product);
         $this->master_product->setHrg_modal($hrg_modal);
@@ -57,16 +59,23 @@ class master_productController extends master_productControllerGenerate
         $this->saveData();
 
         //stock
-        $mdl_stock->setKd_product($kd_product);
-        $mdl_stock->setQty_stock(0);
-        $mdl_stock->setQty_stock_promo(0);
-        $mdl_stock->setCreated_by($created_by);
-        $mdl_stock->setUpdated_by($updated_by);
-        $mdl_stock->setCreated_at($created_at);
-        $mdl_stock->setUpdated_at($updated_at);
-        $ctrl_stock->saveData();
+        if ($id == "" || $id == null) {
 
-        echo "Behasil Tamba Master Produk";
+            $mdl_stock->setKd_product($kd_product);
+            $mdl_stock->setQty_stock(0);
+            $mdl_stock->setQty_stock_promo(0);
+            $mdl_stock->setCreated_by($created_by);
+            $mdl_stock->setUpdated_by($updated_by);
+            $mdl_stock->setCreated_at($created_at);
+            $mdl_stock->setUpdated_at($updated_at);
+            $ctrl_stock->saveData();
+        }
+
+        if ($id == "" || $id == null) {
+            echo "Berhasil Tersimpan";
+        } else {
+            echo "<script>window.history.back();</script>";
+        }
 
 
     }
@@ -147,7 +156,7 @@ class master_productController extends master_productControllerGenerate
             $table .= "<td><input type='hidden' name='ttl[]' id='t" . $no . "_ttl' value=''><input type='text' name='total[]' id='t" . $no . "_total' class='form form-control' readonly></td>";
             $table .= "<td><button type='button' class='btn btn-default' name='hpsDtl[]' id='t" . $no . "_hpsDtl' onclick='hapusElemen(srow" . $no . ",this); return false;'><span class='glyphicon glyphicon-remove'></span> Hapus</button></td>";
             $table .= "</tr>";
-            
+
         }
         $table .= "</tbody>";
         $table .= "<td colspan='4'><span class='glyphicon glyphicon-asterisk'></span><b>Total</b></td><td><input type='hidden' name='gTotal' id='gTotal'><input type='text' name='totalnya' id='totalnya' class='form form-control' value='0' readonly></td>";
@@ -246,7 +255,7 @@ class master_productController extends master_productControllerGenerate
 
 
         header("Content-Type:application/xls", false);
-        header("Content-Disposition: attachment; filename=" .basename($filePath));
+        header("Content-Disposition: attachment; filename=" . basename($filePath));
 
         readfile($filePath);
     }

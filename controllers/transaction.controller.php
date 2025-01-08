@@ -2003,7 +2003,7 @@ class transactionController extends transactionControllerGenerate
                     $this->transaction->setUpdated_at(date('Y-m-d H:i:s'));
                     $this->updateData();
                     echo "<script language='javascript' type='text/javascript'>
-                Swal.fire({
+                    Swal.fire({
                     title : 'Berhasil',
                     icon : 'success',
                     text : 'Closing Online Berhasil Terconfirm'

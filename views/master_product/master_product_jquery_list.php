@@ -68,10 +68,12 @@
                         $ketegori_product = new product_kategori();
                         $kategori_productCtrl = new product_kategoriController($ketegori_product, $this->dbh);
                         $showKategoriProduk = $kategori_productCtrl->showData($master_product->getKategori_id());
+                        $showAllKat = $kategori_productCtrl->showDataAll();
 
                         $tipe_product = new product_tipe();
                         $tipe_productCtrl = new product_tipeController($tipe_product, $this->dbh);
                         $showTipeProduk = $tipe_productCtrl->showData($master_product->getTipe_id());
+                        $showAllTipe = $tipe_productCtrl->showDataAll();
 
                         $pi = $no + 1;
                         $bg = ($pi % 2 != 0) ? "#E1EDF4" : "#F0F0F0";
@@ -120,10 +122,10 @@
                             <td><?php echo $showKategoriProduk->getKategori_name() ?></td>
                             <td><?php echo $showTipeProduk->getTipe_name() ?></td>
                             <td><?php echo $master_product->getSts_aktif() == "1" ? "Aktif" : "Tidak Aktif"; ?></td>
-                            <td><?php echo $showTipeProduk->getCreated_by() ?></td>
-                            <td><?php echo $showTipeProduk->getUpdated_by() ?></td>
-                            <td><?php echo $showTipeProduk->getCreated_at() ?></td>
-                            <td><?php echo $showTipeProduk->getUpdated_at() ?></td>
+                            <td><?php echo $master_product->getCreated_by() ?></td>
+                            <td><?php echo $master_product->getUpdated_by() ?></td>
+                            <td><?php echo $master_product->getCreated_at() ?></td>
+                            <td><?php echo $master_product->getUpdated_at() ?></td>
                             <td align="center" class="combobox">
                                 <?php if ($isadmin || $ispublic || $isupdate) { ?>
                                     <a href='#' class="btn btn-sm btn-info" data-toggle="modal"
@@ -140,48 +142,64 @@
                                                 </div>
 
                                                 <div class="modal-body">
-                                                    <form>
-                                                        <div class="form-group">
+                                                    <form name="Edtmaster_product" id="Edtmaster_product"  method="post" action="index.php?model=master_product&action=saveFormPost">
+                                                        <!-- <div class="form-group">
                                                             <div id="blah" class="col-lg-4 dropzone" ondrop="drag_drop(event)"
                                                                 ondragover="return false">
                                                                 <p>Drop Your Image Here</p>
                                                             </div>
-
+                                                        <br> 
+                                                        </div>-->
+                                                        
+                                                        <div>
+                                                            <input type="hidden" name="id" id="id" value="<?php echo $master_product->getId();?>">
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="exampleFormControlInput1">Kode Produk</label>
-                                                            <input type="text" class="form-control"
-                                                                value="<?php echo $master_product->getKd_product(); ?>">
+                                                            <input type="text" class="form-control" name="kd_product" id="kd_product"
+                                                                value="<?php echo $master_product->getKd_product(); ?>" readonly>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="exampleFormControlInput1">Nama Produk</label>
-                                                            <input type="text" class="form-control"
+                                                            <input type="text" class="form-control" name="nm_product" id="nm_product"
                                                                 value="<?php echo $master_product->getNm_product(); ?>">
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="exampleFormControlTextarea1">Harga Modal</label>
-                                                            <input type="text" class="form-control"
-                                                                value="<?php echo number_format($master_product->getHrg_modal()); ?>">
+                                                            <input type="text" class="form-control" name="hrg_modal" id="hrg_modal"
+                                                                value="<?php echo $master_product->getHrg_modal(); ?>" onkeypress="setHarga(),validate(event);" onkeyup="setHarga()">
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="exampleFormControlInput1">Harga Jual</label>
-                                                            <input type="text" class="form-control"
-                                                                value="<?php echo number_format($master_product->getHrg_jual()); ?>">
+                                                            <input type="text" class="form-control" name="hrg_jual" id="hrg_jual"
+                                                                value="<?php echo $master_product->getHrg_jual(); ?>" readonly>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="exampleFormControlInput1">Kategori Produk</label>
-                                                            <input type="text" class="form-control"
-                                                                value="<?php echo $showKategoriProduk->getKategori_name(); ?>">
+                                                            <input type="hidden" class="form-control"
+                                                                value="<?php echo $showKategoriProduk->getId(); ?>">
+                                                            <select name="kategori_id" id="kategori_id" class="form form-control">
+                                                                <?php foreach ($showAllKat as $key) { ?>
+                                                                    <option
+                                                                        value="<?php echo $key->getId(); ?>" <?php echo  $key->getId()==$showKategoriProduk->getId()?'selected':'';?>>
+                                                                        <?php echo $key->getKategori_name(); ?></option>
+                                                                <?php } ?>
+                                                            </select>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="exampleFormControlInput1">Tipe Produk</label>
-                                                            <input type="text" class="form-control"
-                                                                value="<?php echo $showTipeProduk->getTipe_name(); ?>">
+                                                            <input type="hidden" class="form-control"
+                                                                value="<?php echo $showTipeProduk->getId(); ?>">
+                                                                <select name="tipe_id" id="tipe_id" class="form form-control">
+                                                                <?php foreach($showAllTipe as $keyTipe) {?>    
+                                                                <option value="<?php echo $keyTipe->getId();?>" <?php echo $keyTipe->getId()==$showTipeProduk->getId()?'selected':'';?>><?php echo $keyTipe->getTipe_name(); ?></option>
+                                                            <?php }?>    
+                                                            </select>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-primary">Save changes</button>
                                                         </div>
                                                     </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -227,6 +245,22 @@
             }
         });
     });
+
+    function validate(evt) {
+        var e = evt || window.event;
+        var key = e.keyCode || e.which;
+        if ((key < 48 || key > 57) && !(key == 8 || key == 9 || key == 13 || key == 37 || key == 39 || key == 46)) {
+            e.returnValue = false;
+            if (e.preventDefault) e.preventDefault();
+        }
+    }
+
+    function setHarga() {
+        var edValue = $('#hrg_modal').val();
+        var setValue = $('#hrg_jual');
+
+        setValue.val(edValue);
+    }
 </script>
 
 
