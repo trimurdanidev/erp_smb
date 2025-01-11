@@ -64,8 +64,8 @@
                                 if ($graph_query->getMonth() == 1 || $graph_query->getYear() == 1) {
                                     $link = "<a href=\"#\" onclick=\"showGraphDetail('" . $graph_query->getId() . "','month" . $graph_query->getId() . "', 'year" . $graph_query->getId() . "')\">" . $graph_query->getTitle() . "</a>";
                                 } else {
-                                    $url = "index.php?model=graph_query&action=showGraphAndTable&id=" . $graph_query->getId();
-                                    $link = "<a href=\"#\" onclick=\"showMenu('content','" . $url . "')\">" . $graph_query->getTitle() . "</a>";
+                                    // $url = "index.php?model=graph_query&action=showGraphAndTable&id=" . $graph_query->getId();
+                                    $link =  $graph_query->getTitle() ;
                                 }
                                 echo $link;
                                 ?>
