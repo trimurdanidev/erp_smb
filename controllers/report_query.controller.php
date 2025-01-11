@@ -155,9 +155,10 @@
         
 	function generatetableview($sql, $sumall=0, $subtotal = 0, $rowstart = 0 ){	           
             //echo $sql;
-            $openDiv = "<div class=\"table-responsive\">";
+            $openDiv = "<div class='table-responsive'>";
+            $openDiv .= "<br>";
             $closeDiv = "</div>";
-            $opentable = "<table class=\"table-bordered1\"  width=\"95%\" >";
+            $opentable = "<table class=\"table table-striped\"  width=\"95%\" >";
             $closetable = "</table>";
             $opentrheader = "<tr bgcolor=\"#E9F3F1\">";
             $opentr1 = "<tr bgcolor=\"#E1EDF4\">";

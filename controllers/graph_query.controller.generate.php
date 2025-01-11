@@ -259,29 +259,29 @@
 
                 
         function loadData($graph_query,$row){
-	    $graph_query->setId($row['id']);
-	    $graph_query->setId_graph_model($row['id_graph_model']);
-	    $graph_query->setGroup_code($row['group_code']);
-	    $graph_query->setQuery($row['query']);
-	    $graph_query->setCrosstab($row['crosstab']);
-	    $graph_query->setTabletemp($row['tabletemp']);
-	    $graph_query->setLastupdate($row['lastupdate']);
-	    $graph_query->setTiming($row['timing']);
-	    $graph_query->setMonth($row['month']);
-	    $graph_query->setYear($row['year']);
-	    $graph_query->setTitle($row['Title']);
-	    $graph_query->setSubTitle($row['SubTitle']);
-	    $graph_query->setXaxistitle($row['xaxistitle']);
-	    $graph_query->setYaxistitle($row['yaxistitle']);
-	    $graph_query->setTooltips($row['tooltips']);
-	    $graph_query->setQuerytable($row['querytable']);
-	    $graph_query->setQuerytable2($row['querytable2']);
-	    $graph_query->setEntrytime($row['entrytime']);
-	    $graph_query->setEntryuser($row['entryuser']);
-	    $graph_query->setEntryip($row['entryip']);
-	    $graph_query->setUpdatetime($row['updatetime']);
-	    $graph_query->setUpdateuser($row['updateuser']);
-	    $graph_query->setUpdateip($row['updateip']);
+	    $graph_query->setId(isset($row['id'])?$row['id']:"");
+	    $graph_query->setId_graph_model(isset($row['id_graph_model'])?$row['id_graph_model']:"");
+	    $graph_query->setGroup_code(isset($row['group_code'])?$row['group_code']:"");
+	    $graph_query->setQuery(isset($row['query'])?$row['query']:"");
+	    $graph_query->setCrosstab(isset($row['crosstab'])?$row['crosstab']:"");
+	    $graph_query->setTabletemp(isset($row['tabletemp'])?$row['tabletemp']:"");
+	    $graph_query->setLastupdate(isset($row['lastupdate'])?$row['lastupdate']:"");
+	    $graph_query->setTiming(isset($row['timing'])?$row['timing']:"");
+	    $graph_query->setMonth(isset($row['month'])?$row['month']:"");
+	    $graph_query->setYear(isset($row['year'])?$row['year']:"");
+	    $graph_query->setTitle(isset($row['Title'])?$row['Title']:"");
+	    $graph_query->setSubTitle(isset($row['SubTitle'])?$row['SubTitle']:"");
+	    $graph_query->setXaxistitle(isset($row['xaxistitle']))?$row['xaxistitle']:"";
+	    $graph_query->setYaxistitle(isset($row['yaxistitle']))?$row['yaxistitle']:"";
+	    $graph_query->setTooltips(isset($row['tooltips']))?$row['tooltips']:"";
+	    $graph_query->setQuerytable(isset($row['querytable']))?$row['querytable']:"";
+	    $graph_query->setQuerytable2(isset($row['querytable2']))?$row['querytable2']:"";
+	    $graph_query->setEntrytime(isset($row['entrytime']))?$row['entrytime']:"";
+	    $graph_query->setEntryuser(isset($row['entryuser']))?$row['entryuser']:"";
+	    $graph_query->setEntryip(isset($row['entryip']))?$row['entryip']:"";
+	    $graph_query->setUpdatetime(isset($row['updatetime']))?$row['updatetime']:"";
+	    $graph_query->setUpdateuser(isset($row['updateuser']))?$row['updateuser']:"";
+	    $graph_query->setUpdateip(isset($row['updateip']))?$row['updateip']:"";
 
         }
 
