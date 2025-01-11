@@ -17,6 +17,9 @@
     require_once './models/report_query.class.php';
     require_once './controllers/report_query.controller.php';
     require_once './database/config.php';
+    require_once './models/master_stock.class.php';
+    require_once './controllers/master_stock.controller.php';
+    require_once './controllers/master_stock.controller.generate.php';
 
     if (!isset($_SESSION)) {
         session_start();
@@ -82,7 +85,10 @@
             
             echo "<center><h1>".$graph_query->getTitle()."</h1></center>";
             echo $report_query_controller->generatetableview($query,0);
-            echo "<br><br><div id='graphandtable2'></table><br><br><br>";
+            echo "<br><br>
+            <div class='table-responsive'>
+            <div id='graphandtable2'></table>
+            </div><br><br><br>";
         }
         function showGraphAndTable2(){
             $id = $_GET['id'];
@@ -209,9 +215,17 @@
         function showGraphWithID($graph_query){                        
             $month = isset($_GET['month']) ? $_GET['month'] : date('m');
             $year = isset($_GET['year']) ? $_GET['year'] : date('Y');
+            $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : "";
+            $get_model_table = $graph_query->getTabletemp();
 
             $graph_model = new graph_model();
             $graph_model_controller = new graph_modelController($graph_model, $this->getDbh());
+           
+            if($get_model_table=="master_stock"){
+                $mdl_mst_stock = new master_stock();
+                $ctrl_mst_stock = new master_stockController($mdl_mst_stock,$this->dbh);
+            }
+            
             $graph_model = $graph_model_controller->showData($graph_query ->getId_graph_model());
             $graph_model->setName($graph_model->getName().$graph_query->getId());                    
             $graph_model->setTitle($graph_query->getTitle());                        
@@ -228,14 +242,20 @@
                     $graph_model->setSeries($this->getSeriesPie($query,$graph_model->getTitle()));
                 }
                 $graph_model_controller->setGraph_model($graph_model);
-                //echo "<br>show graph<br>";
+                // echo "<br>show graph<br>";
                 $graph_model_controller->showGraph();
             }else{                
                 $report_query = new report_query();
                 $report_query_controller = new report_queryController($report_query, $this->dbh);
                 
                 echo "<center><h2>".$graph_model->getTitle()."</h2></center>";
-                echo $report_query_controller->generatetableview($query,1);                
+                if($get_model_table=="master_stock"){
+                    // echo "masuk graph query"."<br>";
+                    $ctrl_mst_stock->showDashStock($graph_query->getQuery());
+                }else{
+                    // echo "masuk master_stock"."<br>";
+                    echo $report_query_controller->generatetableview($query,1);                
+                }
             }
             
         }

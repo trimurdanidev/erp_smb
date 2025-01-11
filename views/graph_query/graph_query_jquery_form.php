@@ -29,13 +29,13 @@
     <table >
         <tr> 
             <td class="textBold">Id</td> 
-            <td><input type="text"  name="id" id="id" value="<?php echo $graph_query_->getId();?>" size="11" ReadOnly  ></td>
+            <td><input type="text" class="form form-control" name="id" id="id" value="<?php echo $graph_query_->getId();?>" size="11" ReadOnly placeholder="Autonumber" ></td>
         </tr>
 
         <tr> 
             <td class="textBold">graph model</td> 
             <td>
-                <select name="id_graph_model" id="id_graph_model">
+                <select name="id_graph_model" id="id_graph_model" class="form form-control">
                 <?php
                 $graph_model=new graph_model();
                 $graph_modelctrl=new graph_modelController($graph_model, $this->dbh);
@@ -57,7 +57,7 @@
         <tr> 
             <td class="textBold">Group User</td> 
             <td>
-                <select name="group_code" id="group_code">
+                <select name="group_code" id="group_code" class="form form-control">
                     <option value='All'>All</option>
                 <?php
                 $master_group=new master_group();
@@ -78,65 +78,65 @@
         </tr>
         <tr> 
             <td class="textBold">Query</td> 
-            <td><textarea rows="10" cols="50" name="query" id="query"><?php echo $graph_query_->getQuery();?></textarea></td>
+            <td><textarea rows="10" cols="50" name="query" id="query" class="form form-control"><?php echo $graph_query_->getQuery();?></textarea></td>
         </tr>
 
         <tr> 
             <td class="textBold">Crosstab</td> 
-            <td><input type="text"  name="crosstab" id="crosstab" value="<?php echo $graph_query_->getCrosstab();?>" size="11"   ></td>
+            <td><input type="text"  name="crosstab" id="crosstab" class="form form-control" value="<?php echo $graph_query_->getCrosstab();?>" size="11"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Tabletemp</td> 
-            <td><input type="text"  name="tabletemp" id="tabletemp" value="<?php echo $graph_query_->getTabletemp();?>" size="40"   ></td>
+            <td><input type="text"  name="tabletemp" id="tabletemp" class="form form-control" value="<?php echo $graph_query_->getTabletemp();?>" size="40"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Lastupdate</td> 
-            <td><input type="text"  name="lastupdate" id="lastupdate" value="<?php echo $graph_query_->getLastupdate();?>" size="10"   ></td>
+            <td><input type="text"  name="lastupdate" id="lastupdate" class="form form-control" value="<?php echo $graph_query_->getLastupdate();?>" size="10"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Timing</td> 
-            <td><input type="text"  name="timing" id="timing" value="<?php echo $graph_query_->getTiming();?>" size="11"   ></td>
+            <td><input type="text"  name="timing" id="timing" class="form form-control" value="<?php echo $graph_query_->getTiming();?>" size="11"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Month</td> 
-            <td><input type="text"  name="month" id="month" value="<?php echo $graph_query_->getMonth();?>" size="11"   ></td>
+            <td><input type="text"  name="month" id="month" class="form form-control" value="<?php echo $graph_query_->getMonth();?>" size="11"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Year</td> 
-            <td><input type="text"  name="year" id="year" value="<?php echo $graph_query_->getYear();?>" size="11"   ></td>
+            <td><input type="text"  name="year" id="year" class="form form-control" value="<?php echo $graph_query_->getYear();?>" size="11"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Title</td> 
-            <td><input type="text"  name="Title" id="Title" value="<?php echo $graph_query_->getTitle();?>" size="40"   ></td>
+            <td><input type="text"  name="Title" id="Title" class="form form-control" value="<?php echo $graph_query_->getTitle();?>" size="40"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">SubTitle</td> 
-            <td><input type="text"  name="SubTitle" id="SubTitle" value="<?php echo $graph_query_->getSubTitle();?>" size="40"   ></td>
+            <td><input type="text"  name="SubTitle" id="SubTitle" class="form form-control" value="<?php echo $graph_query_->getSubTitle();?>" size="40"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Xaxistitle</td> 
-            <td><input type="text"  name="xaxistitle" id="xaxistitle" value="<?php echo $graph_query_->getXaxistitle();?>" size="40"   ></td>
+            <td><input type="text"  name="xaxistitle" id="xaxistitle" class="form form-control" value="<?php echo $graph_query_->getXaxistitle();?>" size="40"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Yaxistitle</td> 
-            <td><input type="text"  name="yaxistitle" id="yaxistitle" value="<?php echo $graph_query_->getYaxistitle();?>" size="40"   ></td>
+            <td><input type="text"  name="yaxistitle" id="yaxistitle" class="form form-control" value="<?php echo $graph_query_->getYaxistitle();?>" size="40"   ></td>
         </tr>
 
         <tr> 
             <td class="textBold">Tooltips</td> 
-            <td><input type="text"  name="tooltips" id="tooltips" value="<?php echo $graph_query_->getTooltips();?>" size="40"   ></td>
+            <td><input type="text"  name="tooltips" id="tooltips" class="form form-control" value="<?php echo $graph_query_->getTooltips();?>" size="40"   ></td>
         </tr>
 
-        <tr> 
+        <!-- <tr> 
             <td class="textBold">Entrytime</td> 
             <td><?php echo $graph_query_->getEntrytime();?></td>
         </tr>
@@ -164,12 +164,12 @@
         <tr> 
             <td class="textBold">Updateip</td> 
             <td><?php echo $graph_query_->getUpdateip();?></td>
-        </tr>
+        </tr> -->
 
 
         <tr>
             <td></td>
-            <td><input type="submit" name="submit" value="Submit" class="btn btn-danger btn-sm" ></td>
+            <td><button type="submit" name="submit" class="btn btn-facebook" ><span class="glyphicon glyphicon-floppy-saved"></span> Submit</bbutto</td>
         </tr>
     </table>
 </form>
