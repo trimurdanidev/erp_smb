@@ -117,10 +117,25 @@ class master_profilController extends master_profilControllerGenerate
                 //     echo "Data Updated";
                 // endif;
                 echo "Already Uploaded";
+                echo "<script language='javascript' type='text/javascript'>
+                Swal.fire({
+                title : 'Berhasil',
+                icon : 'success',
+                text : 'Berhasil'
+                });
+                </script>";
                 $uploadok = move_uploaded_file($_FILES[$typeid]["tmp_name"], $target_file);
                 $this->uploadImagePicture($filesource, $formatnow);
             } else {
-                echo "File is not an image.";
+                echo "<script language='javascript' type='text/javascript'>
+                Swal.fire({
+                    title:'Gagal!',
+                    text:'File Gambar Melebihi 20 MB',
+                    icon:'error'
+    
+                });
+                </script>";
+                // echo "File is not an image.";
                 $uploadOk = 0;
             }
         }
