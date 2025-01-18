@@ -1,5 +1,6 @@
 database/connection.php
 uploads/excel_upload/*
+uploads/image_profil/*
 images/*
 
 # ignore log files and databases
