@@ -6,13 +6,14 @@
         </a>
         <ul class="dropdown-menu">
             <!-- User image -->
+             <li class="bg-light-blue"><br></li>
             <li class="user-header bg-light-blue">                
                     <div id="avatarprofile"></div>
                     <?php echo $master_user->getUsername();?>               
                     <br>
                     <?php echo $master_user->getDescription();?>
                     <br>
-                    <small>Member since Nov. <?php echo $master_user->getEntrytime();?></small>
+                    <small>Member since <?php echo $master_user->getEntrytime();?></small>
                 </p>
             </li>
             <!-- Menu Body -->
