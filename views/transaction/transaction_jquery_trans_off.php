@@ -8,7 +8,7 @@
     <?php
     $mdl_pay_transfer = new master_pay_transfer();
     $ctrl_pay_transfer = new master_pay_transferController($mdl_pay_transfer, $this->dbh);
-    $arr_payment = $ctrl_pay_transfer->showDataAll();
+    $arr_payment = $ctrl_pay_transfer->showData_groupByTransfer();
 
     $mdl_trans_log = new transaction_log();
     $ctrl_trans_log = new transaction_logController($mdl_trans_log, $this->dbh);
@@ -60,7 +60,7 @@
                                 <option value="<?php echo $value->getTransfer(); ?>" <?php echo $value->getTransfer() == $paymn ? 'selected' : ''; ?>><?php echo $value->getTransfer(); ?>
                                 </option>
                             <?php } ?>
-                            <option value="Tunai">TUNAI</option>
+                            <option value="Tunai" <?php echo $paymn == 'Tunai' ? 'selected' : ''; ?>>TUNAI</option>
                         </select>
                     </td>
                     <td>
