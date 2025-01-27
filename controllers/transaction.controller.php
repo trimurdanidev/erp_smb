@@ -542,17 +542,20 @@ class transactionController extends transactionControllerGenerate
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
         $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
 
-        // print_r($showDetailUser->getGroupcode());
-
-        if ($showDetailUser->getGroupcode() == 'Owner'):
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=2 order by id desc";
-        else:
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=2 and created_by = '$userLogin' order by id desc";
-        endif;
         $last = $this->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        // print_r($showDetailUser->getGroupcode());
+
+        if ($showDetailUser->getGroupcode() == 'Owner'):
+            $sql = "SELECT * FROM `transaction` WHERE type_trans=2 order by id desc";
+            $sql .= " limit " . $skip . ", " . $limit;
+        else:
+            $sql = "SELECT * FROM `transaction` WHERE type_trans=2 and created_by = '$userLogin' order by id desc";
+            $sql .= " limit " . $skip . ", " . $limit;
+        endif;
 
         $sisa = intval($last % $limit);
 
@@ -619,6 +622,12 @@ class transactionController extends transactionControllerGenerate
         $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $pyment = isset($_REQUEST["payment"]) ? $_REQUEST["payment"] : "";
+        
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
 
         if ($showDetailUser->getGroupcode() == 'Owner'):
             if ($pyment == null || $pyment == "") {
@@ -627,12 +636,14 @@ class transactionController extends transactionControllerGenerate
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id 
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' 
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             } else {
                 $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
                 INNER JOIN transaction_payment d ON d.`trans_id` = a.id
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.payment='$pyment' 
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             }
         else:
             if ($pyment == null || $pyment == "") {
@@ -641,19 +652,17 @@ class transactionController extends transactionControllerGenerate
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id 
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' and a.created_by = '$userLogin'
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             } else {
                 $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
                 INNER JOIN transaction_payment d ON d.`trans_id` = a.id
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.payment='$pyment' and a.created_by = '$userLogin'
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             }
         endif;
 
-        $last = $this->countDataAll();
-        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
-        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
-        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
 
         $sisa = intval($last % $limit);
 
@@ -1548,18 +1557,23 @@ class transactionController extends transactionControllerGenerate
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
         $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
 
-        // print_r($showDetailUser->getGroupcode());
-
-        if ($showDetailUser->getGroupcode() == 'Owner'):
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=1 order by id desc";
-        else:
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=1 and created_by='$userLogin' order by id desc";
-        endif;
-
         $last = $this->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+        // print_r($showDetailUser->getGroupcode());
+
+        if ($showDetailUser->getGroupcode() == 'Owner'):
+            $sql = "SELECT * FROM `transaction` WHERE type_trans=1 order by id desc";
+            $sql .= " limit " . $skip . ", " . $limit;
+        else:
+            $sql = "SELECT * FROM `transaction` WHERE type_trans=1 and created_by='$userLogin' order by id desc";
+            $sql .= " limit " . $skip . ", " . $limit;
+        endif;
+
+        // echo $sql;
+
 
         $sisa = intval($last % $limit);
 
@@ -2096,6 +2110,11 @@ class transactionController extends transactionControllerGenerate
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $mktplc = isset($_REQUEST["mktplc"]) ? $_REQUEST["mktplc"] : "";
 
+        $last = $this->countDataAll();
+        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
         if ($showDetailUser->getGroupcode() == 'Owner'):
             if ($mktplc == null || $mktplc == "") {
                 $sql = "SELECT DISTINCT b .`trans_descript`,a.* FROM `transaction` a 
@@ -2103,12 +2122,14 @@ class transactionController extends transactionControllerGenerate
                 WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate'
                 GROUP BY a.`id`
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             } else {
                 $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
                 INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
                 WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc'
                 GROUP BY a.`id`
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             }
         else:
             if ($mktplc == null || $mktplc == "") {
@@ -2117,21 +2138,19 @@ class transactionController extends transactionControllerGenerate
                 WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' and a.created_by = '$userLogin'
                 GROUP BY a.`id`
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             } else {
                 $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
                 INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
                 WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc' and a.created_by = '$userLogin'
                 GROUP BY a.`id`
                 ORDER BY a.`created_at` DESC";
+                $sql .= " limit " . $skip . ", " . $limit;
             }
         endif;
 
         // echo $sql;
 
-        $last = $this->countDataAll();
-        $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
-        $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
-        $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
 
         $sisa = intval($last % $limit);
 

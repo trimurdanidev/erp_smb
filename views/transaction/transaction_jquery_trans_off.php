@@ -86,7 +86,21 @@
         </div>
         <br>
         <div class="table-responsive">
-
+            <table class="table" width="95%">
+                <tr>
+                    <td align="left">
+                        <img alt="Move First" src="./img/icon/icon_move_first.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off&search=<?php echo $search ?>');">
+                        <img alt="Move Previous" src="./img/icon/icon_move_prev.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off&skip=<?php echo $previous ?>&search=<?php echo $search ?>');">
+                        Page <?php echo $pageactive ?> / <?php echo $pagecount ?>
+                        <img alt="Move Next" src="./img/icon/icon_move_next.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off&skip=<?php echo $next ?>&search=<?php echo $search ?>');">
+                        <img alt="Move Last" src="./img/icon/icon_move_last.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_off&skip=<?php echo $last ?>&search=<?php echo $search ?>');">
+                    </td>
+                </tr>
+            </table>
             <table class="table table-striped" style="width: 95%;">
                 <thead>
                     <tr>
@@ -189,7 +203,8 @@
                                                                         <th class="text-left">No</th>
                                                                         <th class="text-left">Kode Part</th>
                                                                         <th class="text-left">Part</th>
-                                                                        <th class="text-left"><span style="color:red;">Nama Part (Set Faktur)</span></th>
+                                                                        <th class="text-left"><span style="color:red;">Nama Part
+                                                                                (Set Faktur)</span></th>
                                                                         <th class="text-left">Qty</th>
                                                                         <th class="text-left">Harga</th>
                                                                         <th class="text-left">Diskon (%)</th>
@@ -257,7 +272,7 @@
                                                                         <td class="text-center"><b>
                                                                                 <?php echo number_format(floatVal($totalPnjl)); ?>
                                                                             </b></td>
-                                                                            <td></td>
+                                                                        <td></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>

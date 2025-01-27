@@ -93,7 +93,21 @@
 
         <br>
         <div class="table-responsive">
-
+            <table class="table" width="95%">
+                <tr>
+                    <td align="left">
+                        <img alt="Move First" src="./img/icon/icon_move_first.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln&search=<?php echo $search ?>');">
+                        <img alt="Move Previous" src="./img/icon/icon_move_prev.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln&skip=<?php echo $previous ?>&search=<?php echo $search ?>');">
+                        Page <?php echo $pageactive ?> / <?php echo $pagecount ?>
+                        <img alt="Move Next" src="./img/icon/icon_move_next.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln&skip=<?php echo $next ?>&search=<?php echo $search ?>');">
+                        <img alt="Move Last" src="./img/icon/icon_move_last.gif"
+                            onclick="showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln&skip=<?php echo $last ?>&search=<?php echo $search ?>');">
+                    </td>
+                </tr>
+            </table>
             <table class="table table-striped" style="width: 95%;">
                 <thead>
                     <tr>
@@ -200,8 +214,8 @@
                                                                     <th class="text-left">No</th>
                                                                     <th class="text-left">Kode Part</th>
                                                                     <th class="text-left">Part</th>
-                                                                    <?php if($trans_onn->getTrans_status() == '0'){?>
-                                                                    <th class="text-left">Stok</th>
+                                                                    <?php if ($trans_onn->getTrans_status() == '0') { ?>
+                                                                        <th class="text-left">Stok</th>
                                                                     <?php } ?>
                                                                     <th class="text-left">Qty</th>
                                                                     <th class="text-left">Harga</th>
@@ -240,7 +254,7 @@
                                                                     if ($trans_onn->getTrans_status() == '0' && $ggetStok->getQty_stock() < $val_part->getQty()) {
                                                                         $colorrows = "color:red;";
                                                                         $setColspan = 7;
-                                                                    }else{
+                                                                    } else {
                                                                         $colorrows = "";
                                                                         $setColspan = 6;
                                                                     }
@@ -259,12 +273,12 @@
                                                                                 <?php echo $namePart->getNm_product(); ?>
                                                                             </b>
                                                                         </td>
-                                                                        <?php if($trans_onn->getTrans_status() == '0'){?>
-                                                                        <td class="text-left" style="<?php echo $colorrows; ?>">
-                                                                            <b>
-                                                                                <?php echo $ggetStok->getQty_stock(); ?> Pcs
-                                                                            </b>
-                                                                        </td>
+                                                                        <?php if ($trans_onn->getTrans_status() == '0') { ?>
+                                                                            <td class="text-left" style="<?php echo $colorrows; ?>">
+                                                                                <b>
+                                                                                    <?php echo $ggetStok->getQty_stock(); ?> Pcs
+                                                                                </b>
+                                                                            </td>
                                                                         <?php } ?>
                                                                         <td class="text-left" style="<?php echo $colorrows; ?>">
                                                                             <b>
@@ -355,7 +369,8 @@
                                                                     <?php
                                                                 } ?>
                                                                 <tr>
-                                                                    <td colspan="<?php echo $setColspan;?>" class="text-left"><b>Total</b>
+                                                                    <td colspan="<?php echo $setColspan; ?>" class="text-left">
+                                                                        <b>Total</b>
                                                                     </td>
                                                                     <td class="text-center"><b>
                                                                             <?php echo number_format(floatVal($totalPnjl)); ?>
