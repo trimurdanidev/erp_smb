@@ -65,6 +65,7 @@ class master_userController extends master_userControllerGenerate
         require_once './views/master_user/master_user_jquery_form.php';
     }
 
+
     public function saveFormJQuery()
     {
         $options = [
@@ -84,21 +85,24 @@ class master_userController extends master_userControllerGenerate
         //     echo "<pre>";
         //     print_r($password);
         //     echo "</pre";
-            $this->master_user->setId($id);
-            $this->master_user->setUser($user);
-            $this->master_user->setDescription($description);
-            $this->master_user->setUsername($username);
-            $this->master_user->setPassword($password);
-            $this->master_user->setPhone($phone);
-            $this->master_user->setAvatar($avatar);
-            $this->master_user->setNik($nik);
-            $this->master_user->setDepartmentid($departmentid);
-            $this->master_user->setUnitid($unitid);
-            $this->saveData();
 
-            $master_user_detail = new master_user_detail();
-            $master_user_detail_controller = new master_user_detailController($master_user_detail, $this->dbh);
-            $master_user_detail_controller->savePrivileges();
+        $showDataUser = $this->showData($user);
+
+        $this->master_user->setId($id);
+        $this->master_user->setUser($user);
+        $this->master_user->setDescription($description);
+        $this->master_user->setUsername($username);
+        $this->master_user->setPassword($id==""||$id == null ? $password : $showDataUser->getPassword());
+        $this->master_user->setPhone($phone);
+        $this->master_user->setAvatar($avatar);
+        $this->master_user->setNik($nik);
+        $this->master_user->setDepartmentid($departmentid);
+        $this->master_user->setUnitid($unitid);
+        $this->saveData();
+
+        $master_user_detail = new master_user_detail();
+        $master_user_detail_controller = new master_user_detailController($master_user_detail, $this->dbh);
+        $master_user_detail_controller->savePrivileges();
         // else:
         //     echo "Your Username or password is incorrect!";
         // endif;
