@@ -519,6 +519,19 @@ class transactionController extends transactionControllerGenerate
         }
 
     }
+
+    function countDataOffline(){            
+        $sql = "SELECT count(id)  FROM transaction WHERE type_trans=2";
+        $row = $this->dbh->query($sql)->fetch();
+        return $row[0];
+    }
+
+    function countDataOnline(){            
+        $sql = "SELECT count(id)  FROM transaction WHERE type_trans=1";
+        $row = $this->dbh->query($sql)->fetch();
+        return $row[0];
+    }
+
     function showAllJQuery_trans_off()
     {
         $this->setIsadmin(true);
@@ -542,7 +555,7 @@ class transactionController extends transactionControllerGenerate
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
         $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
 
-        $last = $this->countDataAll();
+        $last = $this->countDataOffline();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -623,7 +636,7 @@ class transactionController extends transactionControllerGenerate
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $pyment = isset($_REQUEST["payment"]) ? $_REQUEST["payment"] : "";
         
-        $last = $this->countDataAll();
+        $last = $this->countDataOffline();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -1557,7 +1570,7 @@ class transactionController extends transactionControllerGenerate
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
         $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
 
-        $last = $this->countDataAll();
+        $last = $this->countDataOnline();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -2110,7 +2123,7 @@ class transactionController extends transactionControllerGenerate
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $mktplc = isset($_REQUEST["mktplc"]) ? $_REQUEST["mktplc"] : "";
 
-        $last = $this->countDataAll();
+        $last = $this->countDataOnline();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
