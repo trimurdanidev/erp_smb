@@ -331,8 +331,17 @@ $ctrl_trans_dettail = new transaction_detailController($mdl_trans_detail, $this-
         param['dari'] = dari;
         param['sampai'] = sampai;
 
+        Swal.fire({
+            title: 'Searching...',
+            html: 'Please wait...',
+            allowOutsideClick: false,
+            showLoaderOnConfirm: true,
+        });
+        swal.showLoading();
+
         $.post('index.php?model=transaction&action=showAllJQuery_so_by_data', param, function (data) {
             $('#content').html(data);
+            swal.close();
         });
     }
 

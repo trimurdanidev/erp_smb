@@ -444,8 +444,17 @@
         param['dari'] = dari;
         param['sampai'] = sampai;
 
+        Swal.fire({
+            title: 'Searching...',
+            html: 'Please wait...',
+            allowOutsideClick: false,
+            showLoaderOnConfirm: true,
+        });
+        swal.showLoading();
+
         $.post('index.php?model=transaction&action=showAllJQuery_trans_onn_by_search', param, function (data) {
             $('#content').html(data);
+            swal.close();
         });
     }
 
