@@ -10,15 +10,13 @@ $lat = $_REQUEST['lat'];
         <td colspan="3" align="center">Detail Absensi</td>
     </tr>
     <tr>
-        <div class="card">
-            <img src="http://202.10.42.150:8080/storage/<?php echo $imgAbsen; ?>" alt="Absensi">
-            <br>
-            <a href="https://www.google.com/maps?q=<?php echo $lat . "," . $long; ?>" class="button"
-                target="_blank"><span class=" 	glyphicon glyphicon-map-marker"></span>Lihat Lokasi</a>
-        </div>
-    </tr>
-    <tr>
-
+        <!-- <div class="card"> -->
+        <img src="http://202.10.42.150:8080/storage/<?php echo $imgAbsen; ?>" alt="Absensi" width="100%" height="250px"
+            object-fit="cover" border-radius="8px">
+        <br>
+        <a href="https://www.google.com/maps?q=<?php echo $lat . "," . $long; ?>" class="button" target="_blank"><span
+                class=" 	glyphicon glyphicon-map-marker"></span>Lihat Lokasi</a>
+        <!-- </div> -->
     </tr>
     <!-- <tr>
         <td>Nama Customer</td>
@@ -51,39 +49,3 @@ $lat = $_REQUEST['lat'];
         </td>
     </tr>
 </table>
-<style>
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f3f4f6;
-    }
-
-    .card {
-        width: 400px;
-        background: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        overflow: hidden;
-        text-align: center;
-        padding: 20px;
-    }
-
-    .card img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-
-    .button {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 10px 20px;
-        background: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-    }
-</style>
