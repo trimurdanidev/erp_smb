@@ -1,6 +1,7 @@
 <?php
 require_once './models/master_user.class.php';
 require_once './models/master_profil.class.php';
+require_once './models/report_query.class.php';    
 require_once './models/master_user_detail.class.php';
 require_once './controllers/master_user.controller.generate.php';
 require_once './controllers/master_profil.controller.php';
@@ -14,6 +15,7 @@ require_once './models/login.class.php';
 require_once './models/reset_password_log.class.php';
 require_once './controllers/reset_password_log.controller.generate.php';
 require_once './controllers/reset_password_log.controller.php';
+require_once './controllers/report_query.controller.php';
 
 
 if (!isset($_SESSION)) {
@@ -92,7 +94,7 @@ class master_userController extends master_userControllerGenerate
         $this->master_user->setUser($user);
         $this->master_user->setDescription($description);
         $this->master_user->setUsername($username);
-        $this->master_user->setPassword($id==""||$id == null ? $password : $showDataUser->getPassword());
+        $this->master_user->setPassword($id == "" || $id == null ? $password : $showDataUser->getPassword());
         $this->master_user->setPhone($phone);
         $this->master_user->setAvatar($avatar);
         $this->master_user->setNik($nik);
@@ -243,6 +245,80 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
             echo "<script>alert('User Tidak Ditemukan !');</script>";
             // echo $response['reason'];
         }
+    }
+
+    function showDataAllERP()
+    {
+
+        $sql = "SELECT * FROM db_erp_smb.master_user WHERE departmentid !=0";
+
+        return $this->createList($sql);
+
+    }
+
+    function monitoringAbsen()
+    {
+        $this->setIsadmin(true);
+
+        $mdl_report_query  = new report_query();
+        $ctrl_report_query = new report_queryController($mdl_report_query,$this->dbh);
+
+        if ($this->ispublic || $this->isadmin || $this->isread) {
+            $tanggalMulai = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
+            $tanggalAkir = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
+            $karyawan = isset($_REQUEST['kry']) ? $_REQUEST['kry'] : "";
+
+            $last = $this->countDataAll();
+            $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+            $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+            $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+            $querySql = "CALL `sp_monitoring_erp_absen`('".$tanggalMulai."','".$tanggalAkir."','".$karyawan."');";
+
+            echo $querySql; 
+
+            $sisa = intval($last % $limit);
+
+            if ($sisa > 0) {
+                $last = $last - $sisa;
+            } else if ($last - $limit < 0) {
+                $last = 0;
+            } else {
+                $last = $last - $limit;
+            }
+
+            $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+            if ($skip + $limit > $last) {
+                $next = $last;
+            } else if ($skip == 0) {
+                $next = $skip + $limit + 1;
+            } else {
+                $next = $skip + $limit;
+            }
+            $first = 0;
+
+            $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+            $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+            // $master_user_list = $this->createList($querySql);
+            $master_user_list = $ctrl_report_query->generatetableview($querySql);
+
+            $isadmin = $this->isadmin;
+            $ispublic = $this->ispublic;
+            $isread = $this->isread;
+            $isconfirm = $this->isconfirm;
+            $isentry = $this->isentry;
+            $isupdate = $this->isupdate;
+            $isdelete = $this->isdelete;
+            $isprint = $this->isprint;
+            $isexport = $this->isexport;
+            $isimport = $this->isimport;
+            require_once './views/master_user/monitoring_absen_jquery_list.php';
+        } else {
+            echo "You cannot access this module";
+        }
+
     }
 }
 ?>
