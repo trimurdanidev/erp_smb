@@ -27,6 +27,6 @@
     </tr>
     <tr><td height="5"></td></tr>
     <tr>
-        <td colspan="3" align="center"><input type="button" value="Tutup" class="btn" onclick="Popup.hide('popup')"></td>
+        <td colspan="3" align="center"><input type="button" value="TutupJJJSJJJJ" class="btn" onclick="Popup.hide('popup')"></td>
     </tr>
 </table>
