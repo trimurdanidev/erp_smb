@@ -1,6 +1,6 @@
 <?php
-    $idAbsen = isset($_GET['idAbsen']);
-    $imgAbsen = isset($_GET['img']);
+    $idAbsen = $_SERVER['idAbsen'];
+    $imgAbsen = $_REQUEST['img'];
     $long = isset($_GET['long']);
     $lat = isset($_GET['lat']);
 
