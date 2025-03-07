@@ -10,14 +10,15 @@ $lat = $_REQUEST['lat'];
         <td colspan="3" align="center">Detail Absensi</td>
     </tr>
     <tr>
-        <!-- <div class="card"> -->
-        <img src="http://202.10.42.150:8080/storage/<?php echo $attendanceImage; ?>" alt="Absensi">
-        <!-- </div> -->
+        <div class="card">
+            <img src="http://202.10.42.150:8080/storage/<?php echo $imgAbsen; ?>" alt="Absensi">
+            <br>
+            <a href="https://www.google.com/maps?q=<?php echo $lat . "," . $long; ?>" class="button"
+                target="_blank"><span class=" 	glyphicon glyphicon-map-marker"></span>Lihat Lokasi</a>
+        </div>
     </tr>
     <tr>
 
-        <a href="https://www.google.com/maps?q=<?php echo $lat . "," . $long; ?>" class="button" target="_blank"><span
-                class=" 	glyphicon glyphicon-map-marker"></span>Lihat Lokasi</a>
     </tr>
     <!-- <tr>
         <td>Nama Customer</td>
