@@ -1,6 +1,14 @@
+<?php
+    $idAbsen = isset($_GET['idAbsen']);
+    $imgAbsen = isset($_GET['img']);
+    $long = isset($_GET['long']);
+    $lat = isset($_GET['lat']);
+
+?>
 <table border="0" width="90%" align="center" style="border-collapse:collapse">
     <tr>
-        <td colspan="3" align="center">Detail Customer</td>
+        <td colspan="3" align="center">Detail Absensi</td>
+        <?php echo $idAbsen."<br>".$imgAbsen."<br>".$long?>
     </tr>
     <tr>
         <td>Nama Customer</td>

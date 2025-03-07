@@ -6,6 +6,7 @@ include_once './controllers/master_user.controller.php';
 include_once './models/master_user.class.php';
 include_once './controllers/tools.controller.php';
 
+
 $layout = new layoutController($dbh);
 if (!isset($_SESSION)) {
     session_start();
