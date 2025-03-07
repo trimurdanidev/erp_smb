@@ -8,7 +8,7 @@
 <table border="0" width="90%" align="center" style="border-collapse:collapse">
     <tr>
         <td colspan="3" align="center">Detail Absensi</td>
-        <?php echo $idAbsen."<br>".$imgAbsen."<br>".$long?>
+        <?php echo print_r($idAbsen)."<br>"?>
     </tr>
     <tr>
         <td>Nama Customer</td>
