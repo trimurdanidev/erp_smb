@@ -275,7 +275,7 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
 
             $querySql = "CALL `sp_monitoring_erp_absen`('".$tanggalMulai."','".$tanggalAkir."','".$karyawan."');";
 
-            echo $querySql; 
+            // echo $querySql; 
 
             $sisa = intval($last % $limit);
 
