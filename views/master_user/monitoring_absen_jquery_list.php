@@ -70,12 +70,17 @@
         <br>
         <div class="table-responsive">
 
-            <button type="button" onclick="exportExcel()" class="btn btn-green"><span
-                    class="glyphicon glyphicon-export"></span>
-                Export Excel
-            </button>
 
-            <?php echo $master_user_list; ?>
+            <?php if ($master_user_list !== null) { ?>
+                <button type="button" onclick="exportExcel()" class="btn btn-green"><span
+                        class="glyphicon glyphicon-export"></span>
+                    Export Excel
+                </button>
+
+                <?php
+                echo $master_user_list;
+            }
+            ; ?>
 
         </div>
         <br>
