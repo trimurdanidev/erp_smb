@@ -70,6 +70,10 @@
         <br>
         <div class="table-responsive">
 
+            <button type="button" onclick="exportExcel()" class="btn btn-green"><span
+                    class="glyphicon glyphicon-export"></span>
+                Export Excel
+            </button>
 
             <?php echo $master_user_list; ?>
 
@@ -122,5 +126,30 @@
         site = 'index.php?model=master_user&action=monitoringAbsen&search=' + searchdata;
         target = "content";
         showMenu(target, site);
+    }
+
+    function exportExcel() {
+        var karyawan = $('#kry option:selected').val();
+        var dari = $('#dari').val();
+        var sampai = $('#sampai').val();
+        var param = {};
+        var filename = 'DETAIL ABSENSI';
+
+        param['kry'] = karyawan;
+        param['dari'] = dari;
+        param['sampai'] = sampai;
+
+        Swal.fire({
+            title: 'Exporting...',
+            html: 'Please wait...',
+            allowOutsideClick: false,
+            showLoaderOnConfirm: true,
+        });
+        swal.showLoading();
+
+        $.post('index.php?model=master_user&action=showExportTable', param, function (data) {
+            $('#content').html(data);
+            swal.close();
+        });
     }
 </script>
