@@ -280,6 +280,7 @@ class transactionController extends transactionControllerGenerate
             $mdl_upload_tr_log->setCreated_at($dateTime);
             $mdl_upload_tr_log->setUpdated_by('');
             $mdl_upload_tr_log->setUpdated_at($dateTime);
+            $ctrl_upload_tr_log->setIsadmin(true);
             $ctrl_upload_tr_log->saveData();
 
             foreach ($dataSheet->rows() as $k => $r) {
@@ -337,6 +338,7 @@ class transactionController extends transactionControllerGenerate
                     $mdl_transaction_dtl->setTrans_descript("");
                     $mdl_transaction_dtl->setQty($qty);
                     $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                    $ctrl_transaction_dtl->setIsadmin(true);
                     $ctrl_transaction_dtl->saveData();
 
                     //transaction_log
@@ -350,6 +352,7 @@ class transactionController extends transactionControllerGenerate
                     $mdl_transaction_log->setCreated_at($dateTime);
                     $mdl_transaction_log->setUpdated_by('');
                     $mdl_transaction_log->setUpdated_at($dateTime);
+                    $ctrl_transaction_log->setIsadmin(true);
                     $ctrl_transaction_log->saveData();
 
                     //master_stock
@@ -376,6 +379,7 @@ class transactionController extends transactionControllerGenerate
             $mdl_upload_tr_log->setCreated_at($showUpdadte_upl->getCreated_at());
             $mdl_upload_tr_log->setUpdated_by($showUpdadte_upl->getUpdated_by());
             $mdl_upload_tr_log->setUpdated_at($showUpdadte_upl->getUpdated_at());
+            $ctrl_upload_tr_log->setIsadmin(true);
             $ctrl_upload_tr_log->saveData();
 
             $this->transaction->setId($showUpdate_trs->getId());
@@ -1268,6 +1272,7 @@ class transactionController extends transactionControllerGenerate
                             $mdl_transaction_dtl->setTrans_descript("");
                             $mdl_transaction_dtl->setQty($cul_qty);
                             $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                            $ctrl_transaction_dtl->setIsadmin(true);
                             $ctrl_transaction_dtl->saveData();
 
                             //transaction_log
