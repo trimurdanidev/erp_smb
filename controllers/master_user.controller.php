@@ -1,7 +1,7 @@
 <?php
 require_once './models/master_user.class.php';
 require_once './models/master_profil.class.php';
-require_once './models/report_query.class.php';    
+require_once './models/report_query.class.php';
 require_once './models/master_user_detail.class.php';
 require_once './controllers/master_user.controller.generate.php';
 require_once './controllers/master_profil.controller.php';
@@ -260,8 +260,8 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
     {
         $this->setIsadmin(true);
 
-        $mdl_report_query  = new report_query();
-        $ctrl_report_query = new report_queryController($mdl_report_query,$this->dbh);
+        $mdl_report_query = new report_query();
+        $ctrl_report_query = new report_queryController($mdl_report_query, $this->dbh);
 
         if ($this->ispublic || $this->isadmin || $this->isread) {
             $tanggalMulai = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
@@ -273,7 +273,7 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
             $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
             $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
 
-            $querySql = "CALL `sp_monitoring_erp_absen`('".$tanggalMulai."','".$tanggalAkir."','".$karyawan."');";
+            $querySql = "CALL `sp_monitoring_erp_absen`('" . $tanggalMulai . "','" . $tanggalAkir . "','" . $karyawan . "');";
 
             // echo $querySql; 
 
@@ -318,6 +318,37 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
         } else {
             echo "You cannot access this module";
         }
+
+    }
+
+    function parseDetailAbsen($tanggalMulai,$tanggalAkir,$karyawan){
+        $sql = "CALL `sp_monitoring_erp_absen`('" . $tanggalMulai . "','" . $tanggalAkir . "','" . $karyawan . "');";
+
+        $row = $this->dbh->query($sql);
+        
+        return $row;
+    }
+
+    function showExportTable()
+    {
+        $this->setIsadmin(true);
+
+        $mdl_report_query = new report_query();
+        $ctrl_report_query = new report_queryController($mdl_report_query, $this->dbh);
+
+        $tanggalMulai = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
+        $tanggalAkir = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
+        $karyawan = isset($_REQUEST['kry']) ? $_REQUEST['kry'] : "";
+
+        $report_query = $this->parseDetailAbsen($tanggalMulai,$tanggalAkir,$karyawan);
+
+        $query = $ctrl_report_query->getQueryGenerate($report_query);
+
+        //echo $query;
+        header("Content-Type:application/csv");
+        header('Content-Disposition: attachment; filename="sample_export_data.csv"');
+
+        echo $ctrl_report_query->exportcsv($query, 1);
 
     }
 }
