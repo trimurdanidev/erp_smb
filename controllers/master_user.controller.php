@@ -196,6 +196,10 @@ class master_userController extends master_userControllerGenerate
             $updatePass = "UPDATE `master_user` SET `password`='" . $hasPass . "' where id='" . $getuser->getId() . "'";
             $rs = $this->dbh->query($updatePass);
 
+            //updatePass ERP;
+            $updatePassERP = "UPDATE db_erp_smb.`master_user` SET `password`='" . $hasPass . "' where user=' $user'";
+            $rsERP = $this->dbh->query($updatePassERP);
+
             //log Password
             $id = $ctrl_rst_password_l->getLastId();
             // $user_id = isset($_POST['user_id'])?$_POST['user_id'] : "";
