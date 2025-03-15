@@ -1555,11 +1555,11 @@ class transactionController extends transactionControllerGenerate
             $this->updateData();
             // echo "<script>alert('Stock Opname Berhasil Cancel');</script>";
 
-            if ($getPrdLog->getTrans_type() == '3'):
+            if ($getTransaction->getType_trans() == '3'):
                 $this->showAllJQuery_so();
-            elseif ($getPrdLog->getTrans_type() == '4'):
+            elseif ($getTransaction->getTrans_type() == '4'):
                 $this->showAllJQuery_restok();
-            elseif ($getPrdLog->getTrans_type() == '1'):
+            elseif ($getTransaction->getTrans_type() == '1'):
                 $this->showAllJQuery_trans_onln();
             endif;
 
