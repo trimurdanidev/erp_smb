@@ -1557,9 +1557,9 @@ class transactionController extends transactionControllerGenerate
 
             if ($getTransaction->getType_trans() == '3'):
                 $this->showAllJQuery_so();
-            elseif ($getTransaction->getTrans_type() == '4'):
+            elseif ($getTransaction->getType_trans() == '4'):
                 $this->showAllJQuery_restok();
-            elseif ($getTransaction->getTrans_type() == '1'):
+            elseif ($getTransaction->getType_trans() == '1'):
                 $this->showAllJQuery_trans_onln();
             endif;
 
