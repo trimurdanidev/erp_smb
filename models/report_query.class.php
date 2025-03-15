@@ -2,6 +2,7 @@
     class report_query
     {
 	var $id;
+	var $module;
 	var $reportname;
 	var $header;
 	var $headertable;
@@ -27,6 +28,13 @@
 
 	public function setId($id) {
 	   $this->id = $id;
+	}
+	public function getModule() {
+	   return $this->module;
+	}
+
+	public function setModule($module) {
+	   $this->module = $module;
 	}
 	public function getReportname() {
 	   return $this->reportname;

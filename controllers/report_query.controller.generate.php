@@ -88,6 +88,7 @@
             $sql = "INSERT INTO report_query ";
             $sql .= " ( ";
 	    $sql .= "`id`,";
+	    $sql .= "`module`,";
 	    $sql .= "`reportname`,";
 	    $sql .= "`header`,";
 	    $sql .= "`headertable`,";
@@ -107,6 +108,7 @@
             $sql .= ") ";
             $sql .= " VALUES (";
 	    $sql .= " null,";
+	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getModule(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getReportname(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getHeader(), $this->dbh)."',";
 	    $sql .= "'".$this->toolsController->replacecharSave($this->report_query->getHeadertable(), $this->dbh)."',";
@@ -133,6 +135,7 @@
             $datetime = date("Y-m-d H:i:s");
             $sql = "UPDATE report_query SET ";
 	    $sql .= "`id` = '".$this->toolsController->replacecharSave($this->report_query->getId(),$this->dbh)."',";
+	    $sql .= "`module` = '".$this->toolsController->replacecharSave($this->report_query->getModule(),$this->dbh)."',";
 	    $sql .= "`reportname` = '".$this->toolsController->replacecharSave($this->report_query->getReportname(),$this->dbh)."',";
 	    $sql .= "`header` = '".$this->toolsController->replacecharSave($this->report_query->getHeader(),$this->dbh)."',";
 	    $sql .= "`headertable` = '".$this->toolsController->replacecharSave($this->report_query->getHeadertable(),$this->dbh)."',";
@@ -189,9 +192,9 @@
             if ($bsearch) {
                 $search = $_REQUEST["search"] ;
                $where .= " where id like '%".$search."%'";
+               $where .= "       or  module like '%".$search."%'";
                $where .= "       or  reportname like '%".$search."%'";
                $where .= "       or  header like '%".$search."%'";
-               $where .= "       or  headertable like '%".$search."%'";
 
             }            
             return $where;
@@ -243,23 +246,24 @@
 
                 
         function loadData($report_query,$row){
-	    $report_query->setId(isset($row['id'])?$row['id']:"");
-	    $report_query->setReportname(isset($row['reportname'])?$row['reportname']:"");
-	    $report_query->setHeader(isset($row['header'])?$row['header']:"");
-	    $report_query->setHeadertable(isset($row['headertable'])?$row['headertable']:"");
-	    $report_query->setQuery(isset($row['query'])?$row['query']:"");
-	    $report_query->setCrosstab(isset($row['crosstab'])?$row['crosstab']:"");
-	    $report_query->setTotal(isset($row['total'])?$row['total']:"");
-	    $report_query->setSubtotal(isset($row['subtotal'])?$row['subtotal']:"");
-	    $report_query->setHeadertableshow(isset($row['headertableshow'])?$row['headertableshow']:"");
-	    $report_query->setFootertableshow(isset($row['footertableshow'])?$row['footertableshow']:"");
-	    $report_query->setTotalqueryid(isset($row['totalqueryid'])?$row['totalqueryid']:"");
-	    $report_query->setEntrytime(isset($row['entrytime'])?$row['entrytime']:"");
-	    $report_query->setEntryuser(isset($row['entryuser'])?$row['entryuser']:"");
-	    $report_query->setEntryip(isset($row['entryip'])?$row['entryip']:"");
-	    $report_query->setUpdatetime(isset($row['updatetime'])?$row['updatetime']:"");
-	    $report_query->setUpdateuser(isset($row['updateuser'])?$row['updateuser']:"");
-	    $report_query->setUpdateip(isset($row['updateip'])?$row['updateip']:"");
+	    $report_query->setId(isset($row['id'])?$row['id'] : "");
+	    $report_query->setModule(isset($row['module'])?$row['module'] : "");
+	    $report_query->setReportname(isset($row['reportname'])?$row['reportname'] : "");
+	    $report_query->setHeader(isset($row['header'])?$row['header'] : "");
+	    $report_query->setHeadertable(isset($row['headertable'])?$row['headertable'] : "");
+	    $report_query->setQuery(isset($row['query'])?$row['query'] : "");
+	    $report_query->setCrosstab(isset($row['crosstab'])?$row['crosstab'] : "");
+	    $report_query->setTotal(isset($row['total'])?$row['total'] : "");
+	    $report_query->setSubtotal(isset($row['subtotal'])?$row['subtotal'] : "");
+	    $report_query->setHeadertableshow(isset($row['headertableshow'])?$row['headertableshow'] : "");
+	    $report_query->setFootertableshow(isset($row['footertableshow'])?$row['footertableshow'] : "");
+	    $report_query->setTotalqueryid(isset($row['totalqueryid'])?$row['totalqueryid'] : "");
+	    $report_query->setEntrytime(isset($row['entrytime'])?$row['entrytime'] : "");
+	    $report_query->setEntryuser(isset($row['entryuser'])?$row['entryuser'] : "");
+	    $report_query->setEntryip(isset($row['entryip'])?$row['entryip'] : "");
+	    $report_query->setUpdatetime(isset($row['updatetime'])?$row['updatetime'] : "");
+	    $report_query->setUpdateuser(isset($row['updateuser'])?$row['updateuser'] : "");
+	    $report_query->setUpdateip(isset($row['updateip'])?$row['updateip'] : "");
 
         }
 
@@ -431,6 +435,7 @@
         }                
         function saveFormPost(){
 	    $id = isset($_POST['id'])?$_POST['id'] : "";
+	    $module = isset($_POST['module'])?$_POST['module'] : "";
 	    $reportname = isset($_POST['reportname'])?$_POST['reportname'] : "";
 	    $header = isset($_POST['header'])?$_POST['header'] : "";
 	    $headertable = isset($_POST['headertable'])?$_POST['headertable'] : "";
@@ -443,6 +448,7 @@
 	    $totalqueryid = isset($_POST['totalqueryid'])?$_POST['totalqueryid'] : "";
 
 	    $this->report_query->setId($id);
+	    $this->report_query->setModule($module);
 	    $this->report_query->setReportname($reportname);
 	    $this->report_query->setHeader($header);
 	    $this->report_query->setHeadertable($headertable);
