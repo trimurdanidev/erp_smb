@@ -71,7 +71,9 @@
         <div class="table-responsive">
 
 
-            <?php if ($master_user_list !== null) { ?>
+            <?php if ($master_user_list == 'Tidak Ada Data Yang Ditampilkan.') {
+                echo "";
+            } else { ?>
                 <button type="button" onclick="exportExcel()" class="btn btn-green"><span
                         class="glyphicon glyphicon-export"></span>
                     Export Excel
@@ -79,6 +81,7 @@
 
                 <?php
                 echo $master_user_list;
+
             }
             ; ?>
 
