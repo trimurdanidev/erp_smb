@@ -1268,6 +1268,7 @@ class transactionController extends transactionControllerGenerate
                             $mdl_transaction_dtl->setTrans_descript("");
                             $mdl_transaction_dtl->setQty($cul_qty);
                             $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                            $ctrl_transaction_dtl->setIsadmin(true);
                             $ctrl_transaction_dtl->saveData();
 
                             //transaction_log
