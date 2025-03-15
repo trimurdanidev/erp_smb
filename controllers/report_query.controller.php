@@ -18,7 +18,7 @@ class report_queryController extends report_queryControllerGenerate
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
         $report_query = $this->showData($id);
         $query = $this->getQueryGenerate($report_query);
-        echo $query;
+        // echo $query;
         echo $this->generatetableview($query, $report_query->getTotal(), $report_query->getSubtotal());
     }
 
