@@ -799,6 +799,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_trans_dtl->setNm_product($nameSet);
                 $mdl_trans_dtl->setQty($qty);
                 $mdl_trans_dtl->setHarga($priceSet);
+                $ctrl_trans_dtl->setIsadmin(true);
                 $ctrl_trans_dtl->saveData();
 
                 $total += $qty;
@@ -814,6 +815,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_trans_log->setCreated_at($dateTime);
                 $mdl_trans_log->setUpdated_by('');
                 $mdl_trans_log->setUpdated_at($dateTime);
+                $ctrl_trans_log->setIsadmin(true);
                 $ctrl_trans_log->saveData();
 
                 //master_stock
@@ -824,6 +826,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_mst_stok->setUpdated_by($user);
                 $mdl_mst_stok->setCreated_at($getStock->getCreated_at());
                 $mdl_mst_stok->setUpdated_at(date('Y-m-d H:i:s'));
+                $ctrl_mst_stok->setIsadmin(true);
                 $ctrl_mst_stok->saveData();
             }
 
@@ -837,6 +840,7 @@ class transactionController extends transactionControllerGenerate
             $mdl_trans_payment->setCreated_at(date('Y-m-d H:i:s'));
             $mdl_trans_payment->setUpdated_by($user);
             $mdl_trans_payment->setUpdated_at(date('Y-m-d H:i:s'));
+            $ctrl_trans_payment->setIsadmin(true);
             $ctrl_trans_payment->saveData();
 
             //buyer transaction
@@ -845,6 +849,7 @@ class transactionController extends transactionControllerGenerate
             $mdl_trans_buyer->setBuyer_name($buyer_name);
             $mdl_trans_buyer->setBuyer_phone($buyer_phone);
             $mdl_trans_buyer->setBuyer_address($buyer_address);
+            $ctrl_trans_buyer->setIsadmin(true);
             $ctrl_trans_buyer->saveData();
 
             //Update Total
@@ -1201,6 +1206,7 @@ class transactionController extends transactionControllerGenerate
 
                 //upload_trans_log
                 // $mdl_upload_tr_log->setId($id);
+                $ctrl_upload_tr_log->setIsadmin(true);
                 $mdl_upload_tr_log->setTrans_type(4);
                 $mdl_upload_tr_log->setTrans_descrip('IN RE-STOCK TGL.' . date('d-m-Y') . " OLEH " . $user);
                 $mdl_upload_tr_log->setJumlah_data(0);
@@ -1275,6 +1281,7 @@ class transactionController extends transactionControllerGenerate
                             $mdl_transaction_log->setCreated_at($dateTime);
                             $mdl_transaction_log->setUpdated_by('');
                             $mdl_transaction_log->setUpdated_at($dateTime);
+                            $ctrl_transaction_log->setIsadmin(true);
                             $ctrl_transaction_log->saveData();
 
                             //master_stock
@@ -1302,6 +1309,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_upload_tr_log->setCreated_at($showUpdadte_upl->getCreated_at());
                 $mdl_upload_tr_log->setUpdated_by($showUpdadte_upl->getUpdated_by());
                 $mdl_upload_tr_log->setUpdated_at($showUpdadte_upl->getUpdated_at());
+                $ctrl_upload_tr_log->setIsadmin(true);
                 $ctrl_upload_tr_log->saveData();
 
                 $this->transaction->setId($showUpdate_trs->getId());
@@ -1806,6 +1814,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_upload_tr_log->setCreated_at($dateTime);
                 $mdl_upload_tr_log->setUpdated_by('');
                 $mdl_upload_tr_log->setUpdated_at($dateTime);
+                $ctrl_upload_tr_log->setIsadmin(true);
                 $ctrl_upload_tr_log->saveData();
 
                 $Hitungbaris = 1;
@@ -1861,6 +1870,7 @@ class transactionController extends transactionControllerGenerate
                             $mdl_transaction_dtl->setTrans_descript($cul_marketplace);
                             $mdl_transaction_dtl->setQty($cul_qty);
                             $mdl_transaction_dtl->setHarga($getHarga->getHrg_jual());
+                            $ctrl_transaction_dtl->setIsadmin(true);
                             $ctrl_transaction_dtl->saveData();
 
                             //transaction_log
@@ -1874,6 +1884,7 @@ class transactionController extends transactionControllerGenerate
                             $mdl_transaction_log->setCreated_at($dateTime);
                             $mdl_transaction_log->setUpdated_by('');
                             $mdl_transaction_log->setUpdated_at($dateTime);
+                            $ctrl_transaction_log->setIsadmin(true);
                             $ctrl_transaction_log->saveData();
 
                             //master_stock
@@ -1902,6 +1913,7 @@ class transactionController extends transactionControllerGenerate
                 $mdl_upload_tr_log->setCreated_at($showUpdadte_upl->getCreated_at());
                 $mdl_upload_tr_log->setUpdated_by($showUpdadte_upl->getUpdated_by());
                 $mdl_upload_tr_log->setUpdated_at($showUpdadte_upl->getUpdated_at());
+                $ctrl_upload_tr_log->setIsadmin(true);
                 $ctrl_upload_tr_log->saveData();
 
                 $this->transaction->setId($showUpdate_trs->getId());
