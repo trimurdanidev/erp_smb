@@ -604,9 +604,9 @@ class report_queryController extends report_queryControllerGenerate
         $crosstab = isset($_POST['crosstab']) ? $_POST['crosstab'] : "";
         $total = isset($_POST['total']) ? $_POST['total'] : "";
         $subtotal = isset($_POST['subtotal']) ? $_POST['subtotal'] : "";
-        $headertableshow = isset($_POST['headertableshow']) ? $_POST['headertableshow'] : "";
-        $footertableshow = isset($_POST['footertableshow']) ? $_POST['footertableshow'] : "";
-        $totalqueryid = isset($_POST['totalqueryid']) ? $_POST['totalqueryid'] : "";
+        $headertableshow = 1;
+        $footertableshow = 1;
+        $totalqueryid = 0;
         $entrytime = date('Y-m-d H:i:s');
         $entryuser = $this->user;
         $entryip = $_SERVER['REMOTE_ADDR'];
