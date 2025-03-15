@@ -342,13 +342,11 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
 
         $report_query = $this->parseDetailAbsen($tanggalMulai,$tanggalAkir,$karyawan);
 
-        $query = $ctrl_report_query->getQueryGenerate($report_query);
-
         //echo $query;
         header("Content-Type:application/csv");
         header('Content-Disposition: attachment; filename="sample_export_data.csv"');
 
-        echo $ctrl_report_query->exportcsv($query, 1);
+        echo $ctrl_report_query->exportcsv($report_query, 1);
 
     }
 }
