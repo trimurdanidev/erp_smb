@@ -142,11 +142,19 @@ class master_userController extends master_userControllerGenerate
             if ($newpassword == $retypepassword) {
                 if (trim($newpassword) != "") {
                     // if (strlen(trim($newpassword)) < 8 || strlen(trim($newpassword)) == 8) {
-                        $masteruser->setPassword(password_hash($newpassword, PASSWORD_DEFAULT, $options));
-                        $masterusercontroller = new master_userController($masteruser, $this->dbh);
-                        $masterusercontroller->saveData();
-                        $_SESSION[config::$LOGIN_USER] = serialize($masteruser);
+                    $masteruser->setPassword(password_hash($newpassword, PASSWORD_DEFAULT, $options));
+                    $masterusercontroller = new master_userController($masteruser, $this->dbh);
+                    $masterusercontroller->saveData();
 
+                    echo "<script language='javascript' type='text/javascript'>
+                    Swal.fire({
+                        title : 'Berhasil',
+                        icon : 'success',
+                        text : 'Password Berhasil Diupdate'
+                        });
+                        </script>";
+
+                    $_SESSION[config::$LOGIN_USER] = serialize($masteruser);
                     // } else {
                     //     echo "Password Must Be More Than 8 ";
                     // }
@@ -325,11 +333,12 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
 
     }
 
-    function parseDetailAbsen($tanggalMulai,$tanggalAkir,$karyawan){
+    function parseDetailAbsen($tanggalMulai, $tanggalAkir, $karyawan)
+    {
         $sql = "CALL `sp_monitoring_erp_absen`('" . $tanggalMulai . "','" . $tanggalAkir . "','" . $karyawan . "');";
 
         $row = $this->dbh->query($sql);
-        
+
         return $row;
     }
 
@@ -344,13 +353,13 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
         $tanggalAkir = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $karyawan = isset($_REQUEST['kry']) ? $_REQUEST['kry'] : "";
 
-        $report_query = $this->parseDetailAbsen($tanggalMulai,$tanggalAkir,$karyawan);
+        $report_query = $this->parseDetailAbsen($tanggalMulai, $tanggalAkir, $karyawan);
 
         //echo $query;
         header("Content-Type:application/csv");
         header('Content-Disposition: attachment; filename="sample_export_data.csv"');
 
-        echo $ctrl_report_query->exportcsv($report_query, 1,0);
+        echo $ctrl_report_query->exportcsv($report_query, 1, 0);
 
     }
 }
