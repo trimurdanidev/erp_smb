@@ -31,7 +31,7 @@ class master_stock_periodeController extends master_stock_periodeControllerGener
             $created_by = 'auto';
             $updated_by = '';
             $created_at = date('Y-m-d H:i:s');
-            $updated_at = '';
+            $updated_at = date('Y-m-d H:i:s');
 
 
             // $this->master_stock_periode->setId($id);
