@@ -193,12 +193,12 @@
         }
         function findDataWhere($where){
             $sql = "SELECT * FROM master_stock  ".$where;
-            $sql .= " ORDER BY ";
+            $sql .= " ORDER BY kd_product ";
             return $sql;
         }
         function findCountDataWhere($where){
             $sql = "SELECT count()  FROM master_stock  ".$where;
-            $sql .= " ORDER BY ";
+            $sql .= " ORDER BY kd_product ";
             return $sql;
         }
         function findDataSql($sql){
