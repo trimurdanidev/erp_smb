@@ -141,15 +141,15 @@ class master_userController extends master_userControllerGenerate
             // if (md5($oldpassword) == $masteruser->getPassword()) {
             if ($newpassword == $retypepassword) {
                 if (trim($newpassword) != "") {
-                    if (strlen(trim($newpassword)) < 8 || strlen(trim($newpassword)) == 8) {
+                    // if (strlen(trim($newpassword)) < 8 || strlen(trim($newpassword)) == 8) {
                         $masteruser->setPassword(password_hash($newpassword, PASSWORD_DEFAULT, $options));
                         $masterusercontroller = new master_userController($masteruser, $this->dbh);
                         $masterusercontroller->saveData();
                         $_SESSION[config::$LOGIN_USER] = serialize($masteruser);
 
-                    } else {
-                        echo "Password Must Be More Than 8 ";
-                    }
+                    // } else {
+                    //     echo "Password Must Be More Than 8 ";
+                    // }
                 } else {
                     echo "Password cannot be blank";
                 }
