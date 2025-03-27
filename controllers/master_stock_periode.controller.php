@@ -32,6 +32,7 @@ class master_stock_periodeController extends master_stock_periodeControllerGener
 
         $mdl_stock = new master_stock();
         $ctrl_stock = new master_stockController($mdl_stock, $this->dbh);
+        $ctrl_stock->setIsadmin(true);
 
         $getStok = $ctrl_stock->showDataAll();
 
