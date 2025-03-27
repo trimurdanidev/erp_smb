@@ -146,13 +146,14 @@ class master_userController extends master_userControllerGenerate
                     $masterusercontroller = new master_userController($masteruser, $this->dbh);
                     $masterusercontroller->saveData();
 
-                    echo "<script language='javascript' type='text/javascript'>
-                    Swal.fire({
-                        title : 'Berhasil',
-                        icon : 'success',
-                        text : 'Password Berhasil Diupdate'
-                        });
-                        </script>";
+                    echo "Berhasil, Password Berhasil Diupdate";
+                    // echo "<script language='javascript' type='text/javascript'>
+                    // Swal.fire({
+                    //     title : 'Berhasil',
+                    //     icon : 'success',
+                    //     text : 'Password Berhasil Diupdate'
+                    //     });
+                    //     </script>";
 
                     $_SESSION[config::$LOGIN_USER] = serialize($masteruser);
                     // } else {

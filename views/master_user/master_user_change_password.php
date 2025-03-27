@@ -13,11 +13,11 @@
                     if (x.trim() == "Data is updated") {
                         showMenu('contentmenu', 'index.php?model=master_module&action=showMenu&id=1');
                     } else {
-                        alert(x);
+                        Swal.fire(x);
                     }
                 },
                 error: function () {
-                    alert("Error");
+                    Swal.fire("Error");
                 }
             });
             return false;
