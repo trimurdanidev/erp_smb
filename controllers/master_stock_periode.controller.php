@@ -27,7 +27,7 @@ class master_stock_periodeController extends master_stock_periodeControllerGener
     function getStockAwal()
     {
         $this->setIsadmin(true);
-        $smop   = date('m');
+        $smop   = date('m', strtotime('-1 month'));
         $syop   = date('Y');
 
         $mdl_stock = new master_stock();
