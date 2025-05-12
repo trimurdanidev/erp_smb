@@ -260,16 +260,17 @@ class master_productController extends master_productControllerGenerate
         readfile($filePath);
     }
 
-    function showForm(){
+    function showFormJQuery(){
         $this->setIsadmin(true);
         if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
-            $this->setIsadmin(true);
             $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+            $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+            $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
             $master_product_ = $this->showData($id);
-            require_once './views/master_product/master_product_form.php';
+            require_once './views/master_product/master_product_jquery_form.php';
         }else{
             echo "You cannot access this module";
         }
-    }
+    } 
 }
 ?>
