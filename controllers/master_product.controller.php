@@ -263,6 +263,7 @@ class master_productController extends master_productControllerGenerate
     function showForm(){
         $this->setIsadmin(true);
         if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
+            $this->setIsadmin(true);
             $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
             $master_product_ = $this->showData($id);
             require_once './views/master_product/master_product_form.php';
