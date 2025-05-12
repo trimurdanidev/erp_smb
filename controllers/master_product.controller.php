@@ -259,5 +259,16 @@ class master_productController extends master_productControllerGenerate
 
         readfile($filePath);
     }
+
+    function showForm(){
+        $this->setIsadmin(true);
+        if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
+            $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+            $master_product_ = $this->showData($id);
+            require_once './views/master_product/master_product_form.php';
+        }else{
+            echo "You cannot access this module";
+        }
+    }
 }
 ?>
