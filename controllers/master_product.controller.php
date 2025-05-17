@@ -24,6 +24,7 @@ class master_productController extends master_productControllerGenerate
 {
     function saveFormPost()
     {
+        $this->setIsadmin(true);
         $mdl_stock = new master_stock();
         $ctrl_stock = new master_stockController($mdl_stock, $this->dbh);
 
