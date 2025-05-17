@@ -38,5 +38,14 @@
             
             return $this->transaction_log;
         }
+
+        function showDataDtlArray($transid)
+    {
+        $sql = "SELECT * FROM transaction_log WHERE trans_id = '" . $this->toolsController->replacecharFind($transid, $this->dbh) . "'";
+
+        // $row = $this->dbh->query($sql)->fetch();
+        // $this->loadData($this->transaction_detail, $row);
+        return $this->createList($sql);
+    }
     }
 ?>
