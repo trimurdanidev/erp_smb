@@ -1503,7 +1503,7 @@ class transactionController extends transactionControllerGenerate
                 ORDER BY a.`created_at` DESC";
             endif;
         }
-        echo $sql;
+        // echo $sql;
 
         $last = $ctrl_upload_tr_log->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
