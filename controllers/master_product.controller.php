@@ -284,7 +284,7 @@ class master_productController extends master_productControllerGenerate
         // $my_data = $q;
         $sql = "SELECT a.* FROM master_product a 
                 LEFT JOIN master_stock b ON a.`kd_product` = b.`kd_product`
-                WHERE  a.`sts_aktif` IN ('1') /*AND b.`qty_stock` !=0 OR b.`qty_stock_promo`!=0*/ order by b.qty_stock desc";
+                WHERE  a.`sts_aktif` IN ('1') /*AND b.`qty_stock` !=0 OR b.`qty_stock_promo`!=0*/ order by a.nm_product";
 
         // Generate array with Produk data 
         return $this->createList($sql);
