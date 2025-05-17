@@ -273,5 +273,33 @@ class master_productController extends master_productControllerGenerate
             echo "You cannot access this module";
         }
     } 
+
+    function searchAutoSel()
+    {
+        $this->setIsadmin(true);
+
+        // $dbh = new PDO("mysql:host=localhost;port=3306;dbname=sgs_distribution", "root", "");
+
+        // $q = $_GET['q'];
+        // $my_data = $q;
+        $sql = "SELECT a.* FROM master_product a 
+                LEFT JOIN master_stock b ON a.`kd_product` = b.`kd_product`
+                WHERE  a.`sts_aktif` IN ('1') /*AND b.`qty_stock` !=0 OR b.`qty_stock_promo`!=0*/ order by b.qty_stock desc";
+
+        // Generate array with Produk data 
+        return $this->createList($sql);
+        // $ProdData = array();
+        // if ($sql->rowCount() > 0) {
+        //     while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
+        //         $ProdData[] = $row;
+        //     }
+        // }
+
+        // // echo "<pre>";
+        // // print_r($ProdData);
+        // // echo "</pre>";
+        // // Return results as json encoded array 
+        // echo json_encode($ProdData);
+    }
 }
 ?>
