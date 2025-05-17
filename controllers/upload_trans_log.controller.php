@@ -12,10 +12,11 @@ class upload_trans_logController extends upload_trans_logControllerGenerate
 
     function showDataAll_SOLimit()
     {
+        $user = $this->user;
 
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
-        $sql = "SELECT * FROM upload_trans_log WHERE trans_type='3' ORDER BY id desc";
+        $sql = "SELECT * FROM upload_trans_log WHERE trans_type='3' AND created_by = '$user' ORDER BY id desc";
         $sql .= " limit " . $skip . ", " . $limit;
 
         return $this->createList($sql);
@@ -23,10 +24,11 @@ class upload_trans_logController extends upload_trans_logControllerGenerate
 
     function showDataAll_restokLimit()
     {
+        $user = $this->user;
 
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
-        $sql = "SELECT * FROM upload_trans_log WHERE trans_type='4' ORDER BY id desc";
+        $sql = "SELECT * FROM upload_trans_log WHERE trans_type='4' AND created_by = '$user' ORDER BY id desc";
         $sql .= " limit " . $skip . ", " . $limit;
 
         // echo $sql;

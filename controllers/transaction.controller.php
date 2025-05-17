@@ -86,6 +86,8 @@ class transactionController extends transactionControllerGenerate
 
     function showAllJQuery_so()
     {
+        $user = $this->user;
+
         $mdl_transcation_dtl = new transaction_detail();
         $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
 
@@ -145,6 +147,8 @@ class transactionController extends transactionControllerGenerate
 
     function showAllJQuery_so_by_data()
     {
+        $this->setIsadmin(true);
+
         $mdl_transcation_dtl = new transaction_detail();
         $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
 
@@ -524,13 +528,15 @@ class transactionController extends transactionControllerGenerate
 
     }
 
-    function countDataOffline(){            
+    function countDataOffline()
+    {
         $sql = "SELECT count(id)  FROM transaction WHERE type_trans=2";
         $row = $this->dbh->query($sql)->fetch();
         return $row[0];
     }
 
-    function countDataOnline(){            
+    function countDataOnline()
+    {
         $sql = "SELECT count(id)  FROM transaction WHERE type_trans=1";
         $row = $this->dbh->query($sql)->fetch();
         return $row[0];
@@ -557,7 +563,7 @@ class transactionController extends transactionControllerGenerate
 
         $mdl_user_detail = new master_user_detail();
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
-        $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
+        $showDetailUser = $ctlr_user_detail->showData_byUserArray($userLogin);
 
         $last = $this->countDataOffline();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
@@ -565,14 +571,15 @@ class transactionController extends transactionControllerGenerate
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
 
         // print_r($showDetailUser->getGroupcode());
-
-        if ($showDetailUser->getGroupcode() == 'Owner'):
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=2 order by id desc";
-            $sql .= " limit " . $skip . ", " . $limit;
-        else:
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=2 and created_by = '$userLogin' order by id desc";
-            $sql .= " limit " . $skip . ", " . $limit;
-        endif;
+        foreach ($showDetailUser as $valueGC) {
+            if ($valueGC->getGroupcode() == 'Owner'):
+                $sql = "SELECT * FROM `transaction` WHERE type_trans=2 order by id desc";
+                $sql .= " limit " . $skip . ", " . $limit;
+            else:
+                $sql = "SELECT * FROM `transaction` WHERE type_trans=2 and created_by = '$userLogin' order by id desc";
+                $sql .= " limit " . $skip . ", " . $limit;
+            endif;
+        }
 
         $sisa = intval($last % $limit);
 
@@ -634,52 +641,53 @@ class transactionController extends transactionControllerGenerate
 
         $mdl_user_detail = new master_user_detail();
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
-        $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
+        $showDetailUser = $ctlr_user_detail->showData_byUserArray($userLogin);
 
         $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $pyment = isset($_REQUEST["payment"]) ? $_REQUEST["payment"] : "";
-        
+
         $last = $this->countDataOffline();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
 
 
-        if ($showDetailUser->getGroupcode() == 'Owner'):
-            if ($pyment == null || $pyment == "") {
-                $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
+        foreach ($showDetailUser as $valueGC) {
+            if ($valueGC->getGroupcode() == 'Owner'):
+                if ($pyment == null || $pyment == "") {
+                    $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
                 INNER JOIN transaction_payment d ON d.`trans_id` = a.id
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id 
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' 
                 ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            } else {
-                $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
+                    $sql .= " limit " . $skip . ", " . $limit;
+                } else {
+                    $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
                 INNER JOIN transaction_payment d ON d.`trans_id` = a.id
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.payment='$pyment' 
                 ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            }
-        else:
-            if ($pyment == null || $pyment == "") {
-                $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
+                    $sql .= " limit " . $skip . ", " . $limit;
+                }
+            else:
+                if ($pyment == null || $pyment == "") {
+                    $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
                 INNER JOIN transaction_payment d ON d.`trans_id` = a.id
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id 
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' and a.created_by = '$userLogin'
                 ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            } else {
-                $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
+                    $sql .= " limit " . $skip . ", " . $limit;
+                } else {
+                    $sql = "SELECT a.*,d.method,d.payment,d.payment_akun,f.buyer_name,f.buyer_phone,f.buyer_address FROM `transaction` a 
                 INNER JOIN transaction_payment d ON d.`trans_id` = a.id
                 INNER JOIN transaction_buyer f ON f.trans_id = a.id
                 WHERE a.`type_trans` =2 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.payment='$pyment' and a.created_by = '$userLogin'
                 ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            }
-        endif;
-
+                    $sql .= " limit " . $skip . ", " . $limit;
+                }
+            endif;
+        }
 
         $sisa = intval($last % $limit);
 
@@ -1150,7 +1158,7 @@ class transactionController extends transactionControllerGenerate
         $this->setIsadmin(true);
         $cekDokRestok = $this->cekRestoknotRilis();
         if ($cekDokRestok > 0):
-            echo "Gagal ! Mohon Selesaikan Restok Sebelumnya Terlebih Dahulu";
+            echo "Gagal ! Ada Transaksi Restok Yang Masih Pending / Belum Di Rilis\nSilahkan Infokan Rekan Anda!";
             return false;
         else:
             require_once './Excel/SimpleXLS.php';
@@ -1352,13 +1360,33 @@ class transactionController extends transactionControllerGenerate
         $mdl_transaction_dtl = new transaction_detail();
         $ctrl_transaction_dtl = new transaction_detailController($mdl_transaction_dtl, $this->dbh);
 
+        $mdl_trans_log = new transaction_log();
+        $ctrl_trans_log = new transaction_logController($mdl_trans_log, $this->dbh);
+
         $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+        $showDtlTrLog = $ctrl_trans_log->showDataDtlArray($id);
 
 
         if ($id != "") {
             foreach ($showDtlTrans as $valDetail) {
                 $getStok = $ctrl_stock->showData($valDetail->getKd_product());
+                $getTransLogrr = $ctrl_trans_log->showDataByTransIdSingle($valDetail->getTrans_id(), $valDetail->getKd_product());
+
                 $total += $valDetail->getQty();
+
+                //transaction log
+                $mdl_trans_log->setTrans_id($valDetail->getTrans_id());
+                $mdl_trans_log->setKd_product($valDetail->getKd_product());
+                $mdl_trans_log->setTrans_type($getTransLogrr->getTrans_type());
+                $mdl_trans_log->setQty_before($getStok->getQty_stock());
+                $mdl_trans_log->setQty_after($getStok->getQty_stock() + $valDetail->getQty());
+                $mdl_trans_log->setCreated_by($getTransLogrr->getCreated_by());
+                $mdl_trans_log->setCreated_at($getTransLogrr->getCreated_at());
+                $mdl_trans_log->setUpdated_by($getTransLogrr->getUpdated_by());
+                $mdl_trans_log->setUpdated_at(date('Y-m-d H:i:s'));
+                $ctrl_trans_log->saveData();
+
+
                 //master_stock
                 $mdl_stock->setKd_product($valDetail->getKd_product());
                 $mdl_stock->setQty_stock($getStok->getQty_stock() + $valDetail->getQty());
@@ -1431,6 +1459,9 @@ class transactionController extends transactionControllerGenerate
 
     function showAllJQuery_reStock_by_data()
     {
+        $this->setIsadmin(true);
+        $user = $this->user;
+
         $mdl_transcation_dtl = new transaction_detail();
         $ctrl_transaction_dtl = new transaction_detailController($mdl_transcation_dtl, $this->dbh);
 
@@ -1443,17 +1474,36 @@ class transactionController extends transactionControllerGenerate
         $mdl_upload_tr_log = new upload_trans_log();
         $ctrl_upload_tr_log = new upload_trans_logController($mdl_upload_tr_log, $this->dbh);
 
+        $mdl_master_user_dtl = new master_user_detail();
+        $ctrl_master_userdtl = new master_user_detailController($mdl_master_user_dtl, $this->dbh);
+        $showGroupCode = $ctrl_master_userdtl->showData_byUserArray($user);
+
         $fromDate = isset($_REQUEST["dari"]) ? $_REQUEST["dari"] : "";
         $toDate = isset($_REQUEST["sampai"]) ? $_REQUEST["sampai"] : "";
         $stsId = isset($_REQUEST["sts"]) ? $_REQUEST["sts"] : "";
 
-        $sql = "SELECT a.* FROM `upload_trans_log` a
-        INNER JOIN `transaction` d ON d.`upload_trans_log_id` = a.`id`
-        INNER JOIN transaction_detail b ON d.id = b.`trans_id`
-        INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
-        WHERE d.type_trans='4' and d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId)
-        GROUP BY a.`id` 
-        ORDER BY a.`created_at` DESC";
+        foreach ($showGroupCode as $valueGC) {
+            // echo $valueGC->getGroupcode();
+
+            if ($valueGC->getGroupcode() == 'Owner'):
+                $sql = "SELECT a.* FROM `upload_trans_log` a
+                INNER JOIN `transaction` d ON d.`upload_trans_log_id` = a.`id`
+                INNER JOIN transaction_detail b ON d.id = b.`trans_id`
+                INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
+                WHERE d.type_trans='4' and d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId)
+                GROUP BY a.`id` 
+                ORDER BY a.`created_at` DESC";
+            else:
+                $sql = "SELECT a.* FROM `upload_trans_log` a
+                INNER JOIN `transaction` d ON d.`upload_trans_log_id` = a.`id`
+                INNER JOIN transaction_detail b ON d.id = b.`trans_id`
+                INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
+                WHERE d.type_trans='4' and d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId) AND d.created_by = '$user'
+                GROUP BY a.`id` 
+                ORDER BY a.`created_at` DESC";
+            endif;
+        }
+        echo $sql;
 
         $last = $ctrl_upload_tr_log->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
@@ -1581,23 +1631,22 @@ class transactionController extends transactionControllerGenerate
 
         $mdl_user_detail = new master_user_detail();
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
-        $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
+        $showDetailUser = $ctlr_user_detail->showData_byUserArray($userLogin);
 
         $last = $this->countDataOnline();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
 
-        // print_r($showDetailUser->getGroupcode());
-
-        if ($showDetailUser->getGroupcode() == 'Owner'):
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=1 order by id desc";
-            $sql .= " limit " . $skip . ", " . $limit;
-        else:
-            $sql = "SELECT * FROM `transaction` WHERE type_trans=1 and created_by='$userLogin' order by id desc";
-            $sql .= " limit " . $skip . ", " . $limit;
-        endif;
-
+        foreach ($showDetailUser as $valueGC) {
+            if ($valueGC->getGroupcode() == 'Owner'):
+                $sql = "SELECT * FROM `transaction` WHERE type_trans=1 order by id desc";
+                $sql .= " limit " . $skip . ", " . $limit;
+            else:
+                $sql = "SELECT * FROM `transaction` WHERE type_trans=1 and created_by='$userLogin' order by id desc";
+                $sql .= " limit " . $skip . ", " . $limit;
+            endif;
+        }
         // echo $sql;
 
 
@@ -1751,9 +1800,13 @@ class transactionController extends transactionControllerGenerate
     {
         $this->setIsadmin(true);
         $cekDokOnline = $this->cekOnlineUsernotRilis();
+        $cekDokOnlineUserMore = $this->cekOnlineUserBelumConf();
         if ($cekDokOnline > 0):
             echo "Gagal ! Mohon Selesaikan Transaksi Closing Online Anda Sebelumnya Terlebih Dahulu";
             return false;
+            // elseif($cekDokOnlineUserMore > 0):
+            //     echo "Gagal ! Ada Transaksi Online Belum di Konfirmasi / Masih On Process\nSilahkan infokan Rekan Anda!";
+            //     return false;
         else:
             require_once './Excel/SimpleXLS.php';
             $mdl_transaction_dtl = new transaction_detail();
@@ -1993,7 +2046,11 @@ class transactionController extends transactionControllerGenerate
         $mdl_part = new master_product();
         $ctrl_part = new master_productController($mdl_part, $this->dbh);
 
+        $mdl_trans_log = new transaction_log();
+        $ctrl_trans_log = new transaction_logController($mdl_trans_log, $this->dbh);
+
         $showDtlTrans = $ctrl_transaction_dtl->showDataDtlArray($id);
+        $showDtlTrLog = $ctrl_trans_log->showDataDtlArray($id);
 
 
         if ($id != "") {
@@ -2059,7 +2116,21 @@ class transactionController extends transactionControllerGenerate
                 // echo "123 ";
                 foreach ($showDtlTrans as $valDetail3) {
                     $getStok3 = $ctrl_stock->showData($valDetail3->getKd_product());
+                    $getTransLogrr = $ctrl_trans_log->showDataByTransIdSingle($valDetail3->getTrans_id(), $valDetail3->getKd_product());
                     $total += $valDetail3->getQty();
+
+                    //transaction log
+                    $mdl_trans_log->setTrans_id($valDetail3->getTrans_id());
+                    $mdl_trans_log->setKd_product($valDetail3->getKd_product());
+                    $mdl_trans_log->setTrans_type($getTransLogrr->getTrans_type());
+                    $mdl_trans_log->setQty_before($getStok3->getQty_stock());
+                    $mdl_trans_log->setQty_after($getStok3->getQty_stock() - $valDetail3->getQty());
+                    $mdl_trans_log->setCreated_by($getTransLogrr->getCreated_by());
+                    $mdl_trans_log->setCreated_at($getTransLogrr->getCreated_at());
+                    $mdl_trans_log->setUpdated_by($getTransLogrr->getUpdated_by());
+                    $mdl_trans_log->setUpdated_at(date('Y-m-d H:i:s'));
+                    $ctrl_trans_log->saveData();
+
                     //master_stock
                     $mdl_stock->setKd_product($valDetail3->getKd_product());
                     $mdl_stock->setQty_stock($getStok3->getQty_stock() - $valDetail3->getQty());
@@ -2069,6 +2140,7 @@ class transactionController extends transactionControllerGenerate
                     $mdl_stock->setCreated_at($getStok3->getCreated_at());
                     $mdl_stock->setUpdated_at(date('Y-m-d H:i:s'));
                     $ctrl_stock->saveData();
+
                 }
                 $setStatus = 'Y';
 
@@ -2132,7 +2204,7 @@ class transactionController extends transactionControllerGenerate
 
         $mdl_user_detail = new master_user_detail();
         $ctlr_user_detail = new master_user_detailController($mdl_user_detail, $this->dbh);
-        $showDetailUser = $ctlr_user_detail->showData_byUsernya($userLogin);
+        $showDetailUser = $ctlr_user_detail->showData_byUserArray($userLogin);
 
         // print_r($showDetailUser->getGroupcode());
 
@@ -2145,39 +2217,41 @@ class transactionController extends transactionControllerGenerate
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
 
-        if ($showDetailUser->getGroupcode() == 'Owner'):
-            if ($mktplc == null || $mktplc == "") {
-                $sql = "SELECT DISTINCT b .`trans_descript`,a.* FROM `transaction` a 
-                INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
-                WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate'
-                GROUP BY a.`id`
-                ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            } else {
-                $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
-                INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
-                WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc'
-                GROUP BY a.`id`
-                ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            }
-        else:
-            if ($mktplc == null || $mktplc == "") {
-                $sql = "SELECT DISTINCT b .`trans_descript`,a.* FROM `transaction` a 
-                INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
-                WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' and a.created_by = '$userLogin'
-                GROUP BY a.`id`
-                ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            } else {
-                $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
-                INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
-                WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc' and a.created_by = '$userLogin'
-                GROUP BY a.`id`
-                ORDER BY a.`created_at` DESC";
-                $sql .= " limit " . $skip . ", " . $limit;
-            }
-        endif;
+        foreach ($showDetailUser as $valueGC) {
+            if ($valueGC->getGroupcode() == 'Owner'):
+                if ($mktplc == null || $mktplc == "") {
+                    $sql = "SELECT DISTINCT b .`trans_descript`,a.* FROM `transaction` a 
+                    INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
+                    WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate'
+                    GROUP BY a.`id`
+                    ORDER BY a.`created_at` DESC";
+                    $sql .= " limit " . $skip . ", " . $limit;
+                } else {
+                    $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
+                    INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
+                    WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc'
+                    GROUP BY a.`id`
+                    ORDER BY a.`created_at` DESC";
+                    $sql .= " limit " . $skip . ", " . $limit;
+                }
+            else:
+                if ($mktplc == null || $mktplc == "") {
+                    $sql = "SELECT DISTINCT b .`trans_descript`,a.* FROM `transaction` a 
+                    INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
+                    WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' and a.created_by = '$userLogin'
+                    GROUP BY a.`id`
+                    ORDER BY a.`created_at` DESC";
+                    $sql .= " limit " . $skip . ", " . $limit;
+                } else {
+                    $sql = "SELECT DISTINCT b.`trans_descript`, a.* FROM `transaction` a 
+                    INNER JOIN `transaction_detail` b ON a.`id` = b.`trans_id`
+                    WHERE a.`type_trans` =1 AND a.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND b.`trans_descript`='$mktplc' and a.created_by = '$userLogin'
+                    GROUP BY a.`id`
+                    ORDER BY a.`created_at` DESC";
+                    $sql .= " limit " . $skip . ", " . $limit;
+                }
+            endif;
+        }
 
         // echo $sql;
 

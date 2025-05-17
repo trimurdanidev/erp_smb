@@ -57,5 +57,11 @@
             return $this->master_user_detail;
         }
 
+        function showData_byUserArray($user){
+            $sql = "SELECT * FROM master_user_detail WHERE user = '".$user."'";
+
+           return $this->createList($sql);
+        }
+
     }
 ?>

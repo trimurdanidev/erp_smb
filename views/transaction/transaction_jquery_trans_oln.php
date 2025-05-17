@@ -138,6 +138,7 @@
                             $sumTransDetail = $ctrl_trans_detail->getSumOnlineTrans($trans_onn->getId());
                             $totalan_qty = 0;
                             $totalan_hg = 0;
+                            $setColor = $trans_onn->getTrans_status();
                             foreach ($sumTransDetail as $row) {
                                 // echo $row->getTrans_descript() . "-" . $row->getHarga() . "-" . $row->getQty() . "<br>";
                                 $totalan_qty += $row->getQty();
@@ -145,31 +146,31 @@
                             }
                             $grandTotal += $totalan_hg != null ? $totalan_hg : 0;
                             ?>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo $no++; ?>
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo $trans_onn->getTanggal(); ?>
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo $trans_onn->getNo_trans(); ?>
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo "OUT ONLINE TGL." . $trans_onn->getTanggal() . " OLEH " . $trans_onn->getCreated_by(); ?>
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo $trans_onn->getQtyTotal(); ?> Pcs
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo $trans_onn->getQtyRelease(); ?> Pcs
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo "0"; ?>
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo "0"; ?>
                             </td>
-                            <td>
+                            <td style="<?php echo $setColor == 2 ? "color:red" : '' ?>">
                                 <?php echo number_format(floatVal($totalan_hg)); ?>
                             </td>
                             <td>
@@ -189,6 +190,13 @@
                                                 <h3 class="modal-title fs-5" id="exampleModalLabel">Detail Penjualan
                                                     Online
                                                 </h3>
+                                                <?php ?>
+                                                <?php if ($setColor == 2): ?>
+                                                    <span class="badge badge-danger">Cancel</span>
+                                                <?php elseif ($setColor == 1): ?>
+                                                    <span class="badge badge-success">Success</span>
+                                                <?php else:?>    
+                                                <?php endif;?>
                                             </div>
                                             <div class="modal-body">
                                                 <h4><span class="glyphicon glyphicon-th-list"></span>
