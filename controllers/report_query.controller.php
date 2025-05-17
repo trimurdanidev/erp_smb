@@ -5,6 +5,8 @@ require_once './controllers/master_user.controller.php';
 require_once './models/report_query.class.php';
 require_once './controllers/report_query.controller.generate.php';
 require_once './controllers/CrossTab.php';
+require_once './models/master_product.class.php';
+require_once './controllers/master_product.controller.php';
 
 if (!isset($_SESSION)) {
     session_start();
@@ -82,7 +84,7 @@ class report_queryController extends report_queryControllerGenerate
             $fields = $ct->getFields($query);
             $query = $ct->getCrossTab($fields, $query, 4);
         }
-        //echo $query;
+        // echo $query;
         return $query;
     }
 
