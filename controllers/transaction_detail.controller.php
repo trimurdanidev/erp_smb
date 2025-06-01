@@ -72,20 +72,22 @@ class transaction_detailController extends transaction_detailControllerGenerate
             }
 
             //save transaction
-            $mdl_transaction->setId($getTransactionFromDtl->getId());
-            $mdl_transaction->setNo_trans($getTransactionFromDtl->getNo_trans());
-            $mdl_transaction->setTanggal($getTransactionFromDtl->getTanggal());
-            $mdl_transaction->setType_trans($getTransactionFromDtl->getType_trans());
-            $mdl_transaction->setQtyTotal($totalDetail);
-            $mdl_transaction->setQtyRelease($getTransactionFromDtl->getQtyRelease());
-            $mdl_transaction->setTrans_total($getTransactionFromDtl->getTrans_total());
-            $mdl_transaction->setTrans_status($getTransactionFromDtl->getTrans_status());
-            $mdl_transaction->setCreated_by($getTransactionFromDtl->getCreated_by());
-            $mdl_transaction->setUpload_trans_log_id($getTransactionFromDtl->getUpload_trans_log_id());
-            $mdl_transaction->setCreated_at($getTransactionFromDtl->getCreated_at());
-            $mdl_transaction->setUpdated_by($userBy);
-            $mdl_transaction->setUpdated_at($timeup);
-            $ctrl_transaction->saveData();
+            $queryEditTrans = "UPDATE transaction set qtyTotal = $totalDetail WHERE id='" . $trans_id . "';";
+            $executeHd = $this->dbh->query($queryEditTrans);
+            // $mdl_transaction->setId($getTransactionFromDtl->getId());
+            // $mdl_transaction->setNo_trans($getTransactionFromDtl->getNo_trans());
+            // $mdl_transaction->setTanggal($getTransactionFromDtl->getTanggal());
+            // $mdl_transaction->setType_trans($getTransactionFromDtl->getType_trans());
+            // $mdl_transaction->setQtyTotal($totalDetail);
+            // $mdl_transaction->setQtyRelease($getTransactionFromDtl->getQtyRelease());
+            // $mdl_transaction->setTrans_total($getTransactionFromDtl->getTrans_total());
+            // $mdl_transaction->setTrans_status($getTransactionFromDtl->getTrans_status());
+            // $mdl_transaction->setCreated_by($getTransactionFromDtl->getCreated_by());
+            // $mdl_transaction->setUpload_trans_log_id($getTransactionFromDtl->getUpload_trans_log_id());
+            // $mdl_transaction->setCreated_at($getTransactionFromDtl->getCreated_at());
+            // $mdl_transaction->setUpdated_by($userBy);
+            // $mdl_transaction->setUpdated_at($timeup);
+            // $ctrl_transaction->saveData();
 
             //save transaction log 
             $mdl_transLog->setId($getTrLogFrDtl->getId());
@@ -98,28 +100,15 @@ class transaction_detailController extends transaction_detailControllerGenerate
             $mdl_transLog->setUpdated_by($userBy);
             $mdl_transLog->setUpdated_at($timeup);
             $ctrl_transLog->saveData();
-            if ($getTransactionFromDtl->getType_trans() == '4') {
-                echo "Berhasil Edit";
-            } else if ($getTransactionFromDtl->getType_trans() == '1') {
-                echo "<script language='javascript' type='text/javascript'>
-                Swal.fire({
-                    title : 'Berhasil',
-                    icon : 'Success',
-                    text : 'Berhasil Edit'
-                });
+            // if ($getTransactionFromDtl->getType_trans() == '4') {
+            //     echo "Berhasil Edit";
+            // } else if ($getTransactionFromDtl->getType_trans() == '1') {
+            echo "<script language='javascript' type='text/javascript'>
+                showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln');
+                $('.modal-backdrop').remove();
                 </script>";
-                echo "<script>
-                    window.history.back();
-                </script>";
-            }
-            // echo "<script language='javascript' type='text/javascript'>
-            // Swal.fire({
-            //     title : 'Berhasil',
-            //     icon : 'success',
-            //     text : 'Quantity Restok Berhasil di Edit',
-            // });  
-            // </script>";
-            // $ctrl_transaction->showAllJQuery_restok();
+            // }
+
         } else {
             echo "<script language='javascript' type='text/javascript'>
             Swal.fire({
