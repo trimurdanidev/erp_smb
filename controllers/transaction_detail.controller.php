@@ -100,15 +100,16 @@ class transaction_detailController extends transaction_detailControllerGenerate
             $mdl_transLog->setUpdated_by($userBy);
             $mdl_transLog->setUpdated_at($timeup);
             $ctrl_transLog->saveData();
-            // if ($getTransactionFromDtl->getType_trans() == '4') {
-            //     echo "Berhasil Edit";
-            // } else if ($getTransactionFromDtl->getType_trans() == '1') {
-            echo "<script language='javascript' type='text/javascript'>
-                showMenu('content', 'index.php?model=transaction&action=showAllJQuery_trans_onln');
-                $('.modal-backdrop').remove();
-                </script>";
-            // }
 
+            if ($getTrLogFrDtl->getTrans_type() == '1'):
+                echo "<script language='javascript' type='text/javascript'>
+                  window.history.back();
+                </script>";
+            else:
+                echo "<script>
+                window.history.back();
+                </script>";
+            endif;
         } else {
             echo "<script language='javascript' type='text/javascript'>
             Swal.fire({
