@@ -1935,7 +1935,7 @@ class transactionController extends transactionControllerGenerate
                             // $mdl_transaction_log->setId($id);
                             $mdl_transaction_log->setTrans_id($this->getLastId());
                             $mdl_transaction_log->setKd_product($cul_kd_prod);
-                            $mdl_transaction_log->setTrans_type(4);
+                            $mdl_transaction_log->setTrans_type(1);
                             $mdl_transaction_log->setQty_before($getStock->getQty_stock());
                             $mdl_transaction_log->setQty_after($getStock->getQty_stock() - $cul_qty);
                             $mdl_transaction_log->setCreated_by($user);
