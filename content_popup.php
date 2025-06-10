@@ -13,7 +13,7 @@ $lat = $_REQUEST['lat'];
         <!-- <div class="card"> -->
         <td colspan="3" align="center">
 
-            <img src="http://202.10.42.150:8080/storage/<?php echo $imgAbsen; ?>" alt="Absensi" width="40%"
+            <img src="https://erpsmb.cloud:8443/storage/<?php echo $imgAbsen; ?>" alt="Absensi" width="40%"
                 height="250px" object-fit="cover" border-radius="8px">
         </td>
         <!-- </div> -->
