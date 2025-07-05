@@ -72,7 +72,7 @@
                     <td>
                         <input type="hidden" name="getFrom" id="getFrom" value="<?php echo $fromDate; ?>">
                         <input type="hidden" name="getTo" id="getTo" value="<?php echo $toDate; ?>">
-                        <input type="hidden" name="getPayment" id="getPayment" value="<?php echo $paymn; ?>">
+                        <input type="hidden" name="getPayment" id="getPayment" value="<?php echo $mktpc; ?>">
                     </td>
                     <td>
                         <button type="button" onclick="resetFilter()" class="btn btn-default"><span
@@ -526,6 +526,12 @@
                 });
             }
         });
+    }
+
+    function editQtyOnline (){
+        site = "index.php?model=transaction_detail&action=deleteFormJQuery" + id;
+        target = "content";
+        showMenu(target, site);
     }
 </script>
 <style>

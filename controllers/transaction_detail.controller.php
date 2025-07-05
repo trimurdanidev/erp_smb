@@ -36,6 +36,7 @@ class transaction_detailController extends transaction_detailControllerGenerate
         $ctrl_transLog = new transaction_logController($mdl_transLog, $this->dbh);
 
         $idItem = isset($_POST['idItem']) ? $_POST['idItem'] : "";
+        $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : "";
 
         if ($idItem != null || $idItem != "") {
 
@@ -89,27 +90,47 @@ class transaction_detailController extends transaction_detailControllerGenerate
             // $mdl_transaction->setUpdated_at($timeup);
             // $ctrl_transaction->saveData();
 
-            //save transaction log 
-            $mdl_transLog->setId($getTrLogFrDtl->getId());
-            $mdl_transLog->setTrans_id($getTrLogFrDtl->getTrans_id());
-            $mdl_transLog->setTrans_type($getTrLogFrDtl->getTrans_type());
-            $mdl_transLog->setQty_before($getTrLogFrDtl->getQty_before());
-            $mdl_transLog->setQty_after($getTrLogFrDtl->getQty_before() + $qtyEdtRes);
-            $mdl_transLog->setCreated_by($getTrLogFrDtl->getCreated_by());
-            $mdl_transLog->setCreated_at($getTrLogFrDtl->getCreated_at());
-            $mdl_transLog->setUpdated_by($userBy);
-            $mdl_transLog->setUpdated_at($timeup);
-            $ctrl_transLog->saveData();
+            if ($getTrLogFrDtl->getTrans_type() == '4'):
+                //save transaction log in restok
+                $mdl_transLog->setId($getTrLogFrDtl->getId());
+                $mdl_transLog->setTrans_id($getTrLogFrDtl->getTrans_id());
+                $mdl_transLog->setTrans_type($getTrLogFrDtl->getTrans_type());
+                $mdl_transLog->setQty_before($getTrLogFrDtl->getQty_before());
+                $mdl_transLog->setQty_after($getTrLogFrDtl->getQty_before() + $qtyEdtRes);
+                $mdl_transLog->setCreated_by($getTrLogFrDtl->getCreated_by());
+                $mdl_transLog->setCreated_at($getTrLogFrDtl->getCreated_at());
+                $mdl_transLog->setUpdated_by($userBy);
+                $mdl_transLog->setUpdated_at($timeup);
+                $ctrl_transLog->saveData();
+            elseif ($getTrLogFrDtl->getTrans_type() == '1'):
+                //save transaction log out online
+                $mdl_transLog->setId($getTrLogFrDtl->getId());
+                $mdl_transLog->setTrans_id($getTrLogFrDtl->getTrans_id());
+                $mdl_transLog->setTrans_type($getTrLogFrDtl->getTrans_type());
+                $mdl_transLog->setQty_before($getTrLogFrDtl->getQty_before());
+                $mdl_transLog->setQty_after($getTrLogFrDtl->getQty_before() - $qtyEdtRes);
+                $mdl_transLog->setCreated_by($getTrLogFrDtl->getCreated_by());
+                $mdl_transLog->setCreated_at($getTrLogFrDtl->getCreated_at());
+                $mdl_transLog->setUpdated_by($userBy);
+                $mdl_transLog->setUpdated_at($timeup);
+                $ctrl_transLog->saveData();
 
-            if ($getTrLogFrDtl->getTrans_type() == '1'):
-                echo "<script language='javascript' type='text/javascript'>
-                  window.history.back();
-                </script>";
-            else:
+                // header('Location: index.php?model=transaction&action=showAllJQuery_trans_onln');
                 echo "<script>
                 window.history.back();
                 </script>";
+
             endif;
+
+            // if ($getTrLogFrDtl->getTrans_type() == '1'):
+            //     echo "<script language='javascript' type='text/javascript'>
+            //       window.history.back();
+            //     </script>";
+            // else:
+            //     echo "<script>
+            //     window.history.back();
+            //     </script>";
+            // endif;
         } else {
             echo "<script language='javascript' type='text/javascript'>
             Swal.fire({
