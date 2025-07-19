@@ -49,7 +49,7 @@ class transaction_detailController extends transaction_detailControllerGenerate
 
             $trans_id = $ambilTransId;
             $kd_product = $getDetailProd->getKd_product();
-            $qtyEdtRes = isset($_POST['qtyEdtRes']) ? $_POST['qtyEdtRes'] : "";
+            $qtyEdtRes = isset($_POST['qtyEdtResin']) ? $_POST['qtyEdtResin'] : "";
             // $hasilEdit =  $getTrLogFrDtl->getQty_before() + $qtyEdtRes;
             $harga = $getDetailProd->getHarga();
             $userBy = $this->user;
@@ -114,23 +114,11 @@ class transaction_detailController extends transaction_detailControllerGenerate
                 $mdl_transLog->setUpdated_by($userBy);
                 $mdl_transLog->setUpdated_at($timeup);
                 $ctrl_transLog->saveData();
-
-                // header('Location: index.php?model=transaction&action=showAllJQuery_trans_onln');
-                echo "<script>
-                window.history.back();
-                </script>";
-
+        
             endif;
 
-            // if ($getTrLogFrDtl->getTrans_type() == '1'):
-            //     echo "<script language='javascript' type='text/javascript'>
-            //       window.history.back();
-            //     </script>";
-            // else:
-            //     echo "<script>
-            //     window.history.back();
-            //     </script>";
-            // endif;
+            echo "Berhasil Edit";
+
         } else {
             echo "<script language='javascript' type='text/javascript'>
             Swal.fire({
@@ -155,5 +143,29 @@ class transaction_detailController extends transaction_detailControllerGenerate
     {
 
     }
+
+    function showDataDtlArraybyId($id)
+    {
+        $sql = "SELECT * FROM transaction_detail WHERE id = '" . $id . "'";
+        $row = $this->createList($sql);
+        return $row;
+
+    }
+
+    function showEditOnlineJQuery()
+    {
+        $this->setIsadmin(true);
+
+        if ($this->ispublic || $this->isadmin || $this->isread) {
+            $id = $_GET['id'];
+            $idElement = $_REQUEST['elementid'];
+            $data_detail = $this->showDataDtlArraybyId($id);
+
+            require_once './views/transaction/transaction_jquery_detail.php';
+        } else {
+            echo "You cannot access this module";
+        }
+    }
+
 }
 ?>

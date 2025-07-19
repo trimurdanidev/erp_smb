@@ -133,7 +133,7 @@
                                                 <input type="hidden" name="idItem" id="idItem"
                                                     value="<?php echo $valDetail->getId(); ?>" />
                                                 <label for="exampleFormControlTextarea1">Quantity Restock</label>
-                                                <input type="text" class="form-control" name="qtyEdtRes" id="qtyEdtRes"
+                                                <input type="text" class="form-control" name="qtyEdtResin" id="qtyEdtResin"
                                                     onkeypress="validate(event);"
                                                     value="<?php echo $valDetail->getQty(); ?>" />
                                                 <div class="modal-footer">
