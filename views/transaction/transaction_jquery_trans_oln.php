@@ -195,8 +195,8 @@
                                                     <span class="badge badge-danger">Cancel</span>
                                                 <?php elseif ($setColor == 1): ?>
                                                     <span class="badge badge-success">Success</span>
-                                                <?php else:?>    
-                                                <?php endif;?>
+                                                <?php else: ?>
+                                                <?php endif; ?>
                                             </div>
                                             <div class="modal-body">
                                                 <h4><span class="glyphicon glyphicon-th-list"></span>
@@ -315,14 +315,18 @@
                                                                         </td>
                                                                         <td>
                                                                             <?php if ($trans_onn->getTrans_status() == '0') { ?>
-                                                                                <button class="btn btn-default"
+                                                                                <!-- <button class="btn btn-default"
                                                                                     title="Edit Quantity Detail Out Online"
                                                                                     data-toggle="modal"
                                                                                     data-target="#QtyEdtOln<?php echo $val_part->getId(); ?>"><span
                                                                                         class="glyphicon glyphicon-edit"></span>
-                                                                                    Edit</button>
+                                                                                    Edit Modal</button> -->
+                                                                                <button type="button" class="btn btn default"
+                                                                                    onclick="showFormEdit('<?php echo $val_part->getId(); ?>')"><span
+                                                                                        class="glyphicon glyphicon-edit"></span> Edit</button>
+
                                                                             <?php } ?>
-                                                                            <div class="modal fade"
+                                                                            <div class=" modal fade"
                                                                                 id="QtyEdtOln<?php echo $val_part->getId(); ?>"
                                                                                 tabindex="-1" aria-labelledby="exampleModalLabel"
                                                                                 aria-hidden="true">
@@ -353,7 +357,7 @@
                                                                                                     Online</label>
                                                                                                 <input type="text"
                                                                                                     class="form-control"
-                                                                                                    name="qtyEdtRes" id="qtyEdtRes"
+                                                                                                    name="qtyEdtResin" id="qtyEdtResin"
                                                                                                     onkeypress="validate(event);"
                                                                                                     value="<?php echo $val_part->getQty(); ?>" />
                                                                                                 <div class="modal-footer">
@@ -371,6 +375,13 @@
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="14" align="center">
+                                                                            <div id="popupEdit<?php echo $val_part->getId(); ?>"
+                                                                                style="width:90%;overflow:auto;visibility: hidden">
                                                                             </div>
                                                                         </td>
                                                                     </tr>
@@ -528,10 +539,22 @@
         });
     }
 
-    function editQtyOnline (){
+    function editQtyOnline() {
         site = "index.php?model=transaction_detail&action=deleteFormJQuery" + id;
         target = "content";
         showMenu(target, site);
+    }
+
+    function showFormEdit(id) {
+        var url = "index.php?model=transaction_detail&action=showEditOnlineJQuery&id=" + id + "&elementid=" + id;
+        document.getElementById('popupEdit' + id).style.visibility = "visible";
+        showMenu('popupEdit' + id, url);
+
+    }
+
+    function tutupFormEdit(id) {
+        document.getElementById('popupEdit' + id).style.visibility = "hidden";
+        document.getElementById('popupEdit' + id).innerHTML = "";
     }
 </script>
 <style>

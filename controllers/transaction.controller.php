@@ -2294,5 +2294,7 @@ class transactionController extends transactionControllerGenerate
 
         require_once './views/transaction/transaction_jquery_trans_oln.php';
     }
+
+    
 }
 ?>
