@@ -110,7 +110,9 @@
                         $no = 1;
                         $grandTotal = 0;
                         $qtyTotalAll = 0;
+                        $nn = 0;
                         foreach ($transaction_list as $transfer_out) {
+                            $showSummaryGT = $ctrl_trans_detail->showDataDtlArray($transfer_out->getId());
                             $sts = $transfer_out->getTrans_status();
                             $stsPrint = "";
                             $stsColor = "";
@@ -138,8 +140,13 @@
                                     break;
                             }
                             $getTransLog = $ctrl_trans_log->sDataByTransId($transfer_out->getId());
-                            $grandTotal += $transfer_out->getTrans_total() != null ? $transfer_out->getTrans_total() : 0;
+                            // $grandTotal += $showSummaryGT->getHarga() != null ? $showSummaryGT->getHarga() : 0;
                             $qtyTotalAll += $transfer_out->getQtyRelease() != null ? $transfer_out->getQtyRelease() : 0;
+                            $grandTotal += $transfer_out->getQtyTotal() != null ? $transfer_out->getQtyTotal() : 0;
+                            foreach($showSummaryGT as $valdtl_hr){
+                                $nn += $valdtl_hr->getHarga()*$valdtl_hr->getQty();
+                                $ket = $valdtl_hr->getTrans_descript();
+                            }
                             ?>
                             <td>
                                 <?php echo $no++; ?>
@@ -154,16 +161,16 @@
                                 <?php echo "OUT TRANSFER OUT TGL." . $transfer_out->getTanggal() . " OLEH " . $transfer_out->getCreated_by(); ?>
                             </td>
                             <td>
-                                <?php echo ''; ?>
+                                <?php echo $ket; ?>
+                            </td>
+                            <td>
+                                <?php echo $transfer_out->getQtyTotal(); ?> Pcs
                             </td>
                             <td>
                                 <?php echo $transfer_out->getQtyRelease(); ?> Pcs
                             </td>
                             <td>
-                                <?php echo number_format(floatVal($transfer_out->getTrans_total())); ?>
-                            </td>
-                            <td>
-                                <?php echo number_format(floatVal($transfer_out->getTrans_total())); ?>
+                                <?php echo number_format($nn); ?>
                             </td>
                             <td>
                                 <span class="badge badge-pill badge-primary"><?php echo $statusBadge; ?></span>
@@ -302,11 +309,11 @@
                         ?>
         <tr>
             <td colspan="5"><b>Total</b></td>
-            <td colspan="2"><b>
-                    <?php echo $qtyTotalAll; ?> Pcs
+            <td colspan="1"><b>
+                    <?php echo $grandTotal; ?> Pcs
                 </b></td>
             <td colspan="3"><b>
-                    <?php echo number_format(floatVal($grandTotal)); ?>
+                    <?php echo $qtyTotalAll; ?> Pcs
                 </b></td>
         </tr>
         </tbody>
@@ -320,7 +327,7 @@
     function serchData() {
         var dari = $('#dari').val();
         var sampai = $('#sampai').val();
-         var sts = $('#sts option:selected').val();
+        var sts = $('#sts option:selected').val();
         var param = {};
 
         param['sts'] = sts;
@@ -385,7 +392,7 @@
             confirmButtonText: "Yes"
         }).then((result) => {
             if (result.isConfirmed) {
-                site = "index.php?model=transaction&action=CancelTFO&id=" + id;
+                site = "index.php?model=transaction&action=CancelSO&id=" + id;
                 target = "content";
                 showMenu(target, site);
                 Swal.fire({
