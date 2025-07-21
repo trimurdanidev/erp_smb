@@ -2606,7 +2606,7 @@ class transactionController extends transactionControllerGenerate
             // echo $valueGC->getGroupcode();
 
             if ($valueGC->getGroupcode() == 'Owner'):
-                $sql = "SELECT a.* FROM `transaction` d
+                $sql = "SELECT d.* FROM `transaction` d
                 INNER JOIN `upload_trans_log` a ON d.`upload_trans_log_id` = a.`id`
                 INNER JOIN transaction_detail b ON d.id = b.`trans_id`
                 INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
@@ -2614,8 +2614,8 @@ class transactionController extends transactionControllerGenerate
                 GROUP BY a.`id` 
                 ORDER BY a.`created_at` DESC";
             else:
-                $sql = "SELECT a.* FROM `transaction` d
-                INNER JOIN `upload_trans_log_id` a ON d.`upload_trans_log_id` = a.`id`
+                $sql = "SELECT d.* FROM `transaction` d
+                INNER JOIN `upload_trans_log` a ON d.`upload_trans_log_id` = a.`id`
                 INNER JOIN transaction_detail b ON d.id = b.`trans_id`
                 INNER JOIN transaction_log c ON c.`trans_id` = d.`id`
                 WHERE d.type_trans='9' and d.`tanggal` BETWEEN '$fromDate' AND '$toDate' AND d.`trans_status` IN ($stsId) AND d.created_by = '$user'
@@ -2625,7 +2625,7 @@ class transactionController extends transactionControllerGenerate
         }
         // echo $sql;
 
-        $last = $ctrl_upload_tr_log->countDataAll();
+        $last = $this->countDataAll();
         $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
         $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
         $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
@@ -2654,7 +2654,7 @@ class transactionController extends transactionControllerGenerate
         $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
         $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
 
-        $transaction_list = $ctrl_upload_tr_log->createList($sql);
+        $transaction_list = $this->createList($sql);
         $isadmin = $this->isadmin;
         $ispublic = $this->ispublic;
         $isread = $this->isread;
