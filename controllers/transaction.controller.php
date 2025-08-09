@@ -2691,8 +2691,8 @@ class transactionController extends transactionControllerGenerate
     function getLoppTranstatusNol()
     {
         $this->setIsadmin(true);
-        // $dateNow = date('Y-m-d');
-        $dateNow = "2025-01-05";
+        $dateNow = date('Y-m-d');
+        // $dateNow = "2025-01-05";
         $cekTransNol = $this->countDataByTransStatus($dateNow);
         $loopTransNol = $this->showDataByTransStatus($dateNow);
 
@@ -2743,7 +2743,7 @@ class transactionController extends transactionControllerGenerate
 *REMINDER TRANSAKSI*
 Hallo " . $nameUser . ",
 
-Transaksi $jenisTransaksi dengan *No.$no_trans($qtyTotal Pcs)* Masih Pending Belum Di Release Nih,
+Transaksi *$jenisTransaksi* dengan *No.$no_trans($qtyTotal Pcs)* Masih Pending Belum Di Release Nih,
 Silahkan Lanjutkan dan Release Sekarang Yak!, Biar Tidak menggangu Transaksi yang Lain Ya Kawan.
 
 https://erpsmb.cloud.
