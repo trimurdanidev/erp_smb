@@ -25,7 +25,7 @@
                         <table width="250" cellpadding="5" cellspacing="5">
                             <tr>
                                 <td valign="top">
-                                    <div class="form-group"> User </div>
+                                    <div class="form-group"> Username </div>
                                 </td>
                                 <td width="10" valign="top">
                                     :
@@ -42,10 +42,18 @@
                                     :
                                 </td>
                                 <td>
+                                    <div class="form-group password-wrapper">
+                                        <input type="password" name="password" id="password" size="15">
+                                        <span class="toggle-password" onclick="togglePassword()">
+                                            <i class="fa fa-eye-slash" id="eyeIcon"></i>
+                                        </span>
+                                    </div>
+                                </td>
+                                <!-- <td>
                                     <div class="form-group"> <input type="password" name="password" id="password"
                                             size="15">
                                     </div>
-                                </td>
+                                </td> -->
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -62,10 +70,10 @@
                         </table>
 
                     </form>
-                    <p>Forget Password ?</p>
+                    <p>Lupa Password Coy ?</p>
                     <button class="btn btn-default" onclick="reset()"><i class="fa fa-whatsapp"
                             style="font-size:24px"></i>
-                        Reset Password By WA</button>
+                        Reset Password By Whatsapp</button>
 
                 </div>
             </li>
@@ -77,6 +85,21 @@
 </html>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script language="javascript" type="text/javascript">
+    function togglePassword() {
+        const passwordField = document.getElementById("password");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        } else {
+            passwordField.type = "password";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        }
+    }
+
     function reset() {
         var param = {};
         param['user'] = document.getElementById('user').value;
@@ -88,7 +111,7 @@
                 position: 'center',
                 icon: 'warning',
                 title: 'Warning!!',
-                text : 'Masukkan Username Anda',
+                text: 'Ketik Dulu Usernamenya Atuh',
                 showConfirmButton: true,
                 confirmButtonColor: '#3085d6'
             });
