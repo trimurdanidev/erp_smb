@@ -2740,18 +2740,17 @@ class transactionController extends transactionControllerGenerate
 
                 $pesen = "*ERP SMB*
 
-=REMINDER TRANSAKSI=
+*REMINDER TRANSAKSI*
 Hallo " . $nameUser . ",
 
-Transaksi $jenisTransaksi dengan No.$no_trans($qtyTotal Pcs) Masih Pending Belum Di Release Nih,
+Transaksi $jenisTransaksi dengan *No.$no_trans($qtyTotal Pcs)* Masih Pending Belum Di Release Nih,
 Silahkan Lanjutkan dan Release Sekarang Yak!, Biar Tidak menggangu Transaksi yang Lain Ya Kawan.
 
-https://erpsmb.cloud./index.php
+https://erpsmb.cloud.
 
-Terimakasih Boskuh :-),
+Terimakasih Boskuh,
 
-Selamat Bekerja Kembali,
-;";
+Selamat Bekerja Kembali";
 
                 if ($getUsers->getPhone() != null || $getUsers != ""):
 
