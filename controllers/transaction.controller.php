@@ -2669,5 +2669,102 @@ class transactionController extends transactionControllerGenerate
         require_once './views/transaction/transaction_transfer_out.php';
     }
 
+    function countDataByTransStatus($dateNow)
+    {
+        $this->setIsadmin(true);
+        $sql = "SELECT COUNT(*) from `transaction` WHERE trans_status='0' AND tanggal = '$dateNow' order by id desc";
+        $row = $this->dbh->query($sql)->fetch();
+
+        return $row;
+
+    }
+    function showDataByTransStatus($dateNow)
+    {
+        $this->setIsadmin(true);
+
+        $sql = "SELECT * from `transaction` WHERE trans_status='0' AND tanggal = '$dateNow' order by id desc";
+        $row = $this->createList($sql);
+
+        return $row;
+    }
+
+    function getLoppTranstatusNol()
+    {
+        $this->setIsadmin(true);
+        // $dateNow = date('Y-m-d');
+        $dateNow = "2025-01-05";
+        $cekTransNol = $this->countDataByTransStatus($dateNow);
+        $loopTransNol = $this->showDataByTransStatus($dateNow);
+
+        $mdl_mst_user = new master_user();
+        $ctrl_mst_usr = new master_userController($mdl_mst_user, $this->dbh);
+
+        $toolsControl = new toolsController();
+
+        $mdl_trans_type = new transaction_type();
+        $ctrl_trans_type = new transaction_typeController($mdl_trans_type, $this->dbh);
+
+        if ($cekTransNol > 0):
+            foreach ($loopTransNol as $transaction_valdrf) {
+                $trans_id = $transaction_valdrf->getId();
+                $created_by = $transaction_valdrf->getCreated_by();
+                $type_trans = $transaction_valdrf->getType_trans();
+                $trans_status = $transaction_valdrf->getTrans_status();
+                $qtyTotal = $transaction_valdrf->getQtyTotal();
+                $no_trans = $transaction_valdrf->getNo_trans();
+
+                $getUsers = $ctrl_mst_usr->showData($created_by);
+                $nameUser = $getUsers->getDescription();
+
+                switch ($type_trans) {
+                    case '1':
+                        $jenisTransaksi = "Closing Online";
+                        break;
+
+                    case '2':
+                        $jenisTransaksi = "Offline";
+                        break;
+
+                    case '3':
+                        $jenisTransaksi = "Stock Opname";
+                        break;
+
+                    case '4':
+                        $jenisTransaksi = "Restok";
+                        break;
+
+                    case '9':
+                        $jenisTransaksi = "Transfer Out";
+                        break;
+                }
+
+                $pesen = "*ERP SMB*
+
+=REMINDER TRANSAKSI=
+Hallo " . $nameUser . ",
+
+Transaksi $jenisTransaksi dengan No.$no_trans($qtyTotal Pcs) Masih Pending Belum Di Release Nih,
+Silahkan Lanjutkan dan Release Sekarang Yak!, Biar Tidak menggangu Transaksi yang Lain Ya Kawan.
+
+https://erpsmb.cloud./index.php
+
+Terimakasih Boskuh :-),
+
+Selamat Bekerja Kembali,
+;";
+
+                if ($getUsers->getPhone() != null || $getUsers != ""):
+
+                    //send Whatsapp Reminder Transaction
+                    $toolsControl->sendWhatsapp($getUsers->getPhone(), $pesen);
+                else:
+                    echo "No Telepon user Tidak ditemukan";
+                endif;
+
+            }
+        else:
+            echo "Tidak Ada Transaksi Yang Pending/ Masih Draft";
+        endif;
+    }
 }
 ?>
