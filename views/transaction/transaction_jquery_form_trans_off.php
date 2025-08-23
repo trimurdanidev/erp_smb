@@ -322,6 +322,35 @@
         $('#' + x[0] + '_edprice').val(formatMoney(parseInt(price)))
     }
 
+    function cekStok(id) {
+        var x = $(id).attr('id').split('_');
+        var price = $('#' + x[0] + '_price').val();
+        var stoke = $('#' + x[0] + '_qtyStok').val();
+        var qtyBeli = $('#' + x[0] + '_qtyBeli').val();
+        if (parseInt(qtyBeli) > parseInt(stoke)) {
+            Swal.fire("Uppss!\nQuantity Tidak Boleh Melebihi Stok Maksimal");
+            $('#' + x[0] + '_qtyBeli').val(parseInt(stoke));
+            $('#' + x[0] + '_total').val(formatMoney(parseInt(price) * parseInt(stoke)));
+            $('#' + x[0] + '_ttl').val(parseInt(price) * parseInt(stoke));
+
+            var jum = 0; i = 0; jml = 0;
+            $('.tbody tr').each(function () {
+                jml = '#t' + (i + 1) + '_ttl';
+                if (price != '' || qtyBeli != '') {
+                    jum = parseInt(jum) + parseInt($(jml).val());
+                    // jum += parseInt($(jml).val());
+                    console.log(jml + parseInt($(jml).val()));
+                }
+                i++;
+            });
+            $('#gTotal').val(parseInt(jum));
+            $('#totalnya').val(formatMoney(parseInt(jum)));
+            $('#' + x[0] + '_edprice').val(formatMoney(parseInt(price)))
+
+            return false;
+        }
+    }
+
     function jsBayar(id) {
         var x = $(id).attr('id');
         var bayar = $('#bayar').val();
