@@ -363,5 +363,184 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
         echo $ctrl_report_query->exportcsv($report_query, 1, 0);
 
     }
+
+    function groupAllKary()
+    {
+        $sql = "SELECT GROUP_CONCAT(CONCAT(\"'\", `user`, \"'\")) AS allKary FROM db_erp_smb.`master_user` WHERE deleted_at IS NULL";
+        $row = $this->dbh->query($sql)->fetch();
+
+        return $row;
+    }
+
+    function dataAllKaryawan()
+    {
+        $this->setIsadmin(true);
+
+        $mdl_report_query = new report_query();
+        $ctrl_report_query = new report_queryController($mdl_report_query, $this->dbh);
+
+        $master_department_mdl = new master_department();
+        $master_department_ctrl = new master_departmentController($master_department_mdl, $this->dbh);
+
+        $getGroupDept = $master_department_ctrl->groupAllDept();
+        $getGroupKary = $this->groupAllKary();
+
+
+        $setGroupDep = $getGroupDept['allDept'];
+        $setGroupKar = $getGroupKary['allKary'];
+
+        if ($this->ispublic || $this->isadmin || $this->isread) {
+            $dept = isset($_REQUEST["dept"]) ? $_REQUEST["dept"] : "";
+            $karyawan = isset($_REQUEST['kry']) ? $_REQUEST['kry'] : "";
+
+            $last = $this->countDataAll();
+            $limit = isset($_REQUEST["limit"]) ? $_REQUEST["limit"] : $this->limit;
+            $skip = isset($_REQUEST["skip"]) ? $_REQUEST["skip"] : 0;
+            $search = isset($_REQUEST["search"]) ? $_REQUEST["search"] : "";
+
+            if ($dept != "" || $dept != null && $karyawan != null || $karyawan != ""):
+                $query = "SELECT  a .`id`,
+  a .`user`,
+  a .`description`,
+  a .`password`,
+  a .`username`,
+  a .`phone`,
+  a .`nik`,
+  a .`departmentid`,
+  a .`unitid`,
+  b .`is_mobile`,
+  a .`entrytime`,
+  a .`entryuser`,
+  a .`entryip`,
+  a .`updatetime`,
+  a .`updateuser`,
+  a .`updateip`,
+  a .`avatar`,
+  b .`created_by`,
+  b .`created_at`,
+  b .`updated_at`,
+  b .`deleted_at` ,
+  c.`departmentcode`,
+  c.`description` FROM db_sperepart_bekasi .`master_user` a
+		INNER JOIN db_erp_smb.`master_user` b ON a.`user` = b.`user`
+		INNER JOIN db_erp_smb.`master_department` c ON c.`departmentid` = a.`departmentid` 
+		WHERE a.departmentid IN ($dept) and a.user in ($setGroupKar) AND b.deleted_at IS NULL;";
+                //             elseif ($karyawan == null || $karyawan == ""):
+//                 echo "kondisi 2";
+//                 $query = "SELECT  a .`id`,
+//   a .`user`,
+//   a .`description`,
+//   a .`password`,
+//   a .`username`,
+//   a .`phone`,
+//   a .`nik`,
+//   a .`departmentid`,
+//   a .`unitid`,
+//   b .`is_mobile`,
+//   a .`entrytime`,
+//   a .`entryuser`,
+//   a .`entryip`,
+//   a .`updatetime`,
+//   a .`updateuser`,
+//   a .`updateip`,
+//   a .`avatar`,
+//   b .`created_by`,
+//   b .`created_at`,
+//   b .`updated_at`,
+//   b .`deleted_at` ,
+//   c.`departmentcode`,
+//   c.`description` FROM db_sperepart_bekasi .`master_user` a
+// 		INNER JOIN db_erp_smb.`master_user` b ON a.`user` = b.`user`
+// 		INNER JOIN db_erp_smb.`master_department` c ON c.`departmentid` = a.`departmentid` 
+// 		WHERE a.departmentid IN ($dept) and a.user in ('$karyawan') AND  b.deleted_at IS NULL;";
+            else:
+                $query = "SELECT  a .`id`,
+  a .`user`,
+  a .`description`,
+  a .`password`,
+  a .`username`,
+  a .`phone`,
+  a .`nik`,
+  a .`departmentid`,
+  a .`unitid`,
+  b .`is_mobile`,
+  a .`entrytime`,
+  a .`entryuser`,
+  a .`entryip`,
+  a .`updatetime`,
+  a .`updateuser`,
+  a .`updateip`,
+  a .`avatar`,
+  b .`created_by`,
+  b .`created_at`,
+  b .`updated_at`,
+  b .`deleted_at` ,
+  c.`departmentcode`,
+  c.`description` FROM db_sperepart_bekasi .`master_user` a
+		INNER JOIN db_erp_smb.`master_user` b ON a.`user` = b.`user`
+		INNER JOIN db_erp_smb.`master_department` c ON c.`departmentid` = a.`departmentid` 
+		WHERE  b.deleted_at IS NULL;";
+            endif;
+
+            // echo $query;
+
+            $sisa = intval($last % $limit);
+
+            if ($sisa > 0) {
+                $last = $last - $sisa;
+            } else if ($last - $limit < 0) {
+                $last = 0;
+            } else {
+                $last = $last - $limit;
+            }
+
+            $previous = $skip - $limit < 0 ? 0 : $skip - $limit;
+
+            if ($skip + $limit > $last) {
+                $next = $last;
+            } else if ($skip == 0) {
+                $next = $skip + $limit + 1;
+            } else {
+                $next = $skip + $limit;
+            }
+            $first = 0;
+
+            $pageactive = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($skip / $limit)) + 1;
+            $pagecount = $last == 0 ? $sisa == 0 ? 0 : 1 : intval(($last / $limit)) + 1;
+
+            $master_user_list = $this->dbh->query($query);
+
+            $isadmin = $this->isadmin;
+            $ispublic = $this->ispublic;
+            $isread = $this->isread;
+            $isconfirm = $this->isconfirm;
+            $isentry = $this->isentry;
+            $isupdate = $this->isupdate;
+            $isdelete = $this->isdelete;
+            $isprint = $this->isprint;
+            $isexport = $this->isexport;
+            $isimport = $this->isimport;
+            require_once './views/master_user/site_karyawan.php';
+        } else {
+            echo "You cannot access this module";
+        }
+    }
+
+    function changeMobile()
+    {
+        $this->setIsadmin(true);
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+        $skip = isset($_REQUEST['skip']) ? $_REQUEST['skip'] : "";
+        $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : "";
+        $stat = isset($_REQUEST['stats']) ? $_REQUEST['stats'] : "";
+
+        if ($stat == 1):
+            $sql = "UPDATE db_erp_smb.master_user SET is_mobile=0 WHERE id = '" . $id . "'";
+        else:
+            $sql = "UPDATE db_erp_smb.master_user SET is_mobile=1 WHERE id = '" . $id . "'";
+        endif;
+
+        $execute = $this->dbh->query($sql);
+    }
 }
 ?>
