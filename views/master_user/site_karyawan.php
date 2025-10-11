@@ -19,6 +19,7 @@
     // echo "<pre>";
     // echo print_r($selectKry);
     // echo "</pre>";
+    
     ?>
 
     <h1>DATA KARYAWAN</h1>
@@ -127,14 +128,34 @@
                                 <td><?php echo $list_data_kar['phone'] ?></td>
                                 <!-- <td><?php //echo $list_data_kar->departmentid; ?></td> -->
                                 <td><?php echo $list_data_kar['description']; ?></td>
-                                <td><?php echo "-"; ?></td>
+                                <td>
+                                    <?php
+                                    $lat = $list_data_kar['latitude'];
+                                    $lng = $list_data_kar['longitude'];
+
+                                    // default jika tidak ada atau invalid
+                                    if ($lat === false || $lng === false || $lat === null || $lng === null) {
+                                        // contoh default (Jakarta)
+                                        $lat = -6.200000;
+                                        $lng = 106.816666;
+                                    }
+
+                                    $zoom = 15;
+
+                                    $mapSrc = "https://www.google.com/maps?q={$lat},{$lng}&z={$zoom}&output=embed";
+                                    ?>
+                                    <div class="map-wrap">
+                                        <iframe title="Lokasi" src="<?php echo htmlspecialchars($mapSrc); ?>" allowfullscreen
+                                            loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </td>
                                 <td><?php if ($list_data_kar['is_mobile'] == 0) { ?>
                                         <button class="btn btn-info"
-                                            onclick="funcMobile('<?php  echo $list_data_kar['is_mobile'];?>','<?php echo $list_data_kar['id'];?>')"><span
-                                            class="badge rounded-pill bg-primary">Aktif</span></button>
+                                            onclick="funcMobile('<?php echo $list_data_kar['is_mobile']; ?>','<?php echo $list_data_kar['id']; ?>')"><span
+                                                class="badge rounded-pill bg-primary">Aktif</span></button>
                                     <?php } else if ($list_data_kar['is_mobile'] == 1) { ?>
                                             <button class="btn btn-red"
-                                                onclick="funcMobile('<?php echo $list_data_kar['is_mobile'];?>','<?php echo $list_data_kar['id'];?>')"><span
+                                                onclick="funcMobile('<?php echo $list_data_kar['is_mobile']; ?>','<?php echo $list_data_kar['id']; ?>')"><span
                                                     class="badge rounded-pill bg-secondary">Tidak Aktif</span></button>
                                         </td>
                                 <?php } else
@@ -148,15 +169,34 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h3 class="modal-title fs-5" id="exampleModalLabel">Detail
+                                                    <h3 class="modal-title fs-5" id="exampleModalLabel"><span class="glyphicon glyphicon-info-sign"></span> Detail
                                                         Karyawan <?php echo $list_data_kar['username'] ?>
                                                     </h3>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div class="row table-row">
-                                                        <div class="table-responsive">
-
-                                                        </div>
+                                                    <div class="table-responsive ">
+                                                        <label for="name">Nama</label>
+                                                        <input type="text" class="form- form-control"
+                                                            value="<?php echo $list_data_kar['username'] ?>" disabled>
+                                                        <br>
+                                                        <label for="name">No Telepon</label>
+                                                        <input type="text" class="form- form-control"
+                                                            value="<?php echo $list_data_kar['phone'] ?>" disabled>
+                                                        <br>
+                                                        <label for="name">Alamat</label>
+                                                        <input type="text" class="form- form-control"
+                                                            value="<?php echo $list_data_kar['address'] ?>" disabled>
+                                                        <br>
+                                                        <label for="name">No KTP</label>
+                                                        <input type="text" class="form- form-control"
+                                                            value="<?php echo $list_data_kar['no_ktp'] ?>" disabled>
+                                                        <br>
+                                                        <label for="name">Bagian</label>
+                                                        <input type="text" class="form- form-control"
+                                                            value="<?php echo $list_data_kar['description'] ?>" disabled>
+                                                        <br>
+                                                        <br>
+                                                        <button type="button" class="btn btn-primary" disabled><span class=" 	glyphicon glyphicon-ok-circle"></span> Simpan</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -257,8 +297,17 @@
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
+
+
                     site = "index.php?model=master_user&action=changeMobile&id=" + iduser + "&stats=" + stats;
                     target = "content";
+                    Swal.fire({
+                        title: 'Saving...',
+                        html: 'Please wait...',
+                        allowOutsideClick: false,
+                        showLoaderOnConfirm: true,
+                    });
+                    swal.showLoading();
                     showMenu(target, site);
 
                     Swal.fire("Berhasil!", "Kunci Lokasi Di Aktifkan", "success");
@@ -288,3 +337,22 @@
         }
     }
 </script>
+<style>
+    /* responsive iframe container */
+    .map-wrap {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%;
+        /* 16:9 */
+    }
+
+    .map-wrap iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+</style>

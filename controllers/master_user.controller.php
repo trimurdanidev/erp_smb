@@ -404,7 +404,7 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
   a .`description`,
   a .`password`,
   a .`username`,
-  a .`phone`,
+  b .`phone`,
   a .`nik`,
   a .`departmentid`,
   a .`unitid`,
@@ -415,13 +415,13 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
   a .`updatetime`,
   a .`updateuser`,
   a .`updateip`,
-  a .`avatar`,
+  b .`avatar`,
   b .`created_by`,
   b .`created_at`,
   b .`updated_at`,
   b .`deleted_at` ,
   c.`departmentcode`,
-  c.`description` FROM db_sperepart_bekasi .`master_user` a
+  c.`description`,c.`latitude`,c.`longitude`,'' `address`,'' `no_ktp` FROM db_sperepart_bekasi .`master_user` a
 		INNER JOIN db_erp_smb.`master_user` b ON a.`user` = b.`user`
 		INNER JOIN db_erp_smb.`master_department` c ON c.`departmentid` = a.`departmentid` 
 		WHERE a.departmentid IN ($dept) and a.user in ($setGroupKar) AND b.deleted_at IS NULL;";
@@ -459,7 +459,7 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
   a .`description`,
   a .`password`,
   a .`username`,
-  a .`phone`,
+  b .`phone`,
   a .`nik`,
   a .`departmentid`,
   a .`unitid`,
@@ -470,13 +470,13 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
   a .`updatetime`,
   a .`updateuser`,
   a .`updateip`,
-  a .`avatar`,
+  b .`avatar`,
   b .`created_by`,
   b .`created_at`,
   b .`updated_at`,
   b .`deleted_at` ,
   c.`departmentcode`,
-  c.`description` FROM db_sperepart_bekasi .`master_user` a
+  c.`description`,c.`latitude`,c.`longitude`,'' `address`,'' `no_ktp` FROM db_sperepart_bekasi .`master_user` a
 		INNER JOIN db_erp_smb.`master_user` b ON a.`user` = b.`user`
 		INNER JOIN db_erp_smb.`master_department` c ON c.`departmentid` = a.`departmentid` 
 		WHERE  b.deleted_at IS NULL;";
@@ -545,6 +545,7 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
         endif;
 
         $execute = $this->dbh->query($sql);
+        $this->dataAllKaryawan();
     }
 }
 ?>
