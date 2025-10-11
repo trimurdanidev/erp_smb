@@ -535,9 +535,13 @@ Berhasil Reset Password. Berikut adalah Password Anda : *$newResetPass* ";
         $stat = isset($_REQUEST['stats']) ? $_REQUEST['stats'] : "";
 
         if ($stat == 1):
-            $sql = "UPDATE db_erp_smb.master_user SET is_mobile=0 WHERE id = '" . $id . "'";
+            $sql = "UPDATE db_erp_smb.master_user a
+            INNER JOIN db_sperepart_bekasi.master_user b 
+            ON a.`user` = b.`user` SET is_mobile=0 WHERE b.id = '" . $id . "'";
         else:
-            $sql = "UPDATE db_erp_smb.master_user SET is_mobile=1 WHERE id = '" . $id . "'";
+            $sql = "UPDATE db_erp_smb.master_user a
+            INNER JOIN db_sperepart_bekasi.master_user b 
+            ON a.`user` = b.`user` SET is_mobile=1 WHERE b.id = '" . $id . "'";
         endif;
 
         $execute = $this->dbh->query($sql);
