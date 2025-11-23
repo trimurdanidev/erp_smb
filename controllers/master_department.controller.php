@@ -55,7 +55,7 @@ class master_departmentController extends master_departmentControllerGenerate
             } else {
 
                 //DB : sparepart_motor_bekasi
-                $this->master_department->setDepartmentid($this->getLastId());
+                $this->master_department->setDepartmentid($departmentid);
                 // $this->master_department->setdepartmentcode($departmentcode); // cuma di DB ERP SMB
                 $this->master_department->setDescription($description);
                 $this->saveData();
