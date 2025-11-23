@@ -8,6 +8,7 @@
     require_once './controllers/report_query.controller.php';
     require_once './controllers/tools.controller.php';
     require_once './database/config.php';
+
     if (!isset($_SESSION)) {
         session_start();
     }
@@ -30,6 +31,7 @@
         var $isprint = false;
         var $isexport = false;
         var $isimport = false;
+        var $lastID = "";
         var $toolsController;
         function __construct($master_department, $dbh) {
             $this->modulename = strtoupper($this->modulename);
@@ -197,8 +199,8 @@
 
                 
         function loadData($master_department,$row){
-	    $master_department->setDepartmentid(isset($row['departmentid'])?$row['departmentid']:"");
-	    $master_department->setDescription(isset($row['description'])?$row['description']:"");
+	    $master_department->setDepartmentid(isset($row['departmentid'])?$row['departmentid'] : "");
+	    $master_department->setDescription(isset($row['description'])?$row['description'] : "");
 
         }
 
@@ -380,16 +382,18 @@
             if($check == 0){
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isentry)){
                     $this->insertData();
-                    echo "Data is Inserted";
+                    $last_id = $this->dbh->lastInsertId();
+                    $this->setLastId($last_id);
+                    //echo "Data is Inserted";
                 }else{
-                    echo "You cannot insert data this module";
+                    //echo "You cannot insert data this module";
                 }
             } else {
                 if ($this->ispublic || $this->isadmin || ($this->isread && $this->isupdate)){
                     $this->updateData();
-                    echo "Data is updated";
+                    //echo "Data is updated";
                 }else{
-                    echo "You cannot update this module";
+                    //echo "You cannot update this module";
                 }
             }
         }
@@ -544,6 +548,14 @@
 
         public function setIsimport($isimport) {
             $this->isimport = $isimport;
+        }
+
+        public function setLastId($id){
+            $this->lastID = $id;
+        }
+        
+        public function getLastId(){
+            return $this->lastID;
         }
     }
 ?>
